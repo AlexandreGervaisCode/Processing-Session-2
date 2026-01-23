@@ -8,9 +8,9 @@
  * personnes qui ne savent pas ce que l'autre a fait.
  */
  
- // Mettre la fenêtre à la taille demandé avec un arrière-plan gris foncé
+ // Mettre la fenêtre à la taille demandé avec un arrière-plan foncé
 size(400, 600);
-background(25);
+background(61, 46, 41);
 
 // Palette de couleur utilisé
 color COL_MAIN = color(255, 60, 60);
