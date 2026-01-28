@@ -13,11 +13,11 @@ size(400, 600);
 background(61, 46, 41);
 
 // Palette de couleur utilisé
-color COL_MAIN = color(255, 60, 60);
-color COL_MAIN_SHADING = color(255, 40, 40);
-color COL_WHITE = color(235);
-color COL_WHITE_SHADING = color(255);
-color COL_BLACK = color(15);
+final color COL_MAIN = color(255, 60, 60);
+final color COL_MAIN_SHADING = color(255, 40, 40);
+final color COL_WHITE = color(235);
+final color COL_WHITE_SHADING = color(255);
+final color COL_BLACK = color(15);
 
 
 // Élément arrière-plan "eyeSocket"
