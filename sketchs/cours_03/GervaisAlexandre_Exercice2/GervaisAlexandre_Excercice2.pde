@@ -95,11 +95,34 @@ rect(100,0,200,200);
 //   D É B U T   C O D E   A L E X A N D R E
 // -------------------------------------------
 // Instructions: 1 boucle for repeat min 5x. Width et Height use min 1x
+// Note : Le personnage reproduit avec le concept de monstre en tête est Hatsune Miku "monster-fied"
+
 // Création des variables
 final color COL_SHIRT = color(173);
 final color COL_SKIN = color(210,0,50);
 final color COL_SKIRT = color(69,74,77);
 final color COL_ACCENT = color(142, 208, 208);
+final color COL_TATTOO = color(234, 73, 88);
+
+// Left Leg
+fill(COL_SKIN);
+noStroke();
+quad(130, 420, 195, 420, 190, 500, 132, 500);
+// Thights
+fill(COL_SKIRT);
+quad(190, 500, 132, 500, 133, 600, 188, 600);
+stroke(COL_ACCENT);
+line(190, 500, 132, 500);
+
+// Right Leg
+fill(COL_SKIN);
+noStroke();
+quad(270, 420, 205, 420, 210, 500, 268, 500);
+// Thights
+fill(COL_SKIRT);
+quad(210, 500, 268, 500, 267, 600, 212, 600);
+stroke(COL_ACCENT);
+line(210, 500, 268, 500);
 
 // Skirt
 fill(COL_SKIRT);
@@ -122,9 +145,76 @@ for(float x = 125; x<295; x+=25){
   }
 }
 
+// Left Arm
+noStroke();
+fill(COL_SKIN);
+rect(150, 208, 40, 30);
+circle(150, 235, 55);
+quad(123, 230, 145, 240, 120, 320, 90, 320);
+// Arm Sleeve Color
+fill(COL_SKIRT);
+stroke(COL_ACCENT);
+beginShape();
+vertex(90, 319);
+vertex(120, 319);
+vertex(80, 380);
+vertex(100, 460);
+vertex(20, 450);
+vertex(80, 380);
+endShape(CLOSE);
+// Arm Sleeve
+noStroke();
+quad(120, 320, 90, 320, 20, 450, 100, 460);
+
+// Right Arm
+fill(COL_SKIN);
+rect(210, 208, 40, 30);
+circle(250, 235, 55);
+quad(277, 230, 255, 240, 280, 320, 310, 320);
+// Arm Sleeve Color
+fill(COL_SKIRT);
+stroke(COL_ACCENT);
+beginShape();
+vertex(310, 319);
+vertex(280, 319);
+vertex(320, 380);
+vertex(300, 460);
+vertex(380, 450);
+vertex(320, 380);
+endShape(CLOSE);
+// Arm Sleeve
+noStroke();
+fill(COL_SKIRT);
+quad(280, 320, 310, 320, 380, 450, 300, 460);
+
+// Tattoo
+stroke(COL_TATTOO);
+strokeWeight(2);
+noFill();
+// le 0
+beginShape();
+vertex(258,225);
+vertex(256,227);
+vertex(253,232);
+vertex(258,239);
+vertex(260,241);
+vertex(262,241);
+vertex(264,232);
+vertex(262,227);
+endShape(CLOSE);
+// le 1
+line(265,230,270,225);
+line(270,225,274,240);
+// Ligne du bas
+line(258, 244, 278, 242);
+// Ligne du milieu du 0
+stroke(COL_SKIN);
+line(258,225,262,241);
+
 // Shirt
 fill(COL_SHIRT);
 stroke(COL_ACCENT);
+strokeWeight(4);
 quad(175, 205, 225, 205, 260, 265, 140, 265);
 noStroke();
 quad(257, 262, 143, 262, 155, 320, 245, 320);
@@ -161,10 +251,21 @@ fill(COL_SKIRT);
 rect(186, 350, 15, 8);
 rect(186, 359, 15, 8);
 
+// Shirt Collar Colored
+stroke(COL_ACCENT);
+strokeWeight(3);
+beginShape();
+vertex(235, 210);
+vertex(220, 230);
+vertex(200, 210);
+vertex(180, 230);
+vertex(165, 210);
+vertex(200, 205);
+endShape(CLOSE);
+
 // Shirt Collar
 fill(COL_SHIRT);
-stroke(COL_ACCENT);
-strokeWeight(2);
+noStroke();
 beginShape();
 vertex(170,200);
 vertex(200,205);
