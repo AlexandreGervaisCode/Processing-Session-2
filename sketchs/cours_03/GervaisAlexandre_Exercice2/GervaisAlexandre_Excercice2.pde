@@ -9,6 +9,7 @@
  */
  
 size(400, 600);
+background(40);
 
 //tete
 noStroke();
@@ -87,4 +88,90 @@ noStroke();
 rect(182,190,35,20); 
 
 //masque
+fill(0);
 rect(100,0,200,200);
+
+// -------------------------------------------
+//   D É B U T   C O D E   A L E X A N D R E
+// -------------------------------------------
+// Instructions: 1 boucle for repeat min 5x. Width et Height use min 1x
+// Création des variables
+final color COL_SHIRT = color(173);
+final color COL_SKIN = color(210,0,50);
+final color COL_SKIRT = color(69,74,77);
+final color COL_ACCENT = color(142, 208, 208);
+
+// Skirt
+fill(COL_SKIRT);
+noStroke();
+quad(140, 380, 260, 380, 280, 440, 120, 440);
+fill(COL_ACCENT);
+quad(280, 440, 120, 440, 120, 447, 280, 447);
+for(float x = 125; x<295; x+=25){
+  float y = 390;
+  if (x>=200){
+    fill(COL_SKIRT);
+    quad(x-(width/20), y, x-(width/10), y, x-(width/20), y+(height/10), x, y+(height/10));
+    fill(COL_ACCENT);
+    quad(x-(width/20), y+(height/10), x, y+(height/10), x, y+(height/10)+7, x-(width/20), y+(height/10)+7);
+  } else {
+    fill(COL_SKIRT);
+    quad(x+(width/20), y, x+(width/10), y, x+(width/20), y+(height/10), x, y+(height/10));
+    fill(COL_ACCENT);
+    quad(x+(width/20), y+(height/10), x, y+(height/10), x, y+(height/10)+7, x+(width/20), y+(height/10)+7);
+  }
+}
+
+// Shirt
+fill(COL_SHIRT);
+stroke(COL_ACCENT);
+quad(175, 205, 225, 205, 260, 265, 140, 265);
+noStroke();
+quad(257, 262, 143, 262, 155, 320, 245, 320);
+
+// Shirt Bottom Colored
+stroke(COL_ACCENT);
+beginShape();
+vertex(260, 380);
+vertex(220, 400);
+vertex(200, 370);
+vertex(180, 400);
+vertex(140, 380);
+vertex(200, 360);
+endShape(CLOSE);
+
+// Shirt Bottom
+noStroke();
+beginShape();
+vertex(155, 320);
+vertex(245, 320);
+vertex(260, 380);
+vertex(220, 400);
+vertex(200, 370);
+vertex(180, 400);
+vertex(140, 380);
+endShape(CLOSE);
+
+// Tie
+fill(COL_ACCENT);
+quad(195, 218, 205, 218, 207, 228, 193, 228);
+quad(205, 228, 195, 228, 185, 380, 215, 380);
+triangle(185, 380, 215, 380, 200, 400);
+fill(COL_SKIRT);
+rect(186, 350, 15, 8);
+rect(186, 359, 15, 8);
+
+// Shirt Collar
+fill(COL_SHIRT);
+stroke(COL_ACCENT);
+strokeWeight(2);
+beginShape();
+vertex(170,200);
+vertex(200,205);
+vertex(230,200);
+vertex(235, 210);
+vertex(220, 230);
+vertex(200, 210);
+vertex(180, 230);
+vertex(165, 210);
+endShape(CLOSE);
