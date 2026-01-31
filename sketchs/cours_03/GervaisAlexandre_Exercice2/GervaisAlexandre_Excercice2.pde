@@ -94,8 +94,6 @@ rect(100,0,200,200);
 // -------------------------------------------
 //   D É B U T   C O D E   A L E X A N D R E
 // -------------------------------------------
-// Instructions: 1 boucle for repeat min 5x. Width et Height use min 1x
-// Note : Le personnage reproduit avec le concept de monstre en tête est Hatsune Miku "monster-fied"
 
 // Création des variables
 final color COL_SHIRT = color(173);
