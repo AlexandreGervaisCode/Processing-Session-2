@@ -100,17 +100,19 @@ rect(100,0,200,200);
 // Création des variables
 final color COL_SHIRT = color(173);
 final color COL_SKIN = color(210,0,50);
-final color COL_SKIRT = color(69,74,77);
+final color COL_CLOTHES = color(69,74,77);
 final color COL_ACCENT = color(142, 208, 208);
 final color COL_TATTOO = color(234, 73, 88);
+final color COL_DETAIL = color(232, 234, 123);
 
 // Left Leg
 fill(COL_SKIN);
 noStroke();
 quad(130, 420, 195, 420, 190, 500, 132, 500);
 // Thights
-fill(COL_SKIRT);
+fill(COL_CLOTHES);
 quad(190, 500, 132, 500, 133, 600, 188, 600);
+strokeWeight(5);
 stroke(COL_ACCENT);
 line(190, 500, 132, 500);
 
@@ -119,31 +121,49 @@ fill(COL_SKIN);
 noStroke();
 quad(270, 420, 205, 420, 210, 500, 268, 500);
 // Thights
-fill(COL_SKIRT);
+fill(COL_CLOTHES);
 quad(210, 500, 268, 500, 267, 600, 212, 600);
 stroke(COL_ACCENT);
 line(210, 500, 268, 500);
 
 // Skirt
-fill(COL_SKIRT);
+fill(COL_CLOTHES);
 noStroke();
 quad(140, 380, 260, 380, 280, 440, 120, 440);
 fill(COL_ACCENT);
 quad(280, 440, 120, 440, 120, 447, 280, 447);
-for(float x = 125; x<295; x+=25){
-  float y = 390;
+for(float x = 125; x<300; x+=25){
+  float y = 386;
+  fill(COL_CLOTHES);                   
   if (x>=200){
-    fill(COL_SKIRT);
     quad(x-(width/20), y, x-(width/10), y, x-(width/20), y+(height/10), x, y+(height/10));
     fill(COL_ACCENT);
     quad(x-(width/20), y+(height/10), x, y+(height/10), x, y+(height/10)+7, x-(width/20), y+(height/10)+7);
   } else {
-    fill(COL_SKIRT);
     quad(x+(width/20), y, x+(width/10), y, x+(width/20), y+(height/10), x, y+(height/10));
     fill(COL_ACCENT);
     quad(x+(width/20), y+(height/10), x, y+(height/10), x, y+(height/10)+7, x+(width/20), y+(height/10)+7);
   }
 }
+
+// Belt Thing
+noFill();
+stroke(COL_ACCENT);
+beginShape();
+vertex(225, 400);
+vertex(228, 410);
+vertex(233, 425);
+vertex(240, 440);
+vertex(250, 450);
+vertex(254, 452);
+vertex(258, 452);
+vertex(260, 450);
+vertex(265, 440);
+vertex(268, 430);
+vertex(270, 415);
+vertex(268, 400);
+vertex(263, 382);
+endShape();
 
 // Left Arm
 noStroke();
@@ -152,14 +172,15 @@ rect(150, 208, 40, 30);
 circle(150, 235, 55);
 quad(123, 230, 145, 240, 120, 320, 90, 320);
 // Arm Sleeve Color
-fill(COL_SKIRT);
+fill(COL_CLOTHES);
+strokeWeight(4);
 stroke(COL_ACCENT);
 beginShape();
 vertex(90, 319);
 vertex(120, 319);
 vertex(80, 380);
-vertex(100, 460);
-vertex(20, 450);
+vertex(100, 462);
+vertex(20, 452);
 vertex(80, 380);
 endShape(CLOSE);
 // Arm Sleeve
@@ -172,19 +193,19 @@ rect(210, 208, 40, 30);
 circle(250, 235, 55);
 quad(277, 230, 255, 240, 280, 320, 310, 320);
 // Arm Sleeve Color
-fill(COL_SKIRT);
+fill(COL_CLOTHES);
 stroke(COL_ACCENT);
 beginShape();
 vertex(310, 319);
 vertex(280, 319);
 vertex(320, 380);
-vertex(300, 460);
-vertex(380, 450);
+vertex(300, 462);
+vertex(380, 452);
 vertex(320, 380);
 endShape(CLOSE);
 // Arm Sleeve
 noStroke();
-fill(COL_SKIRT);
+fill(COL_CLOTHES);
 quad(280, 320, 310, 320, 380, 450, 300, 460);
 
 // Tattoo
@@ -218,9 +239,11 @@ strokeWeight(4);
 quad(175, 205, 225, 205, 260, 265, 140, 265);
 noStroke();
 quad(257, 262, 143, 262, 155, 320, 245, 320);
-
+fill(COL_DETAIL);
+rect(212, 248, 24, 9);
 // Shirt Bottom Colored
 stroke(COL_ACCENT);
+noFill();
 beginShape();
 vertex(260, 380);
 vertex(220, 400);
@@ -229,9 +252,9 @@ vertex(180, 400);
 vertex(140, 380);
 vertex(200, 360);
 endShape(CLOSE);
-
 // Shirt Bottom
 noStroke();
+fill(COL_SHIRT);
 beginShape();
 vertex(155, 320);
 vertex(245, 320);
@@ -247,7 +270,7 @@ fill(COL_ACCENT);
 quad(195, 218, 205, 218, 207, 228, 193, 228);
 quad(205, 228, 195, 228, 185, 380, 215, 380);
 triangle(185, 380, 215, 380, 200, 400);
-fill(COL_SKIRT);
+fill(COL_CLOTHES);
 rect(186, 350, 15, 8);
 rect(186, 359, 15, 8);
 
@@ -262,7 +285,6 @@ vertex(180, 230);
 vertex(165, 210);
 vertex(200, 205);
 endShape(CLOSE);
-
 // Shirt Collar
 fill(COL_SHIRT);
 noStroke();
