@@ -18,6 +18,11 @@ final float BOX_SIZE = 400;
 int hitpoints;
 float posX;
 float posY;
+boolean dUp = false;
+boolean dDown = false;
+boolean dLeft = false;
+boolean dRight = false;
+float soulSpeed = 4;
 
 void setup() {
   size(1000,750);
@@ -26,7 +31,7 @@ void setup() {
   hitpoints = 20;
 }
 
-void draw(){ 
+void draw() { 
   background(COL_BG);
   
   // Soul
@@ -45,25 +50,58 @@ void draw(){
   popMatrix();
   
   if (keyPressed) {
-    if (key=='w' && posY>(height-BOX_SIZE)/2+20){
-      posY-=4;
+    if ((dUp && dLeft) || (dUp&&dRight) || (dDown&&dLeft) || (dDown&&dRight)) {
+      soulSpeed = 4/sqrt(2);
+    } else {
+      soulSpeed = 4;
     }
-    if (key=='s' && posY<(height-BOX_SIZE)*1.5+30){
-      posY+=4;
+    if (dUp  && posY>(height-BOX_SIZE)/2+20) {
+      posY-=soulSpeed;
     }
-    if (key=='a' && posX>(width-BOX_SIZE)/2+20){
-      posX-=4;
+    if (dDown && posY<(height-BOX_SIZE)*1.5+30) {
+      posY+=soulSpeed;
     }
-    if (key=='d' && posX<(width-BOX_SIZE)+80){
-      posX+=4;
+    if (dLeft && posX>(width-BOX_SIZE)/2+20) {
+      posX-=soulSpeed;
     }
-    println(posX, posY, (width-BOX_SIZE)+80);
+    if (dRight && posX<(width-BOX_SIZE)+80) {
+      posX+=soulSpeed;
+    }
   }
-  
   // Bounding Box
   rectMode(CENTER);
   noFill();
   strokeWeight(8);
   stroke(COL_BORDER);
   square(width/2,height/2,BOX_SIZE);
+}
+
+void keyPressed() {
+  if (key=='w' || key=='W'){
+      dUp=true;
+  }
+  if (key=='s' || key=='S'){
+      dDown=true;
+  }
+  if (key=='a' || key=='A'){
+    dLeft=true;
+  }
+  if (key=='d' || key=='D'){
+    dRight=true;
+  }
+}
+
+void keyReleased() {
+  if (key=='w'){
+      dUp=false;
+  }
+  if (key=='s'){
+    dDown=false;
+  }
+  if (key=='a'){
+    dLeft=false;
+  }
+  if (key=='d'){
+    dRight=false;
+  }
 }
