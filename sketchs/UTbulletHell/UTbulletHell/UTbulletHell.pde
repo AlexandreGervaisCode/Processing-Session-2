@@ -92,16 +92,16 @@ void keyPressed() {
 }
 
 void keyReleased() {
-  if (key=='w'){
+  if (key=='w' && key=='W'){
       dUp=false;
   }
-  if (key=='s'){
+  if (key=='s' && key=='S'){
     dDown=false;
   }
-  if (key=='a'){
+  if (key=='a' && key=='A'){
     dLeft=false;
   }
-  if (key=='d'){
+  if (key=='d' && key=='D'){
     dRight=false;
   }
 }
