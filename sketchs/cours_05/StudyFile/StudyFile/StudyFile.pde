@@ -112,6 +112,10 @@ if (a == 3) {
 // map(value, fromMin, fromMax, toMin, toMax);
 float maVar = map(mouseX, 0, width, 100, 300);
 
+// Met un minimum et un maximum possible
+// constrain(value, min, max);
+float maVar = constrain(mouseX, 100, 300);
+
 // TRACKING DE LA SOURIS --------------------
 // Contient la valeur des coordonnées X et Y de la position de la souris
 mouseX
