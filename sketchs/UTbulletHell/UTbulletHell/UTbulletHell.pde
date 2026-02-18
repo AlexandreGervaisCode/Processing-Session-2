@@ -6,6 +6,8 @@
  * Description du projet: WO O O O O, STORY OF UNDERTALE
  */
 
+// POUR LES BULLETS, UTILISER UN ARRAY
+
 // Color Variables
 final color COL_BG = color(0);
 final color COL_SOUL = color(255,0,0);
