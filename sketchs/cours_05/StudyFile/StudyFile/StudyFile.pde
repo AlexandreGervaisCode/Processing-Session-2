@@ -76,13 +76,13 @@ color maVariable = lerpColor(color1, color2, progress);
 // Vérifie si la condition est vraie, si oui, exécute le code, sinon fait rien
 // Si le premier if est vrai, else if et else ne vont pas être exécuter.
 // Dès que la condition d'un des if est vrai, tout ceux qui suivent seront ignorés
-// if (a == 3) {
-      println("a égale 3");
-    } else if (a > 3) {
-      println("a est plus grand que 3");
-    } else {
-      println("a est plus petit que 3");
-    }
+if (a == 3) {
+  println("a égale 3");
+} else if (a > 3) {
+  println("a est plus grand que 3");
+} else {
+  println("a est plus petit que 3");
+}
 
 // CONDITIONS IF -------------------- 
 // == vérifie l'égalité entre 2 valeurs. EX: if (maVariable == 1)
@@ -93,15 +93,130 @@ color maVariable = lerpColor(color1, color2, progress);
 // > < vérifie si c'est plus grand que. EX: if (a < 2) ou (a > 2)
 // >= <= vérifie si c'est plus grand ou égal. EX: if (a >= 2) ou (a <= 2)
 
+// OPERATIONS DE MATH --------------------
+// Ajoute un nombre à la variable. même chose que maVar = maVar + un nombre;
+// += EX où maVar=5: maVar += 10; maVar égale maintenant 15.
+
+// Même choses, mais soustrait, multipli et divise
+// -= // Soustrait
+// *= // Multipli
+// /= // Divise
+
+// Incrémentation (pour les boucles)
+// maVar++ // augmente la variable de 1
+
+// Décrémentation (pour les boucles)
+// maVar-- // soustrait la variable de 1
+
+// Ré-attribution de valeurs
+// map(value, fromMin, fromMax, toMin, toMax);
+float maVar = map(mouseX, 0, width, 100, 300);
+
+// TRACKING DE LA SOURIS --------------------
+// Contient la valeur des coordonnées X et Y de la position de la souris
+mouseX
+mouseY
+
+// Contient la valeur des coordonnées X et Y de la souris de la frame précédente
+// Bon pour détecter la vitesse de la souris
+pmouseX
+pmouseY
+// Exemple d'utilisation
+float diffX = abs(mouseX - pmouseX); // abs() donne la valeur absolue d'un calcul
+strokeWeight(diffX); // Plus la souris va vite en horizontal, plus le trait est épais
+line(pmouseX, pmouseY, mouseX, mouseY); // Dessine un trait qui suit la souris
+
+// TOUCHE DE CLAVIER --------------------
+// Détecte si une touche est appuyée
+keyPressed
+
+// Donne la touche la plus récemment appuyée sous type de caractère (char)
+key
+
+// Donne la touche spéciale la plus récemment appuyé
+// Exemple de valeurs possibles: LEFT RIGHT UP DOWN SHIFT ALT CONTROL etc...
+keyCode
+
+// Exemple d'utilisation
+if (keyPressed) { // check si une touche est appuyée
+  if (key == 'a' || key == 'A') { // check si A est appuyé, pas oublié les ' '
+    println("TOUCHE 'A' APPUYÉE");
+  } else if (keyCode == LEFT) { // check si la flèche gauche est appuyé
+    println("FLÈCHE GAUCHE SUR LE CLAVIER APPUYÉ");
+  } else { // si une touche autre que A est appuyée
+    println("TOUCHE APPUYÉE QUI N'EST PAS 'A' ");
+  }
+} else { // Si aucune touche est appuyée
+  println("AUCUNE TOUCHE APPUYÉE");
+}
+
+// Détecte si la souris est appuyée
+if (mousePressed) {
+  println("SOURIS APPUYÉE");
+} else {
+  println("SOURIS PAS APPUYÉE");
+}
+
+
+
 // BOUCLE FOR --------------------
 // Défini une variable qui changera avec chaque itération de la boucle jusqu'à tant
 // que la condition mise soit vraie.
 // Première section: initiation de la variable unique à la boucle
 // Deuxième section: condition à complèter pour finir la boucle
 // Troisième section: changement de la valeur de la variable
-// for (int i = 20; i < 200; i += 10) {
-//   line(100, i, 300, i);
-// }
+for (int i = 20; i < 200; i += 10) {
+  line(100, i, 300, i);
+}
 
 // TRANSFORM --------------------
+// Change le point d'origine de la forme, le point dont les modifications sont faites
+translate(x, y);
+
+// Applique une rotation à la forme. Accepte les PI et radians(90)
+rotate(radians(45));
+
+// Manipule la taille d'un élément, incluant l'épaisseur du contour
+scale(0.5);
+
+// Permet d'encadrer les modifications entre quelques lignes, n'affectant pas le reste
+pushMatrix(); // Ouverture de l'encadrement
+translate(10, 10);
+popMatrix(); // Fermeture de l'encadrement
+
+// COLLISION --------------------
+// Collision avec un cercle
+float circleX = 10; // Coordonnées et taille du cercle de collision
+float circleY = 10;
+float circleRadius = 20;
+circle(circleX, circleY, circleRadius*2); // Placement du cercle
+
+// dist(x1, y1, x2, y2) permet de trouver la distance en pixel entre 2 coordonnées
+float distance = dist(mouseX, mouseY, circleX, circleY);
+
+if (distance <= circleRadius) { // Check si la souris est dans le cercle
+  println("COLLISION AVEC CERCLE");
+} else {
+  println("PAS DE COLLISION");
+}
+
+// Collision avec un rectangle
+float rectX = 10; // Coordonnées et taille du rectangle
+float rectY = 20;
+rectWidth = 30;
+rectHeight = 40;
+
+rect(rectX, rectY, rectWidth, rectHeight); // Placement du rectangle
+
+if (rectX <= mouseX && // Si la sourisX est plus grand que 10 (rectX)
+    mouseX <= (rectX + rectWidth) // Si la sourisX est plus petit que 40 (x+width)
+    rectY <= mouseY && // Si la sourisY est plus grand que 20 (rectY)
+    mouseY <= (rectY + rectHeight)){// si la sourisY est plus petit que 60 (y+height)
+// Essentiellement, on viens de check si la coordonné de la souris est dans le rect
+  println("COLLISION AVEC RECTANGLE");
+} else {
+  println("PAS DE COLLISION");
+}
+
+
 */
