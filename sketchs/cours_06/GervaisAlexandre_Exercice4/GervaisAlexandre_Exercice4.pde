@@ -91,17 +91,21 @@ void draw() {
   }
   
   // Change la direction du cercle si une extrêmitées est atteinte
-  if (circleX + circleRadius >= width || circleX-circleRadius <= 0) {
+  if (circleX + circleRadius + SIZE_UP_RATE >= width || circleX-circleRadius-SIZE_UP_RATE <= 0) {
     circleSpeedX *= -1;
+    // Empêche le cercle d'être coincé sur les coins horizontaux
+    circleX = constrain(circleX, 0+circleRadius+SIZE_UP_RATE, width-circleRadius-SIZE_UP_RATE);
   }
-  if (circleY + circleRadius >= height || circleY-circleRadius <= 0) {
+  if (circleY + circleRadius + SIZE_UP_RATE >= height || circleY-circleRadius-SIZE_UP_RATE <= 0) {
     circleSpeedY *= -1;
+    // Empêche le cercle d'être coincé sur les coins verticaux
+    circleY = constrain(circleY, 0+circleRadius+SIZE_UP_RATE, height-circleRadius-SIZE_UP_RATE);
   }
   
+  // Bouge le cercle si aucun menu est ouvert
   if (!isGameOver && !isLevelUp) {
     circleX += circleSpeedX;
     circleY += circleSpeedY;
-    circle(circleX, circleY, circleRadius*2);
   }
   
   // Changement de scénario --------------------
