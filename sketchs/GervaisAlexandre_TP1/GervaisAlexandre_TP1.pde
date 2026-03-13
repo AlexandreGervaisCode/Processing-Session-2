@@ -98,10 +98,14 @@ void draw() {
 
 // Création des personnages --------------------
 void createCharacter(float posX, float posY, PImage characterImg) {
-  image(characterImg, posX, posY, SEARCH_SIZE, SEARCH_SIZE);
   if (characterImg == targetChar) {
+    // Met la cible 5 px de plus que les autres pour éviter de l'empilement
+    image(characterImg, posX, posY, SEARCH_SIZE+5, SEARCH_SIZE+5);
+    // Sauvegarde la position où appuyer
     targetPosX = posX;
     targetPosY = posY;
+  } else {
+    image(characterImg, posX, posY, SEARCH_SIZE, SEARCH_SIZE);
   }
 }
 // Re-roll qui sera la cible
@@ -161,10 +165,10 @@ void drawPoster(float topScreenHeight) {
   fill(COL_BG);
   // Ceci crée le "Top Screen" du mini-jeu
   rect(0, 0, width, topScreenHeight);
-  textFont(wantedFont, 35);
+  textFont(wantedFont, 25);
   textAlign(RIGHT);
   fill(COL_TEXT);
-  text("WANTED", width/2, topScreenHeight/6);
+  text("Score: "+currentScore, width/10*9, topScreenHeight);
   image(posterChar, width/2-(POSTER_SIZE/2), topScreenHeight/2-(POSTER_SIZE/2), POSTER_SIZE, POSTER_SIZE);
 }
 
@@ -173,7 +177,7 @@ void mousePressed() {
   if (isSearching) {
     if (mouseX>=targetPosX && mouseX<=targetPosX+SEARCH_SIZE &&
       mouseY>=targetPosY-ERROR_MARGIN && mouseY<=targetPosY+SEARCH_SIZE+ERROR_MARGIN) {
-      println("yippee");
+      currentScore++;
       // Augmente les chances que Luigi soit la cible
       if (luigiChance < 50) {
         luigiChance+=floor(random(1, 5));
