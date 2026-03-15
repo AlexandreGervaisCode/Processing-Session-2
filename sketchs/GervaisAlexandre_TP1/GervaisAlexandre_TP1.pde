@@ -31,8 +31,12 @@ PImage posterChar;
 // Police
 PFont wantedFont;
 // Couleurs
-final color COL_BG = color(0);
-final color COL_TEXT = color(255, 231, 55);
+final color COL_BG = color(0); // Noir
+final color COL_TEXT = color(255, 231, 55); // Jaune
+final color COL_SHOP_TOP_BG = color(119, 200, 238); // Bleu
+final color COL_SHOP_TOP_STROKE = color(67, 121, 203); // Stroke Bleu
+final color COL_SHOP_BOTTOM_BG = color(185); // Gris
+final color COL_SHOP_BOTTOM_STROKE = color(130); // Stroke Gris
 
 // Controle du jeu --------------------
 boolean isSearching; // Permet de détecter si le jeu est en cours
@@ -42,8 +46,6 @@ int wantedCharIndex; // Permet de savoir quel perso doit être trouvé
 float luigiChance = 0; // calcule les chances que Luigi doit être trouvé
 float timeLeft; // Temps restant avant que le jeu fini
 float transitionTime; // Temps de transition entre les rounds
-int nextTransitionHiddenValue; // Permet d'avoir des events secrets
-int kromerAmount = 0; // Montant d'argent
 int currentScore; // Pointage
 final float ERROR_MARGIN = 5; // Marge d'erreur permise
 final int FLOOR_MIN_CHAR_INSTANCES = 4; // La valeur minimale de minCharInstances
@@ -66,6 +68,30 @@ float targetPosY; // Garde en mémoire la posY de la cible
 float targetSizeUp = 5; // Controle a quel point la cible est plus grand
 float topScreenHeight; // Taille de l'écran supérieur
 
+// Variables reliés au shop
+final float SHOP_KEEPER_SIZE = 200; // Taille du shopkeeper
+final float SHOP_SLOT = 100; // Taille d'un slot d'item dans le shop
+final float SHOP_ITEM = SHOP_SLOT-10; // Taille d'un item dans le shop
+final float SHOP_ITEM_OFFSET = 5; // Offset des item dans le shop
+float shopSlotPosX; // Position X des Item Slots
+float shopSlotPosY; // Position Y des Item Slots
+float shopExitPosX; // Position X du bouton quitter
+float shopExitPosY; // Position X du bouton quitter
+boolean isInMenu = false; // Si l'utilisateur est dans un menu
+int kromerAmount = 0; // Montant d'argent
+int itemKeygenPrice = 3000; // Prix des objets
+int itemGlassesPrice = 1500;
+int itemScarfPrice = 750;
+int itemPotionPrice = 2000;
+boolean isKeygenGot = false;
+int transitionHiddenValue; // Permet d'avoir des events secrets
+// Shop Sprites
+PImage shopKeeper;
+PImage itemKeygen;
+PImage itemGlasses;
+PImage itemScarf;
+PImage itemPotion;
+
 // Pre-loading --------------------
 void setup() {
   // Taille de la fenêtre
@@ -82,6 +108,11 @@ void setup() {
   posterYoshi = loadImage("char_y_close.png");
   // Loading Font
   wantedFont = createFont("sm-64-ds-usa-font.otf", 128);
+  // Loading Shop Sprites
+  itemKeygen = loadImage("item_keygen.png");
+  itemGlasses = loadImage("item_glasses.png");
+  itemScarf = loadImage("item_scarf.png");
+  itemPotion = loadImage("item_potion.png");
   // Définit les extrêmités de placement de personnages
   charMinPosX = OFFSET;
   charMaxPosX = width-OFFSET-(SEARCH_SIZE);
@@ -90,6 +121,10 @@ void setup() {
   // Commence le timer à 1 minute
   timeLeft = 30;
   topScreenHeight = height/3;
+  shopSlotPosX = width/3-(SHOP_SLOT/2);
+  shopSlotPosY = (height-topScreenHeight)/2-(SHOP_SLOT/2);
+  shopExitPosX = width/16;
+  shopExitPosY = height/12*11;
   noStroke();
 }
 
@@ -111,14 +146,26 @@ void draw() {
     isGameOver = gameOverCheck();
   }
   // S'active durant les transition entre les rounds --------------------
-  if (isInTransition) {
+  if (isInTransition && !isInMenu) {
     transitionTime = timer(transitionTime);
     if (transitionTime>0) {
       fill(COL_TEXT);
       rect(0, 0, width, height);
       createCharacter(targetPosX, targetPosY, targetChar);
     } else {
-      isInTransition = !isInTransition;
+       if (transitionHiddenValue >= 90 && currentScore>25) {
+         isInMenu = true;
+         shop();
+       } else if (transitionHiddenValue == 87 && currentScore>25) {
+         // where's waldo
+         // isInMenu = true;
+       } else if (transitionHiddenValue == 18 && currentScore>25) {
+         // Smash
+         // isInMenu = true;
+       } else {
+         println(transitionHiddenValue);
+         isInTransition = !isInTransition;
+       }
     }
   }
   
@@ -268,10 +315,35 @@ void mousePressed() {
       }
       transitionTime = 3;
       isInTransition = true;
+      transitionHiddenValue = floor(random(100));
+      if (key == 'g') {
+        currentScore = 26;
+        transitionHiddenValue = 90;
+      }
       isSearching = false;
-    } else if (mousePressed) {
+    } else {
       timeLeft -= 10;
     }
+  }
+  if (isInMenu) {
+    // Si le user essaye d'acheter un item
+    if (mouseX>=shopSlotPosX && mouseX<=shopSlotPosX+SHOP_SLOT &&
+      mouseY>=shopSlotPosY && mouseY<=shopSlotPosY+SHOP_SLOT) { // Glasses
+        purchaseItem(0);
+      } else if (mouseX>=shopSlotPosX*2 && mouseX<=shopSlotPosX*2+SHOP_SLOT &&
+      mouseY>=shopSlotPosY && mouseY<=shopSlotPosY+SHOP_SLOT) { // Scarf
+        purchaseItem(1);
+      } else if (mouseX>=shopSlotPosX && mouseX<=shopSlotPosX+SHOP_SLOT &&
+      mouseY>=shopSlotPosY*2 && mouseY<=shopSlotPosY*2+SHOP_SLOT) { // Potion
+        purchaseItem(2);
+      } else if (mouseX>=shopSlotPosX*2 && mouseX<=shopSlotPosX*2+SHOP_SLOT &&
+      mouseY>=shopSlotPosY*2 && mouseY<=shopSlotPosY*2+SHOP_SLOT) { // Keygen
+        purchaseItem(3);
+      } else if (mouseX>=shopExitPosX && mouseX<=shopExitPosX+(width*3) &&
+      mouseY>=shopExitPosX && mouseY<=shopExitPosX+(height/12)) {
+        frameRate(60);
+        isInMenu = !isInMenu;
+      }
   }
 }
 
@@ -286,4 +358,66 @@ float timer(float countdown) {
 // Check si le joueur à perdu --------------------
 boolean gameOverCheck() {
   return timeLeft<=0;
+}
+
+void purchaseItem(int itemIndex) {
+  if (itemIndex == 0 && kromerAmount >= itemGlassesPrice) {
+    kromerAmount -= itemGlassesPrice;
+    targetSizeUp+=5;
+    shopKeeper = loadImage("npc_shop_success.png");
+  } else if (itemIndex == 1 && kromerAmount >= itemScarfPrice) {
+    kromerAmount -= itemScarfPrice;
+    luigiChance=0;
+    shopKeeper = loadImage("npc_shop_success.png");
+  } else if (itemIndex == 2 && kromerAmount >= itemPotionPrice) {
+    kromerAmount -= itemPotionPrice;
+    timeLeft+=45;
+    shopKeeper = loadImage("npc_shop_success.png");
+  } else if (itemIndex == 3 && kromerAmount >= itemKeygenPrice) {
+    kromerAmount -= itemKeygenPrice;
+    isKeygenGot = true;
+    shopKeeper = loadImage("npc_shop_success.png");
+  } else {
+    shopKeeper = loadImage("npc_shop_poor.png");
+  }
+}
+
+void shop() {
+  // 4 items : KEYGEN (crashes), B.Shot Glasses (+targetSize)
+  // PuppetScarf (luigiChance=0), S.Potion (+45 timeLeft)
+  shopKeeper = loadImage("npc_shop_neutral.png");
+  frameRate(1);
+  for (float x = 0; x<width; x+=width/5) {
+    for (float y = 0; y<height; y+=height/15) {
+      if (y<=topScreenHeight) {
+        fill(COL_SHOP_TOP_BG);
+        stroke(COL_SHOP_TOP_STROKE);
+      } else {
+        fill(COL_SHOP_BOTTOM_BG);
+        stroke(COL_SHOP_BOTTOM_STROKE);
+      }
+      rect(x, y, width/5, height/12);
+    }
+  }
+  // Dessine le Shopkeeper
+  image(shopKeeper, width-SHOP_KEEPER_SIZE, topScreenHeight-SHOP_KEEPER_SIZE, SHOP_KEEPER_SIZE, SHOP_KEEPER_SIZE);
+  fill(COL_SHOP_TOP_BG);
+  stroke(COL_SHOP_TOP_STROKE);
+  // Place les slots pour les items
+  square(shopSlotPosX, shopSlotPosY, SHOP_SLOT);
+  square(shopSlotPosX, shopSlotPosY*2, SHOP_SLOT);
+  square(shopSlotPosX*2, shopSlotPosY, SHOP_SLOT);
+  square(shopSlotPosX*2, shopSlotPosY*2, SHOP_SLOT);
+  // Place les items dans les slots
+  image(itemGlasses, shopSlotPosX+SHOP_ITEM_OFFSET, shopSlotPosY+SHOP_ITEM_OFFSET, SHOP_ITEM, SHOP_ITEM);
+  image(itemScarf, shopSlotPosX*2+SHOP_ITEM_OFFSET, shopSlotPosY+SHOP_ITEM_OFFSET, SHOP_ITEM, SHOP_ITEM);
+  image(itemPotion, shopSlotPosX+SHOP_ITEM_OFFSET, shopSlotPosY*2+SHOP_ITEM_OFFSET, SHOP_ITEM, SHOP_ITEM);
+  image(itemKeygen, shopSlotPosX*2+SHOP_ITEM_OFFSET, shopSlotPosY*2+SHOP_ITEM_OFFSET, SHOP_ITEM, SHOP_ITEM);
+  // Dessine le bouton quitter
+  rect(shopExitPosX, shopExitPosY, width/16*14, height/12);
+  textSize(24);
+  fill(COL_BG);
+  textAlign(CENTER);
+  text("S'enfuir", width/2, height/12*11.5);
+  noStroke();
 }
