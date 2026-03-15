@@ -36,10 +36,24 @@ final color COL_TEXT = color(255, 231, 55);
 
 // Controle du jeu --------------------
 boolean isSearching; // Permet de détecter si le jeu est en cours
+boolean isGameOver; // Permet de détecter si y'a un Game Over
+boolean isInTransition; // Permet de détecter si le joueur est en transition
 int wantedCharIndex; // Permet de savoir quel perso doit être trouvé
 float luigiChance = 0; // calcule les chances que Luigi doit être trouvé
 float timeLeft; // Temps restant avant que le jeu fini
+float transitionTime; // Temps de transition entre les rounds
+int nextTransitionHiddenValue; // Permet d'avoir des events secrets
+int kromerAmount; // Montant d'argent
 int currentScore; // Pointage
+final float ERROR_MARGIN = 5; // Marge d'erreur permise
+final int FLOOR_MIN_CHAR_INSTANCES = 4; // La valeur minimale de minCharInstances
+final int FLOOR_MAX_CHAR_INSTANCES = 12; // La valeur minimale de maxCharInstances
+int minCharInstances = FLOOR_MIN_CHAR_INSTANCES; // Controle combien de persos minimum affiché
+int maxCharInstances = FLOOR_MAX_CHAR_INSTANCES; // Controle combien de persos maximum affiché
+final int CAP_MIN_CHAR_INSTANCES = 50; // La valeur maximale de minCharInstances
+final int CAP_MAX_CHAR_INSTANCES = 64; // La valeur maximale de maxCharInstances
+
+// Coordonées et tailles
 final float OFFSET = 10; // Offset pour ne pas avoir les perso sur les coins
 final int SEARCH_SIZE = 55; // Définit la taille des images à chercher
 final int POSTER_SIZE = 150; // Définit la taille de l'image du poster
@@ -49,13 +63,8 @@ float charMinPosY; // Défini la posY minimum des search icons
 float charMaxPosY; // Défini la posY maximale des search icons
 float targetPosX; // Garde en mémoire la posX de la cible
 float targetPosY; // Garde en mémoire la posY de la cible
-final float ERROR_MARGIN = 5; // Marge d'erreur permise
-final int FLOOR_MIN_CHAR_INSTANCES = 4; // La valeur minimale de minCharInstances
-final int FLOOR_MAX_CHAR_INSTANCES = 12; // La valeur minimale de maxCharInstances
-int minCharInstances = FLOOR_MIN_CHAR_INSTANCES; // Controle combien de persos minimum affiché
-int maxCharInstances = FLOOR_MAX_CHAR_INSTANCES; // Controle combien de persos maximum affiché
-final int CAP_MIN_CHAR_INSTANCES = 50; // La valeur maximale de minCharInstances
-final int CAP_MAX_CHAR_INSTANCES = 64; // La valeur maximale de maxCharInstances
+float topScreenHeight; // Taille de l'écran supérieur
+
 // Pre-loading --------------------
 void setup() {
   // Taille de la fenêtre
@@ -77,11 +86,14 @@ void setup() {
   charMaxPosX = width-OFFSET-(SEARCH_SIZE);
   charMinPosY = height/3+OFFSET+(SEARCH_SIZE/2);
   charMaxPosY = height-OFFSET-(SEARCH_SIZE);
+  // Commence le timer à 1 minute
+  timeLeft = 30*frameRate;
+  topScreenHeight = height/3;
 }
 
 void draw() {
-  // Réalise ce code 1 seule fois par minigame round
-  if (!isSearching) {
+  // Réalise ce code 1 seule fois par minigame round --------------------
+  if (!isSearching && !isInTransition) {
     background(COL_BG);
     resetCharIndex();
     // Décide le nombre d'instances chaque mauvais perso vont apparaitres
@@ -91,8 +103,21 @@ void draw() {
     // fun thingy to play with
     // windowMove(floor(random(displayWidth-width)), floor(random(displayHeight-height)));
   }
+  // S'active à chaque frame que le joueur cherche --------------------
   if (isSearching) {
-    drawPoster(height/3);
+    drawPoster();
+    isGameOver = gameOverCheck();
+  }
+  // S'active durant les transition entre les rounds --------------------
+  if (isInTransition) {
+    transitionTime = timer(transitionTime);
+    if (transitionTime>0) {
+      fill(COL_TEXT);
+      rect(0, 0, width, height);
+      createCharacter(targetPosX, targetPosY, targetChar);
+    } else {
+      isInTransition = !isInTransition;
+    }
   }
 }
 
@@ -108,7 +133,7 @@ void createCharacter(float posX, float posY, PImage characterImg) {
     image(characterImg, posX, posY, SEARCH_SIZE, SEARCH_SIZE);
   }
 }
-// Re-roll qui sera la cible
+// Re-roll qui sera la cible --------------------
 void resetCharIndex() {
   int rngChar = floor(random(100));
   if (luigiChance >= rngChar) {
@@ -147,7 +172,7 @@ void resetCharIndex() {
     windowTitle("WANTED - LUIGI");
   }
 }
-// Crée les instances des personnages
+// Crée les instances des personnages --------------------
 void createChars() {
   float charInstances = round(random(minCharInstances, maxCharInstances));
   for (float i = 0; i<charInstances; i++) {
@@ -161,15 +186,20 @@ void createChars() {
   }
 }
 
-void drawPoster(float topScreenHeight) {
+// Déssine l'écran supérieur --------------------
+void drawPoster() {
   fill(COL_BG);
   // Ceci crée le "Top Screen" du mini-jeu
   rect(0, 0, width, topScreenHeight);
-  textFont(wantedFont, 25);
-  textAlign(RIGHT);
+  textFont(wantedFont, 40);
   fill(COL_TEXT);
+  textAlign(CENTER);
+  timeLeft = timer(timeLeft);
+  text(floor(timeLeft/frameRate)+"s", width/2, topScreenHeight/4);
+  textAlign(RIGHT);
+  textSize(25);
   text("Score: "+currentScore, width/10*9, topScreenHeight);
-  image(posterChar, width/2-(POSTER_SIZE/2), topScreenHeight/2-(POSTER_SIZE/2), POSTER_SIZE, POSTER_SIZE);
+  image(posterChar, width/2-(POSTER_SIZE/2), topScreenHeight/3*2-(POSTER_SIZE/2), POSTER_SIZE, POSTER_SIZE);
 }
 
 // Détection de réussite/échec ---------------------
@@ -178,6 +208,7 @@ void mousePressed() {
     if (mouseX>=targetPosX && mouseX<=targetPosX+SEARCH_SIZE &&
       mouseY>=targetPosY-ERROR_MARGIN && mouseY<=targetPosY+SEARCH_SIZE+ERROR_MARGIN) {
       currentScore++;
+      timeLeft += 15*frameRate;
       // Augmente les chances que Luigi soit la cible
       if (luigiChance < 50) {
         luigiChance+=floor(random(1, 5));
@@ -199,10 +230,24 @@ void mousePressed() {
           maxCharInstances=CAP_MAX_CHAR_INSTANCES;
         }
       }
-      println(minCharInstances, maxCharInstances);
+      transitionTime = 3*frameRate;
+      isInTransition = true;
       isSearching = false;
     } else if (mousePressed) {
-      println("oh no");
+      timeLeft -= 10*frameRate;
     }
   }
+}
+
+// Timer utilisé à plusieurs places --------------------
+float timer(float countdown) {
+  if (countdown > 0) {
+    countdown--;
+  }
+  return countdown;
+}
+
+// Check si le joueur à perdu --------------------
+boolean gameOverCheck() {
+  return timeLeft<=0;
 }
