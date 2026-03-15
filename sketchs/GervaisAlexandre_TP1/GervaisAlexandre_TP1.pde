@@ -43,7 +43,7 @@ float luigiChance = 0; // calcule les chances que Luigi doit être trouvé
 float timeLeft; // Temps restant avant que le jeu fini
 float transitionTime; // Temps de transition entre les rounds
 int nextTransitionHiddenValue; // Permet d'avoir des events secrets
-int kromerAmount; // Montant d'argent
+int kromerAmount = 0; // Montant d'argent
 int currentScore; // Pointage
 final float ERROR_MARGIN = 5; // Marge d'erreur permise
 final int FLOOR_MIN_CHAR_INSTANCES = 4; // La valeur minimale de minCharInstances
@@ -63,6 +63,7 @@ float charMinPosY; // Défini la posY minimum des search icons
 float charMaxPosY; // Défini la posY maximale des search icons
 float targetPosX; // Garde en mémoire la posX de la cible
 float targetPosY; // Garde en mémoire la posY de la cible
+float targetSizeUp = 5; // Controle a quel point la cible est plus grand
 float topScreenHeight; // Taille de l'écran supérieur
 
 // Pre-loading --------------------
@@ -87,13 +88,14 @@ void setup() {
   charMinPosY = height/3+OFFSET+(SEARCH_SIZE/2);
   charMaxPosY = height-OFFSET-(SEARCH_SIZE);
   // Commence le timer à 1 minute
-  timeLeft = 30*frameRate;
+  timeLeft = 30;
   topScreenHeight = height/3;
+  noStroke();
 }
 
 void draw() {
   // Réalise ce code 1 seule fois par minigame round --------------------
-  if (!isSearching && !isInTransition) {
+  if (!isSearching && !isInTransition && !isGameOver) {
     background(COL_BG);
     resetCharIndex();
     // Décide le nombre d'instances chaque mauvais perso vont apparaitres
@@ -104,7 +106,7 @@ void draw() {
     // windowMove(floor(random(displayWidth-width)), floor(random(displayHeight-height)));
   }
   // S'active à chaque frame que le joueur cherche --------------------
-  if (isSearching) {
+  if (isSearching && !isGameOver) {
     drawPoster();
     isGameOver = gameOverCheck();
   }
@@ -119,13 +121,37 @@ void draw() {
       isInTransition = !isInTransition;
     }
   }
+  
+  // Si le joueur échoue, reset tout
+  if (isGameOver) {
+    fill(COL_BG);
+    rect(0, 0, width, height);
+    fill(COL_TEXT);
+    textAlign(CENTER);
+    textSize(35);
+    text("GAME OVER", width/2, height/2);
+    textSize(25);
+    text("APPUYER SUR UNE TOUCHE POUR CONTINUER", width/2, height/4*3);
+    if (keyPressed) {
+      isSearching = false;
+      isInTransition = false;
+      luigiChance = 0;
+      kromerAmount = 0;
+      currentScore = 0;
+      minCharInstances = FLOOR_MIN_CHAR_INSTANCES;
+      maxCharInstances = FLOOR_MAX_CHAR_INSTANCES;
+      timeLeft = 15;
+      targetSizeUp = 5;
+      isGameOver = false;
+    }
+  }
 }
 
 // Création des personnages --------------------
 void createCharacter(float posX, float posY, PImage characterImg) {
   if (characterImg == targetChar) {
     // Met la cible 5 px de plus que les autres pour éviter de l'empilement
-    image(characterImg, posX, posY, SEARCH_SIZE+5, SEARCH_SIZE+5);
+    image(characterImg, posX, posY, SEARCH_SIZE+targetSizeUp, SEARCH_SIZE+targetSizeUp);
     // Sauvegarde la position où appuyer
     targetPosX = posX;
     targetPosY = posY;
@@ -195,10 +221,12 @@ void drawPoster() {
   fill(COL_TEXT);
   textAlign(CENTER);
   timeLeft = timer(timeLeft);
-  text(floor(timeLeft/frameRate)+"s", width/2, topScreenHeight/4);
+  text(floor(timeLeft)+"s", width/2, topScreenHeight/4);
   textAlign(RIGHT);
   textSize(25);
   text("Score: "+currentScore, width/10*9, topScreenHeight);
+  textAlign(LEFT);
+  text(kromerAmount+"K", width/10, topScreenHeight);
   image(posterChar, width/2-(POSTER_SIZE/2), topScreenHeight/3*2-(POSTER_SIZE/2), POSTER_SIZE, POSTER_SIZE);
 }
 
@@ -208,7 +236,7 @@ void mousePressed() {
     if (mouseX>=targetPosX && mouseX<=targetPosX+SEARCH_SIZE &&
       mouseY>=targetPosY-ERROR_MARGIN && mouseY<=targetPosY+SEARCH_SIZE+ERROR_MARGIN) {
       currentScore++;
-      timeLeft += 15*frameRate;
+      timeLeft += 15;
       // Augmente les chances que Luigi soit la cible
       if (luigiChance < 50) {
         luigiChance+=floor(random(1, 5));
@@ -230,11 +258,19 @@ void mousePressed() {
           maxCharInstances=CAP_MAX_CHAR_INSTANCES;
         }
       }
-      transitionTime = 3*frameRate;
+      // Si la cible est Mario ou Wario, gagne 1/3 max argent
+      if (wantedCharIndex == 0 || wantedCharIndex == 2) {
+        kromerAmount += floor(random(minCharInstances/3, maxCharInstances/3));
+      } else if (wantedCharIndex == 1) { // Si Yoshi, gagne 2/3 max argent
+        kromerAmount += floor(random(minCharInstances/3*2, maxCharInstances/3*2));
+      } else { // Si Luigi, gagne max argent
+        kromerAmount += floor(random(minCharInstances, maxCharInstances));
+      }
+      transitionTime = 3;
       isInTransition = true;
       isSearching = false;
     } else if (mousePressed) {
-      timeLeft -= 10*frameRate;
+      timeLeft -= 10;
     }
   }
 }
@@ -242,7 +278,7 @@ void mousePressed() {
 // Timer utilisé à plusieurs places --------------------
 float timer(float countdown) {
   if (countdown > 0) {
-    countdown--;
+    countdown-=1/frameRate;
   }
   return countdown;
 }
