@@ -100,6 +100,10 @@ float shopExitPosX; // Position X du bouton quitter
 float shopExitPosY; // Position X du bouton quitter
 float shopExitWidth; // Width X du bouton quitter
 float shopExitHeight; // Height du bouton quitter
+float shopStatsPosX = 0; // Position X du bouton Stats topScreenHeight+height/15
+float shopStatsPosY; // Position Y du bouton Stats
+float shopStatsWidth; // Largeur du bouton Stats
+float shopStatsHeight; // Hauteur du bouton Stats
 boolean isInMenu = false; // Si l'utilisateur est dans un menu
 boolean hasSeenShop = false; // Cache le montant d'argent si le shop n'a pas été vu
 int kromerAmount = 0; // Montant d'argent
@@ -160,6 +164,9 @@ void setup() {
   shopExitPosY = height/12*10.5;
   shopExitWidth = width/16*14;
   shopExitHeight = height/10;
+  shopStatsPosY = topScreenHeight+height/15;
+  shopStatsWidth = width/6;
+  shopStatsHeight = height/16;
   spotlightX = width*-0.5;
   spotlightY = topScreenHeight/3*1.72;
   noStroke();
@@ -363,10 +370,8 @@ void mousePressed() {
           maxCharInstances=CAP_MAX_CHAR_INSTANCES;
         }
       }
-      // Si la cible est Mario ou Wario, gagne 1/3 max argent
-      if (wantedCharIndex == 0 || wantedCharIndex == 2) {
-        kromerAmount += floor(random(minCharInstances/3, maxCharInstances/3));
-      } else if (wantedCharIndex == 1) { // Si Yoshi, gagne 2/3 max argent
+      // Si la cible n'est pas Luigi, gagne 1/3 max argent
+      if (wantedCharIndex == 0 || wantedCharIndex == 1 || wantedCharIndex == 2) {
         kromerAmount += floor(random(minCharInstances/3*2, maxCharInstances/3*2));
       } else { // Si Luigi, gagne max argent
         kromerAmount += floor(random(minCharInstances, maxCharInstances));
@@ -375,10 +380,10 @@ void mousePressed() {
       isInTransition = true;
       transitionHiddenValue = floor(random(100));
       /*if (key == 'g') { // Debug Mode for shop
-        currentScore = 26;
-        transitionHiddenValue = 90;
-        kromerAmount=10000;
-      }*/
+       currentScore = 26;
+       transitionHiddenValue = 90;
+       kromerAmount=10000;
+       }*/
       isSearching = false;
     } else {
       timeLeft -= 10;
@@ -510,8 +515,6 @@ void shop() {
         rect(x, y, width/5, height/12); // Dessine la brique
       }
     }
-    // Dessine le Shopkeeper
-    image(shopKeeper, width-SHOP_KEEPER_SIZE, topScreenHeight-SHOP_KEEPER_SIZE+(height/15), SHOP_KEEPER_SIZE, SHOP_KEEPER_SIZE);
     // Manipule la fenêtre
     windowMove(floor(random(displayWidth/5, displayWidth/5*2)), floor(random(displayHeight/5)));
     windowTitle(str(noise(random(15))*random(30)));
@@ -561,8 +564,13 @@ void shop() {
     mouseY>=shopExitPosY && mouseY<=shopExitPosY+shopExitHeight) { // Bouton quitter
     textSize(30);
     shopDialogue = "TU NE VEUX PAS\nAPPUYER SUR\n[Ce Bouton].";
+  } else if (mouseX>=shopStatsPosX && mouseX<=shopStatsPosX+shopStatsWidth &&
+    mouseY>=shopStatsPosY && mouseY<=shopStatsPosY+shopStatsHeight) { // Bouton Stats
+    textSize(20);
+    shopDialogue = "SCORE: "+currentScore+"\nTEMPS RESTANT: "+int(timeLeft)+"s\nCHANCES DE LUIGI: "+int(luigiChance)+"%\nCIBLE AGGRANDITE: "+int(targetSizeUp)+"px\n[KeyGen]: "+isKeygenGot;
   }
-
+  // Dessine le Shopkeeper
+  image(shopKeeper, width-SHOP_KEEPER_SIZE, topScreenHeight-SHOP_KEEPER_SIZE+(height/15), SHOP_KEEPER_SIZE, SHOP_KEEPER_SIZE);
   // Speech Bubble
   fill(COL_SPEECH_BUBBLE);
   stroke(COL_SHOP_TOP_STROKE);
@@ -592,8 +600,13 @@ void shop() {
   textAlign(CENTER);
   fill(COL_BG);
   text("S'enfuir", width/2, shopExitPosY+(shopExitHeight/3*2));
-  // Dessine les prix
+  // Bouton Stats
+  fill(COL_TEXT);
+  rect(shopStatsPosX, shopStatsPosY, shopStatsWidth, shopStatsHeight);
+  fill(COL_BG);
   textSize(24);
+  text("Stats", shopStatsWidth/2, topScreenHeight+height/9);
+  // Dessine les prix
   text(itemGlassesPrice, shopSlotPosXLeft+SHOP_SLOT/2, shopSlotPosYTop+SHOP_SLOT);
   text(itemScarfPrice, shopSlotPosXRight+SHOP_SLOT/2, shopSlotPosYTop+SHOP_SLOT);
   text(itemPotionPrice, shopSlotPosXLeft+SHOP_SLOT/2, shopSlotPosYBottom+SHOP_SLOT);
@@ -601,7 +614,7 @@ void shop() {
   // Montre le Nombre d'argent du joueur
   textAlign(LEFT);
   textSize(30);
-  text("M: "+kromerAmount, width/10, topScreenHeight);
+  text("$"+kromerAmount, width/10, topScreenHeight);
   hasSeenShop = true; // affiche l'argent hors du shop, ne se reset jamais
   noStroke();
 }
