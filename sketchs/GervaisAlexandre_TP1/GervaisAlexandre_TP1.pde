@@ -441,7 +441,6 @@ void levelTransition() {
       shopTimer = 0.1;
       isInTransition = !isInTransition;
     } else {
-      println(transitionHiddenValue);
       isInTransition = !isInTransition;
     }
   }
@@ -480,6 +479,7 @@ void resetValues() {
   maxCharInstances = FLOOR_MAX_CHAR_INSTANCES;
   timeLeft = 30;
   targetSizeUp = 5;
+  spotlightX = width*-0.5;
   isGameOver = false;
 }
 
