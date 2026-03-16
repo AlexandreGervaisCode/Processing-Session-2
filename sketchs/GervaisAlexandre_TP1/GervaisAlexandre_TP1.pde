@@ -296,7 +296,10 @@ void drawPoster() {
   text("Score: "+currentScore, width/10*9, topScreenHeight-topScreenHeight/16);
   if (hasSeenShop) {
     textAlign(LEFT);
-    text("M: "+kromerAmount, width/10, topScreenHeight-topScreenHeight/16);
+    textFont(shopFont);
+    textSize(25);
+    text("$"+kromerAmount, width/10, topScreenHeight-topScreenHeight/16);
+    textFont(wantedFont);
   }
   image(posterChar, width/2-(POSTER_SIZE/2), topScreenHeight/3*1.75-(POSTER_SIZE/2), POSTER_SIZE, POSTER_SIZE);
 }
