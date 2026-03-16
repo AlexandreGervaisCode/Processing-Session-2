@@ -371,11 +371,11 @@ void mousePressed() {
       transitionTime = 3;
       isInTransition = true;
       transitionHiddenValue = floor(random(100));
-      /*if (key == 'g') { // Debug Mode for shop
+      if (key == 'g') { // Debug Mode for shop
         currentScore = 26;
         transitionHiddenValue = 90;
         kromerAmount=10000;
-      }*/
+      }
       isSearching = false;
     } else {
       timeLeft -= 10;
@@ -427,10 +427,10 @@ void levelTransition() {
     }
   } else {
     // Si la hidden value permet la visite au shop
-    if (transitionHiddenValue >= 90 && currentScore>25) {
+    if (transitionHiddenValue >= 90 && currentScore>=25) {
       shopKeeper = loadImage("npc_shop_neutral.png");
       isInMenu = true;
-      shopTimer = 0;
+      shopTimer = 0.1;
       isInTransition = !isInTransition;
     } else {
       println(transitionHiddenValue);
