@@ -39,6 +39,7 @@ PImage targetChar;
 PImage posterChar;
 // Police
 PFont wantedFont;
+PFont shopFont;
 // Couleurs
 final color COL_BG = color(0); // Noir
 final color COL_TEXT = color(255, 231, 55); // Jaune
@@ -76,6 +77,15 @@ float targetPosX; // Garde en mémoire la posX de la cible
 float targetPosY; // Garde en mémoire la posY de la cible
 float targetSizeUp = 5; // Controle a quel point la cible est plus grand
 float topScreenHeight; // Taille de l'écran supérieur
+float spotlightX; // Spotlight position X
+float spotlightY; // Spotlight position Y
+float spotlightSize = 165; // Taille du spotlight
+float spotlightScaleDirection = 0.5; // Si le spotlight grandi ou rétricis
+final float MIN_SPOTLIGHT_SIZE = 160; // taille minimum du spotlight
+final float MAX_SPOTLIGHT_SIZE = 175; // taille maximum du spotlight
+float spotlightSpeed = 3; // Vitesse X du spotlight
+final color COL_SPOTLIGHT = color(255, 255, 0, 170);
+float spotlightTimer;
 
 // Variables reliés au shop
 final float SHOP_KEEPER_SIZE = 200; // Taille du shopkeeper
@@ -93,6 +103,10 @@ float shopExitHeight; // Height du bouton quitter
 boolean isInMenu = false; // Si l'utilisateur est dans un menu
 boolean hasSeenShop = false; // Cache le montant d'argent si le shop n'a pas été vu
 int kromerAmount = 0; // Montant d'argent
+int nbrShopVisits = 0; // Nombre de visites au shop pour dialogue dynamique
+float shopTimer = 0; // Simule l'effet 1 frame par seconde
+String shopDialogue = "EMPTY STRING"; // Dialogue dans le shop
+final color COL_SPEECH_BUBBLE = color(202, 238, 255);
 int itemKeygenPrice = 1750; // Prix des objets
 int itemGlassesPrice = 1050;
 int itemScarfPrice = 200;
@@ -123,6 +137,7 @@ void setup() {
   posterYoshi = loadImage("char_y_close.png");
   // Loading Font
   wantedFont = createFont("sm-64-ds-usa-font.otf", 128);
+  shopFont = createFont("undertale-deltarune-text-font-extended.otf", 128);
   // Loading Shop Sprites
   itemKeygen = loadImage("item_keygen.png");
   itemGlasses = loadImage("item_glasses.png");
@@ -135,6 +150,7 @@ void setup() {
   charMaxPosY = height-OFFSET-(SEARCH_SIZE);
   // Commence le timer
   timeLeft = 30;
+  spotlightTimer = 5;
   topScreenHeight = height/3;
   shopSlotPosXLeft = width/3-(SHOP_SLOT/2);
   shopSlotPosXRight = (width/3)*2-(SHOP_SLOT/2);
@@ -144,6 +160,8 @@ void setup() {
   shopExitPosY = height/12*10.5;
   shopExitWidth = width/16*14;
   shopExitHeight = height/10;
+  spotlightX = width*-0.5;
+  spotlightY = topScreenHeight/3*1.72;
   noStroke();
 }
 
@@ -151,27 +169,28 @@ void draw() {
   // Réalise ce code 1 seule fois par minigame round --------------------
   if (!isSearching && !isInTransition && !isGameOver && !isInMenu) {
     background(COL_BG);
-    
+
     // Re-randomize la cible
     resetCharIndex();
-    
+
     // Décide le nombre d'instances chaque mauvais perso vont apparaitres
     createChars();
-    
+
     // Ce booléan permet de décider les positions aléatoires 1 seule fois
     isSearching = true;
   }
   // S'active à chaque frame que le joueur cherche --------------------
   if (isSearching && !isGameOver) {
-    
+
     // Dessine l'écran supérieur
+    topScreenBackground();
     drawPoster();
-    
+
     // Check si l'utilisateur(trice) a perdu
     isGameOver = gameOverCheck();
-    
+
     // Si la Keygen a été achetée
-    if (isKeygenGot) { 
+    if (isKeygenGot) {
       activateKeygen();
     }
   }
@@ -267,9 +286,6 @@ void createChars() {
 
 // Déssine l'écran supérieur --------------------
 void drawPoster() {
-  fill(COL_BG);
-  // Ceci crée le "Top Screen" du mini-jeu
-  rect(0, 0, width, topScreenHeight);
   textFont(wantedFont, 40);
   fill(COL_TEXT);
   textAlign(CENTER);
@@ -277,12 +293,40 @@ void drawPoster() {
   text(floor(timeLeft)+"s", width/2, topScreenHeight/4);
   textAlign(RIGHT);
   textSize(25);
-  text("Score: "+currentScore, width/10*9, topScreenHeight);
+  text("Score: "+currentScore, width/10*9, topScreenHeight-topScreenHeight/16);
   if (hasSeenShop) {
     textAlign(LEFT);
-    text("M: "+kromerAmount, width/10, topScreenHeight);
+    text("M: "+kromerAmount, width/10, topScreenHeight-topScreenHeight/16);
   }
-  image(posterChar, width/2-(POSTER_SIZE/2), topScreenHeight/3*2-(POSTER_SIZE/2), POSTER_SIZE, POSTER_SIZE);
+  image(posterChar, width/2-(POSTER_SIZE/2), topScreenHeight/3*1.75-(POSTER_SIZE/2), POSTER_SIZE, POSTER_SIZE);
+}
+
+void topScreenBackground() {
+  fill(COL_BG);
+  // Ceci crée le "Top Screen" du mini-jeu
+  rect(0, 0, width, topScreenHeight);
+  fill(COL_SPOTLIGHT);
+  // Permet au spotlight de rétricir/grandir progressivement
+  if (spotlightSize >= MAX_SPOTLIGHT_SIZE || spotlightSize <= MIN_SPOTLIGHT_SIZE) {
+    spotlightScaleDirection*=-1;
+  }
+  // Dessine le spotlight
+  circle(spotlightX, spotlightY, spotlightSize);
+  // Bouge le spotlight de gauche à droite avec une pause au milieu
+  if (spotlightX > width*1.5 || spotlightX < width*-0.5) {
+    spotlightSpeed *= -1;
+  } // Pause au milieu
+  if (spotlightX >= width/2-2 && spotlightX <= width/2+2) {
+    spotlightTimer = timer(spotlightTimer);
+    // grandit/rétricit seulement quand immobile
+    spotlightSize += spotlightScaleDirection;
+    if (spotlightTimer <= 0) {
+      spotlightX += spotlightSpeed;
+    }
+  } else {
+    spotlightTimer = 5;
+    spotlightX += spotlightSpeed;
+  }
 }
 
 // ------------------------------------------
@@ -327,11 +371,11 @@ void mousePressed() {
       transitionTime = 3;
       isInTransition = true;
       transitionHiddenValue = floor(random(100));
-      if (key == 'g') {
+      /*if (key == 'g') { // Debug Mode for shop
         currentScore = 26;
         transitionHiddenValue = 90;
         kromerAmount=10000;
-      }
+      }*/
       isSearching = false;
     } else {
       timeLeft -= 10;
@@ -352,8 +396,9 @@ void mousePressed() {
       mouseY>=shopSlotPosYBottom && mouseY<=shopSlotPosYBottom+SHOP_SLOT) { // Keygen
       purchaseItem(3);
     } else if (mouseX>=shopExitPosX && mouseX<=shopExitPosX+shopExitWidth &&
-      mouseY>=shopExitPosY && mouseY<=shopExitPosY+shopExitHeight) {
-      frameRate(60);
+      mouseY>=shopExitPosY && mouseY<=shopExitPosY+shopExitHeight) { // Bouton quitter
+      nbrShopVisits++;
+      textFont(wantedFont);
       windowMove((displayWidth/2)-(width/2), (displayHeight/2)-(height/2));
       isInMenu = !isInMenu;
     }
@@ -363,7 +408,7 @@ void mousePressed() {
 // Timer utilisé à plusieurs places --------------------
 float timer(float countdown) {
   if (countdown > 0) {
-    countdown-=1/random(59, 60);
+    countdown-=1/frameRate;
   }
   return countdown;
 }
@@ -375,10 +420,17 @@ void levelTransition() {
     fill(COL_TEXT);
     rect(0, 0, width, height); // Met l'arrière-plan jaune
     createCharacter(targetPosX, targetPosY, targetChar); // Affiche la cible
+    if (random(2) > 1) { // Reset/randomize la position du spotlight
+      spotlightX = width*-0.5;
+    } else {
+      spotlightX = width*1.5;
+    }
   } else {
+    // Si la hidden value permet la visite au shop
     if (transitionHiddenValue >= 90 && currentScore>25) {
       shopKeeper = loadImage("npc_shop_neutral.png");
       isInMenu = true;
+      shopTimer = 0;
       isInTransition = !isInTransition;
     } else {
       println(transitionHiddenValue);
@@ -431,32 +483,95 @@ void resetValues() {
 void shop() {
   // 4 items : KEYGEN (crashes), B.Shot Glasses (+targetSize)
   // PuppetScarf (luigiChance=0), S.Potion (+45 timeLeft)
-  frameRate(1); // Aide a donner l'effet "I dont think I should be here..."
-  for (float x = 0; x<width; x+=width/5) { // Dessine les briques
-    for (float y = 0; y<height; y+=height/15) {
-      if (y<=topScreenHeight) { // Dessine les briques à l'écran supérieur
-        if (floor(random(3))>0) { // Crée le pattern aléatoire des briques
-          fill(COL_SHOP_TOP_BG);
-        } else {
-          fill(COL_SHOP_TOP_STROKE);
+  shopTimer = timer(shopTimer); // Simule une frameRate de 1
+  textFont(shopFont);
+  if (shopTimer <= 0) {
+    for (float x = 0; x<width; x+=width/5) { // Dessine les briques
+      for (float y = 0; y<height; y+=height/15) {
+        if (y<=topScreenHeight) { // Dessine les briques à l'écran supérieur
+          if (floor(random(3))>0) { // Crée le pattern aléatoire des briques
+            fill(COL_SHOP_TOP_BG);
+          } else {
+            fill(COL_SHOP_TOP_STROKE);
+          }
+          stroke(COL_SHOP_TOP_STROKE);
+        } else { // Dessine les briques à l'écran inférieur
+          if (floor(random(3))>0) { // Crée le pattern aléatoire des briques
+            fill(COL_SHOP_BOTTOM_BG);
+          } else {
+            fill(COL_SHOP_BOTTOM_STROKE);
+          }
+          stroke(COL_SHOP_BOTTOM_STROKE);
         }
-        stroke(COL_SHOP_TOP_STROKE);
-      } else { // Dessine les briques à l'écran inférieur
-        if (floor(random(3))>0) { // Crée le pattern aléatoire des briques
-          fill(COL_SHOP_BOTTOM_BG);
-        } else {
-          fill(COL_SHOP_BOTTOM_STROKE);
-        }
-        stroke(COL_SHOP_BOTTOM_STROKE);
+        strokeWeight(4);
+        rect(x, y, width/5, height/12); // Dessine la brique
       }
-      rect(x, y, width/5, height/12); // Dessine la brique
     }
+    // Dessine le Shopkeeper
+    image(shopKeeper, width-SHOP_KEEPER_SIZE, topScreenHeight-SHOP_KEEPER_SIZE+(height/15), SHOP_KEEPER_SIZE, SHOP_KEEPER_SIZE);
+    // Manipule la fenêtre
+    windowMove(floor(random(displayWidth/5, displayWidth/5*2)), floor(random(displayHeight/5)));
+    windowTitle(str(noise(random(15))*random(30)));
+    shopTimer = 4;
   }
-  // Dessine le Shopkeeper
-  image(shopKeeper, width-SHOP_KEEPER_SIZE, topScreenHeight-SHOP_KEEPER_SIZE+(height/15), SHOP_KEEPER_SIZE, SHOP_KEEPER_SIZE);
+
+  // Dialogue --------------------
+  // Dialogue basique
+  if (nbrShopVisits == 0) {
+    textSize(20);
+    shopDialogue = "HEY  TOUT  !! C'EST MOI!!! LE\n[[Number 1 Rated Salesman1997]]\nPRÉFÉRÉ DE TOUT LE MO NDE!\nSPAMTON G. SPAMTON!!";
+  } else if (nbrShopVisits == 1) {
+    textSize(20);
+    shopDialogue = "TU NE VEUX PAS ÊTRE UN\n[[BIG SHOT]]? Y'A RIEN DE MAL\nAVEC AVOIR UN PETIT [Plaisir]\nDE TEMPS EN TEMPS.";
+  } else if (nbrShopVisits == 2) {
+    textSize(20);
+    shopDialogue = "INQUIÈTEZ-VOUS PAS ENFANTS\nJE SUIS UN [HommeHonnête].\nJ'AI JUSTE BESOIN DE VOS\n[Détails De Compte] ET LES\n[Numéros sur l'4rriàre]";
+  } else if (nbrShopVisits == 3) {
+    textSize(20);
+    shopDialogue = "Y'a rien qui va mal. Y'a\nRIEN qui va mal. Y'a RIEN\nQUI VA MAL. Y'A RIEN QUI VA\nMAL. Y'A  R1EN Q UI VA\n  MAL";
+  } else if (nbrShopVisits == 4) {
+    textSize(18);
+    shopDialogue = "ATTEND REGARDE!! T'ENTENDS CES\n[Ballons]??? TU ES LE [1000e\nClient(e)]!!. ENTANT QUE\n[Bague Commémorative], JE TE\nPERMET DE TE PROCURER [KeyGen]\nDE MOI A [Un Bas Bas Prix De]";
+  } else {
+    textSize(30);
+    shopDialogue = "ACHÈTE [KEYGEN].";
+  }
+
+  // Si un objet est hovered, dit leur effet
+  if (mouseX>=shopSlotPosXLeft && mouseX<=shopSlotPosXLeft+SHOP_SLOT &&
+    mouseY>=shopSlotPosYTop && mouseY<=shopSlotPosYTop+SHOP_SLOT) { // Glasses
+    textSize(20);
+    shopDialogue = "WOAH! C'EST LE [Dealmaker]!!\nAVEC CECI, CE SALE DE [Plombier]\nSERA PLUS GRAND ET PLUS\nVISIBLE !! MAIS JAMAIS PLUS\nGRAND QUE [Spamton G.Spamton]!!";
+  } else if (mouseX>=shopSlotPosXRight && mouseX<=shopSlotPosXRight+SHOP_SLOT &&
+    mouseY>=shopSlotPosYTop && mouseY<=shopSlotPosYTop+SHOP_SLOT) { // Scarf
+    textSize(20);
+    shopDialogue = "AH LE [Puppet Scarf]... CECI\nVA [Reset] TES CH4NCES DE VOIR\n[Joueur 2] À Z3R0 ! MAIS\nSEULEMENT TEMPORAIREMENT...\nBON DÉBARA [Luigi] !!";
+  } else if (mouseX>=shopSlotPosXLeft && mouseX<=shopSlotPosXLeft+SHOP_SLOT &&
+    mouseY>=shopSlotPosYBottom && mouseY<=shopSlotPosYBottom+SHOP_SLOT) { // Potion
+    textSize(20);
+    shopDialogue = "MA [S. Potion] SI ADORÉE, QUE\nFERAIS-JE SANS TOI? UNE GORGÉE\nET [Kabloom], TON TEMPS\nRESTANT AVANT [Hyperlink\nBlocked] AUGMENTE DE\n[60 secondes] !!";
+  } else if (mouseX>=shopSlotPosXRight && mouseX<=shopSlotPosXRight+SHOP_SLOT &&
+    mouseY>=shopSlotPosYBottom && mouseY<=shopSlotPosYBottom+SHOP_SLOT) { // Keygen
+    textSize(20);
+    shopDialogue = "[KeyGen] !!!!! MA POSSESSION LA\nPLUS PRÉCIEUSE ! OH, VAS-Y.\nACHÈTE LE ! TU NE VAS JAMAIS\nREGRETTER LE [Hyperlink Blocked]\nQUI VIENT AVEC !!";
+  } else if (mouseX>=shopExitPosX && mouseX<=shopExitPosX+shopExitWidth &&
+    mouseY>=shopExitPosY && mouseY<=shopExitPosY+shopExitHeight) { // Bouton quitter
+    textSize(30);
+    shopDialogue = "TU NE VEUX PAS\nAPPUYER SUR\n[Ce Bouton].";
+  }
+
+  // Speech Bubble
+  fill(COL_SPEECH_BUBBLE);
+  stroke(COL_SHOP_TOP_STROKE);
+  rect(20, 10, width/7*4.5, topScreenHeight/5*4, 20);
+
+  // Texte Speech Bubble
+  fill(COL_BG);
+  text(shopDialogue, 40, 40);
+
   // Couleurs pour les Item Slots
   fill(COL_SHOP_TOP_BG);
-  stroke(COL_SHOP_TOP_STROKE);
+  strokeWeight(2);
   // Place les slots pour les items
   square(shopSlotPosXLeft, shopSlotPosYTop, SHOP_SLOT);
   square(shopSlotPosXRight, shopSlotPosYTop, SHOP_SLOT);
@@ -485,9 +600,6 @@ void shop() {
   textSize(30);
   text("M: "+kromerAmount, width/10, topScreenHeight);
   hasSeenShop = true; // affiche l'argent hors du shop, ne se reset jamais
-  // Manipule la fenêtre
-  windowMove(floor(random(displayWidth/5, displayWidth/5*2)), floor(random(displayHeight/5)));
-  windowTitle(str(noise(random(15))*random(30)));
   noStroke();
 }
 
