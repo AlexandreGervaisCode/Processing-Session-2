@@ -73,17 +73,23 @@ final float SHOP_KEEPER_SIZE = 200; // Taille du shopkeeper
 final float SHOP_SLOT = 100; // Taille d'un slot d'item dans le shop
 final float SHOP_ITEM = SHOP_SLOT-10; // Taille d'un item dans le shop
 final float SHOP_ITEM_OFFSET = 5; // Offset des item dans le shop
-float shopSlotPosX; // Position X des Item Slots
-float shopSlotPosY; // Position Y des Item Slots
+float shopSlotPosXLeft; // Position X des Item Slots à gauche
+float shopSlotPosXRight; // Position X des Item Slots à gauche
+float shopSlotPosYTop; // Position Y des Item Slots en haut
+float shopSlotPosYBottom; // Position Y des Item Slots en bas
 float shopExitPosX; // Position X du bouton quitter
 float shopExitPosY; // Position X du bouton quitter
+float shopExitWidth; // Width X du bouton quitter
+float shopExitHeight; // Height du bouton quitter
 boolean isInMenu = false; // Si l'utilisateur est dans un menu
+boolean hasSeenShop = false; // Cache le montant d'argent si le shop n'a pas été vu
 int kromerAmount = 0; // Montant d'argent
-int itemKeygenPrice = 3000; // Prix des objets
-int itemGlassesPrice = 1500;
-int itemScarfPrice = 750;
-int itemPotionPrice = 2000;
-boolean isKeygenGot = false;
+int itemKeygenPrice = 1750; // Prix des objets
+int itemGlassesPrice = 1050;
+int itemScarfPrice = 200;
+int itemPotionPrice = 600;
+boolean isKeygenGot = false; // Si Keygen a été obtenu
+float deathTime = 0.5; // Temps avant que Keygen est effet
 int transitionHiddenValue; // Permet d'avoir des events secrets
 // Shop Sprites
 PImage shopKeeper;
@@ -121,29 +127,59 @@ void setup() {
   // Commence le timer à 1 minute
   timeLeft = 30;
   topScreenHeight = height/3;
-  shopSlotPosX = width/3-(SHOP_SLOT/2);
-  shopSlotPosY = (height-topScreenHeight)/2-(SHOP_SLOT/2);
+  shopSlotPosXLeft = width/3-(SHOP_SLOT/2);
+  shopSlotPosXRight = (width/3)*2-(SHOP_SLOT/2);
+  shopSlotPosYTop = (height-topScreenHeight)-SHOP_SLOT;
+  shopSlotPosYBottom = (height-topScreenHeight)*1.25-SHOP_SLOT;
   shopExitPosX = width/16;
-  shopExitPosY = height/12*11;
+  shopExitPosY = height/12*10.5;
+  shopExitWidth = width/16*14;
+  shopExitHeight = height/10;
   noStroke();
 }
 
 void draw() {
   // Réalise ce code 1 seule fois par minigame round --------------------
-  if (!isSearching && !isInTransition && !isGameOver) {
+  if (!isSearching && !isInTransition && !isGameOver && !isInMenu) {
     background(COL_BG);
     resetCharIndex();
     // Décide le nombre d'instances chaque mauvais perso vont apparaitres
     createChars();
     // Ce booléan permet de décider les positions aléatoires 1 seule fois
     isSearching = true;
-    // fun thingy to play with
-    // windowMove(floor(random(displayWidth-width)), floor(random(displayHeight-height)));
   }
   // S'active à chaque frame que le joueur cherche --------------------
   if (isSearching && !isGameOver) {
     drawPoster();
     isGameOver = gameOverCheck();
+    if (isKeygenGot) { // Si la Keygen a été achetée
+      // Met un titre aléatoire de gibberish
+      int randomTitle = floor(random(4));
+      if (randomTitle == 0) {
+        windowTitle("ASDiohs0-eir92UJ1987lms;dfj90u3fnaf208OIDSNF");
+      } else if (randomTitle == 1) {
+        windowTitle("1O4HIdiosfgé902J3SALEMAN0ionadsIUàSFA09u1997");
+      } else if (randomTitle == 2) {
+        windowTitle("809NkohO.Rrng90PapyRuSDAkè83fhmKNIghTgOPM3oLte");
+      } else {
+        windowTitle("gjpo39KLM1kU3iojs23IOJHmikudfIOAI089àHBEaMàÈas");
+      }
+      deathTime = timer(deathTime); // Départ le timer de la fin
+      if (deathTime<0.2) { // Reproduit l'écran blanc d'un crash avant le vrai
+        windowResize(floor(random(displayWidth)), floor(random(displayHeight)));
+        windowMove(floor(random(displayWidth-width)), floor(random(displayHeight-height)));
+        fill(255, 255, 255, 35);
+        rect(0, 0, width, height);
+      }
+      if (deathTime<0.1) { // Ré-adjuste la fenêtre pour être visible durant le crash
+        windowResize(900,600);
+        windowMove((displayWidth/2)-(width/2), (displayHeight/2)-(height/2));
+      }
+      if (deathTime<0) { // vrai Crash
+        PImage deathScreen = loadImage("adsiahbiduabuiwdbhn.gif");
+        image(deathScreen, 0, 0, deathScreen.width, deathScreen.height);
+      }
+    }
   }
   // S'active durant les transition entre les rounds --------------------
   if (isInTransition && !isInMenu) {
@@ -153,22 +189,22 @@ void draw() {
       rect(0, 0, width, height);
       createCharacter(targetPosX, targetPosY, targetChar);
     } else {
-       if (transitionHiddenValue >= 90 && currentScore>25) {
-         isInMenu = true;
-         shop();
-       } else if (transitionHiddenValue == 87 && currentScore>25) {
-         // where's waldo
-         // isInMenu = true;
-       } else if (transitionHiddenValue == 18 && currentScore>25) {
-         // Smash
-         // isInMenu = true;
-       } else {
-         println(transitionHiddenValue);
-         isInTransition = !isInTransition;
-       }
+      if (transitionHiddenValue >= 90 && currentScore>25) {
+        shopKeeper = loadImage("npc_shop_neutral.png");
+        isInMenu = true;
+        isInTransition = !isInTransition;
+      } else {
+        println(transitionHiddenValue);
+        isInTransition = !isInTransition;
+      }
     }
   }
-  
+
+  // Si l'utilisateur est dans le magasin
+  if (isInMenu) {
+    shop();
+  }
+
   // Si le joueur échoue, reset tout
   if (isGameOver) {
     fill(COL_BG);
@@ -187,7 +223,7 @@ void draw() {
       currentScore = 0;
       minCharInstances = FLOOR_MIN_CHAR_INSTANCES;
       maxCharInstances = FLOOR_MAX_CHAR_INSTANCES;
-      timeLeft = 15;
+      timeLeft = 30;
       targetSizeUp = 5;
       isGameOver = false;
     }
@@ -272,18 +308,20 @@ void drawPoster() {
   textAlign(RIGHT);
   textSize(25);
   text("Score: "+currentScore, width/10*9, topScreenHeight);
-  textAlign(LEFT);
-  text(kromerAmount+"K", width/10, topScreenHeight);
+  if (hasSeenShop) {
+    textAlign(LEFT);
+    text("M: "+kromerAmount, width/10, topScreenHeight);
+  }
   image(posterChar, width/2-(POSTER_SIZE/2), topScreenHeight/3*2-(POSTER_SIZE/2), POSTER_SIZE, POSTER_SIZE);
 }
 
 // Détection de réussite/échec ---------------------
 void mousePressed() {
   if (isSearching) {
-    if (mouseX>=targetPosX && mouseX<=targetPosX+SEARCH_SIZE &&
-      mouseY>=targetPosY-ERROR_MARGIN && mouseY<=targetPosY+SEARCH_SIZE+ERROR_MARGIN) {
+    if (mouseX>=targetPosX && mouseX<=targetPosX+SEARCH_SIZE+targetSizeUp &&
+      mouseY>=targetPosY-ERROR_MARGIN && mouseY<=targetPosY+SEARCH_SIZE+ERROR_MARGIN+targetSizeUp) {
       currentScore++;
-      timeLeft += 15;
+      timeLeft += 10;
       // Augmente les chances que Luigi soit la cible
       if (luigiChance < 50) {
         luigiChance+=floor(random(1, 5));
@@ -319,6 +357,7 @@ void mousePressed() {
       if (key == 'g') {
         currentScore = 26;
         transitionHiddenValue = 90;
+        kromerAmount=10000;
       }
       isSearching = false;
     } else {
@@ -327,30 +366,30 @@ void mousePressed() {
   }
   if (isInMenu) {
     // Si le user essaye d'acheter un item
-    if (mouseX>=shopSlotPosX && mouseX<=shopSlotPosX+SHOP_SLOT &&
-      mouseY>=shopSlotPosY && mouseY<=shopSlotPosY+SHOP_SLOT) { // Glasses
-        purchaseItem(0);
-      } else if (mouseX>=shopSlotPosX*2 && mouseX<=shopSlotPosX*2+SHOP_SLOT &&
-      mouseY>=shopSlotPosY && mouseY<=shopSlotPosY+SHOP_SLOT) { // Scarf
-        purchaseItem(1);
-      } else if (mouseX>=shopSlotPosX && mouseX<=shopSlotPosX+SHOP_SLOT &&
-      mouseY>=shopSlotPosY*2 && mouseY<=shopSlotPosY*2+SHOP_SLOT) { // Potion
-        purchaseItem(2);
-      } else if (mouseX>=shopSlotPosX*2 && mouseX<=shopSlotPosX*2+SHOP_SLOT &&
-      mouseY>=shopSlotPosY*2 && mouseY<=shopSlotPosY*2+SHOP_SLOT) { // Keygen
-        purchaseItem(3);
-      } else if (mouseX>=shopExitPosX && mouseX<=shopExitPosX+(width*3) &&
-      mouseY>=shopExitPosX && mouseY<=shopExitPosX+(height/12)) {
-        frameRate(60);
-        isInMenu = !isInMenu;
-      }
+    if (mouseX>=shopSlotPosXLeft && mouseX<=shopSlotPosXLeft+SHOP_SLOT &&
+      mouseY>=shopSlotPosYTop && mouseY<=shopSlotPosYTop+SHOP_SLOT) { // Glasses
+      purchaseItem(0);
+    } else if (mouseX>=shopSlotPosXRight && mouseX<=shopSlotPosXRight+SHOP_SLOT &&
+      mouseY>=shopSlotPosYTop && mouseY<=shopSlotPosYTop+SHOP_SLOT) { // Scarf
+      purchaseItem(1);
+    } else if (mouseX>=shopSlotPosXLeft && mouseX<=shopSlotPosXLeft+SHOP_SLOT &&
+      mouseY>=shopSlotPosYBottom && mouseY<=shopSlotPosYBottom+SHOP_SLOT) { // Potion
+      purchaseItem(2);
+    } else if (mouseX>=shopSlotPosXRight && mouseX<=shopSlotPosXRight+SHOP_SLOT &&
+      mouseY>=shopSlotPosYBottom && mouseY<=shopSlotPosYBottom+SHOP_SLOT) { // Keygen
+      purchaseItem(3);
+    } else if (mouseX>=shopExitPosX && mouseX<=shopExitPosX+shopExitWidth &&
+      mouseY>=shopExitPosY && mouseY<=shopExitPosY+shopExitHeight) {
+      frameRate(60);
+      isInMenu = !isInMenu;
+    }
   }
 }
 
 // Timer utilisé à plusieurs places --------------------
 float timer(float countdown) {
   if (countdown > 0) {
-    countdown-=1/frameRate;
+    countdown-=1/random(59, 60);
   }
   return countdown;
 }
@@ -360,24 +399,36 @@ boolean gameOverCheck() {
   return timeLeft<=0;
 }
 
+// Quand t'achète un objet dans le shop
 void purchaseItem(int itemIndex) {
-  if (itemIndex == 0 && kromerAmount >= itemGlassesPrice) {
+  if (itemIndex == 0 && kromerAmount >= itemGlassesPrice) { // Glasses
+    // Le but des lunettes est d'augmenter la taille de la cible
     kromerAmount -= itemGlassesPrice;
-    targetSizeUp+=5;
+    targetSizeUp+=3;
     shopKeeper = loadImage("npc_shop_success.png");
-  } else if (itemIndex == 1 && kromerAmount >= itemScarfPrice) {
+  } else if (itemIndex == 1 && kromerAmount >= itemScarfPrice) { // Scarf
+    // Le but de l'écharpe est de reset les chances de croiser Luigi
     kromerAmount -= itemScarfPrice;
     luigiChance=0;
     shopKeeper = loadImage("npc_shop_success.png");
-  } else if (itemIndex == 2 && kromerAmount >= itemPotionPrice) {
+  } else if (itemIndex == 2 && kromerAmount >= itemPotionPrice) { // Potion
+    // Le but de la potion est d'augmenter le temps du joueur
     kromerAmount -= itemPotionPrice;
-    timeLeft+=45;
+    timeLeft+=60;
     shopKeeper = loadImage("npc_shop_success.png");
-  } else if (itemIndex == 3 && kromerAmount >= itemKeygenPrice) {
+  } else if (itemIndex == 3 && kromerAmount >= itemKeygenPrice) { // Keygen
+    // Le but de Keygen est de surprendre le user avec un crash
     kromerAmount -= itemKeygenPrice;
     isKeygenGot = true;
+    luigiChance = 100;
+    targetSizeUp = 20;
+    searchMario = loadImage("char_spe_mike.png");
+    searchLuigi = loadImage("char_spe_spamton_search.png");
+    searchYoshi = loadImage("char_spe_tenna.png");
+    searchWario = loadImage("char_spe_queen.png");
+    posterLuigi = loadImage("char_spe_spamton_close.png");
     shopKeeper = loadImage("npc_shop_success.png");
-  } else {
+  } else { // Si les fonds ne sont pas assez pour un achat
     shopKeeper = loadImage("npc_shop_poor.png");
   }
 }
@@ -385,39 +436,62 @@ void purchaseItem(int itemIndex) {
 void shop() {
   // 4 items : KEYGEN (crashes), B.Shot Glasses (+targetSize)
   // PuppetScarf (luigiChance=0), S.Potion (+45 timeLeft)
-  shopKeeper = loadImage("npc_shop_neutral.png");
   frameRate(1);
   for (float x = 0; x<width; x+=width/5) {
     for (float y = 0; y<height; y+=height/15) {
       if (y<=topScreenHeight) {
-        fill(COL_SHOP_TOP_BG);
+        if (floor(random(3))>0) {
+          fill(COL_SHOP_TOP_BG);
+        } else {
+          fill(COL_SHOP_TOP_STROKE);
+        }
         stroke(COL_SHOP_TOP_STROKE);
       } else {
-        fill(COL_SHOP_BOTTOM_BG);
+        if (floor(random(3))>0) {
+          fill(COL_SHOP_BOTTOM_BG);
+        } else {
+          fill(COL_SHOP_BOTTOM_STROKE);
+        }
         stroke(COL_SHOP_BOTTOM_STROKE);
       }
       rect(x, y, width/5, height/12);
     }
   }
   // Dessine le Shopkeeper
-  image(shopKeeper, width-SHOP_KEEPER_SIZE, topScreenHeight-SHOP_KEEPER_SIZE, SHOP_KEEPER_SIZE, SHOP_KEEPER_SIZE);
+  image(shopKeeper, width-SHOP_KEEPER_SIZE, topScreenHeight-SHOP_KEEPER_SIZE+(height/15), SHOP_KEEPER_SIZE, SHOP_KEEPER_SIZE);
+
   fill(COL_SHOP_TOP_BG);
   stroke(COL_SHOP_TOP_STROKE);
   // Place les slots pour les items
-  square(shopSlotPosX, shopSlotPosY, SHOP_SLOT);
-  square(shopSlotPosX, shopSlotPosY*2, SHOP_SLOT);
-  square(shopSlotPosX*2, shopSlotPosY, SHOP_SLOT);
-  square(shopSlotPosX*2, shopSlotPosY*2, SHOP_SLOT);
+  square(shopSlotPosXLeft, shopSlotPosYTop, SHOP_SLOT);
+  square(shopSlotPosXRight, shopSlotPosYTop, SHOP_SLOT);
+  square(shopSlotPosXLeft, shopSlotPosYBottom, SHOP_SLOT);
+  square(shopSlotPosXRight, shopSlotPosYBottom, SHOP_SLOT);
   // Place les items dans les slots
-  image(itemGlasses, shopSlotPosX+SHOP_ITEM_OFFSET, shopSlotPosY+SHOP_ITEM_OFFSET, SHOP_ITEM, SHOP_ITEM);
-  image(itemScarf, shopSlotPosX*2+SHOP_ITEM_OFFSET, shopSlotPosY+SHOP_ITEM_OFFSET, SHOP_ITEM, SHOP_ITEM);
-  image(itemPotion, shopSlotPosX+SHOP_ITEM_OFFSET, shopSlotPosY*2+SHOP_ITEM_OFFSET, SHOP_ITEM, SHOP_ITEM);
-  image(itemKeygen, shopSlotPosX*2+SHOP_ITEM_OFFSET, shopSlotPosY*2+SHOP_ITEM_OFFSET, SHOP_ITEM, SHOP_ITEM);
+  image(itemGlasses, shopSlotPosXLeft+SHOP_ITEM_OFFSET, shopSlotPosYTop+SHOP_ITEM_OFFSET, SHOP_ITEM, SHOP_ITEM);
+  image(itemScarf, shopSlotPosXRight+SHOP_ITEM_OFFSET, shopSlotPosYTop+SHOP_ITEM_OFFSET, SHOP_ITEM, SHOP_ITEM);
+  image(itemPotion, shopSlotPosXLeft+SHOP_ITEM_OFFSET, shopSlotPosYBottom+SHOP_ITEM_OFFSET, SHOP_ITEM, SHOP_ITEM);
+  image(itemKeygen, shopSlotPosXRight+SHOP_ITEM_OFFSET, shopSlotPosYBottom+SHOP_ITEM_OFFSET, SHOP_ITEM, SHOP_ITEM);
   // Dessine le bouton quitter
-  rect(shopExitPosX, shopExitPosY, width/16*14, height/12);
-  textSize(24);
-  fill(COL_BG);
+  rect(shopExitPosX, shopExitPosY, shopExitWidth, shopExitHeight);
+  fill(COL_SHOP_TOP_BG);
+  textSize(30);
   textAlign(CENTER);
-  text("S'enfuir", width/2, height/12*11.5);
+  fill(COL_BG);
+  text("S'enfuir", width/2, shopExitPosY+(shopExitHeight/3*2));
+  // Dessine les prix
+  textSize(24);
+  text(itemGlassesPrice, shopSlotPosXLeft+SHOP_SLOT/2, shopSlotPosYTop+SHOP_SLOT);
+  text(itemScarfPrice, shopSlotPosXRight+SHOP_SLOT/2, shopSlotPosYTop+SHOP_SLOT);
+  text(itemPotionPrice, shopSlotPosXLeft+SHOP_SLOT/2, shopSlotPosYBottom+SHOP_SLOT);
+  text(itemKeygenPrice, shopSlotPosXRight+SHOP_SLOT/2, shopSlotPosYBottom+SHOP_SLOT);
+  // Montre le Nombre d'argent
+  textAlign(LEFT);
+  textSize(30);
+  text("M: "+kromerAmount, width/10, topScreenHeight);
+  hasSeenShop = true; // affiche l'argent hors du shop, ne se reset jamais
+  // Manipule la fenêtre
+  windowMove(floor(random(displayWidth/5, displayWidth/5*2)), floor(random(displayHeight/5)));
+  windowTitle(str(noise(random(15))*random(30)));
   noStroke();
 }
