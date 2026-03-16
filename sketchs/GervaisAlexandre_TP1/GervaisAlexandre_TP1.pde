@@ -374,11 +374,11 @@ void mousePressed() {
       transitionTime = 3;
       isInTransition = true;
       transitionHiddenValue = floor(random(100));
-      if (key == 'g') { // Debug Mode for shop
+      /*if (key == 'g') { // Debug Mode for shop
         currentScore = 26;
         transitionHiddenValue = 90;
         kromerAmount=10000;
-      }
+      }*/
       isSearching = false;
     } else {
       timeLeft -= 10;
