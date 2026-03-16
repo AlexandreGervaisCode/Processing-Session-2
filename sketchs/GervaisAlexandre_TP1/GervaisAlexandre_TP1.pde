@@ -381,6 +381,7 @@ void mousePressed() {
     } else if (mouseX>=shopExitPosX && mouseX<=shopExitPosX+shopExitWidth &&
       mouseY>=shopExitPosY && mouseY<=shopExitPosY+shopExitHeight) {
       frameRate(60);
+      windowMove((displayWidth/2)-(width/2), (displayHeight/2)-(height/2));
       isInMenu = !isInMenu;
     }
   }
