@@ -172,6 +172,7 @@ void setup() {
   shopStatsHeight = height/16;
   spotlightX = width*-0.5;
   spotlightY = topScreenHeight/3*1.72;
+  windowMove((displayWidth/2)-(width/2), (displayHeight/2)-(height/2)); // Centre la fenêtre
   noStroke();
 }
 
@@ -705,7 +706,7 @@ void keyPressed() {
   }
   // Si D majuscule est appuyé pendant que la souris est sur le coin droit
   // inférieur du score (durant une round)
-  if (key == 'D' && mouseX == 630 && mouseY == 217) {
+  if (key == 'D' && mouseX >= 628 && mouseX <= 631 && mouseY <= 217 && mouseY <= 220) {
     debugOn = true;
   }
 }
