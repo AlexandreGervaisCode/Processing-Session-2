@@ -295,13 +295,13 @@ void createCharacter(float posX, float posY, PImage characterImg) {
 void createChars() {
   float charInstances = round(random(minCharInstances, maxCharInstances));
   for (float i = 0; i<charInstances; i++) {
-    if (i == round(charInstances/2)) { // Fait le perso cible une seule fois
-      createCharacter(random(charMinPosX, charMaxPosX), random(charMinPosY, charMaxPosY), targetChar);
-    }
     // Fait les persos incorrects en plusieurs exemplaires chacuns
     createCharacter(random(charMinPosX, charMaxPosX), random(charMinPosY, charMaxPosY), wrongChar1);
     createCharacter(random(charMinPosX, charMaxPosX), random(charMinPosY, charMaxPosY), wrongChar2);
     createCharacter(random(charMinPosX, charMaxPosX), random(charMinPosY, charMaxPosY), wrongChar3);
+    if (i == round(charInstances/2)) { // Fait le perso cible une seule fois
+      createCharacter(random(charMinPosX, charMaxPosX), random(charMinPosY, charMaxPosY), targetChar);
+    }
   }
 }
 
