@@ -383,7 +383,7 @@ void mousePressed() {
        currentScore = 26;
        transitionHiddenValue = 90;
        kromerAmount=10000;
-       }*/
+      }*/
       isSearching = false;
     } else {
       timeLeft -= 10;
@@ -531,7 +531,7 @@ void shop() {
     shopDialogue = "TU NE VEUX PAS ÊTRE UN\n[[BIG SHOT]]? Y'A RIEN DE MAL\nAVEC AVOIR UN PETIT [Plaisir]\nDE TEMPS EN TEMPS.";
   } else if (nbrShopVisits == 2) {
     textSize(20);
-    shopDialogue = "INQUIÈTEZ-VOUS PAS ENFANTS\nJE SUIS UN [HommeHonnête].\nJ'AI JUSTE BESOIN DE VOS\n[Détails De Compte] ET LES\n[Numéros sur l'4rriàre]";
+    shopDialogue = "INQUIÈTEZ-VOUS PAS ENFANTS\nJE SUIS UN [HommeHonnête].\nJ'AI JUSTE BESOIN DE VOS\n[Détails De Compte] ET LES\n[Numéros sur l'4rrière]";
   } else if (nbrShopVisits == 3) {
     textSize(20);
     shopDialogue = "Y'a rien qui va mal. Y'a\nRIEN qui va mal. Y'a RIEN\nQUI VA MAL. Y'A RIEN QUI VA\nMAL. Y'A  R1EN Q UI VA\n  MAL";
