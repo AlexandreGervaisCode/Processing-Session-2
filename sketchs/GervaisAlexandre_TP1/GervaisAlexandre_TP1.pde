@@ -125,6 +125,9 @@ PImage itemGlasses;
 PImage itemScarf;
 PImage itemPotion;
 
+// Debug Mode
+boolean debugOn = false;
+
 // Pre-loading --------------------
 void setup() {
   // Taille de la fenêtre
@@ -218,6 +221,12 @@ void draw() {
       resetValues();
     }
   }
+  
+  // Indication visuelle de si le mode Debug est activé
+  if (debugOn) {
+    fill(color(255, 0, 0));
+    square(width-10, 0, 10);
+  }
 }
 
 // ------------------------------------------
@@ -226,6 +235,10 @@ void draw() {
 
 // Re-roll qui sera la cible --------------------
 void resetCharIndex() {
+  if (isKeygenGot) {
+    luigiChance = 100;
+    targetSizeUp = 20;
+  }
   int rngChar = floor(random(100));
   if (luigiChance >= rngChar) {
     wantedCharIndex = 3;
@@ -379,11 +392,6 @@ void mousePressed() {
       transitionTime = 3;
       isInTransition = true;
       transitionHiddenValue = floor(random(100));
-      /*if (key == 'g') { // Debug Mode for shop
-       currentScore = 26;
-       transitionHiddenValue = 90;
-       kromerAmount=10000;
-      }*/
       isSearching = false;
     } else {
       timeLeft -= 10;
@@ -640,8 +648,6 @@ void purchaseItem(int itemIndex) {
     // Le but de Keygen est de surprendre le user avec un crash
     kromerAmount -= itemKeygenPrice;
     isKeygenGot = true;
-    luigiChance = 100;
-    targetSizeUp = 20;
     searchMario = loadImage("char_spe_mike.png");
     searchLuigi = loadImage("char_spe_spamton_search.png");
     searchYoshi = loadImage("char_spe_tenna.png");
@@ -680,5 +686,26 @@ void activateKeygen() {
   if (deathTime<0) { // vrai Crash
     PImage deathScreen = loadImage("adsiahbiduabuiwdbhn.gif");
     image(deathScreen, 0, 0, deathScreen.width, deathScreen.height);
+  }
+}
+
+// Sert seulement à déboguer
+void keyPressed() {
+  if (debugOn) { // Permet l'éxecution des commandes Debug si le mode est activé
+    if (key == 'g') { // Force le shop a apparaitre
+      transitionHiddenValue = 97;
+      currentScore = 25;
+    } else if (key == 'k') { // Augmente Monnaie
+      kromerAmount += 1000;
+    } else if (key == 't') { // Augmente Temps
+      timeLeft += 100;
+    } else if (key == 's') { // Augmente Size
+      targetSizeUp += 3;
+    }
+  }
+  // Si D majuscule est appuyé pendant que la souris est sur le coin droit
+  // inférieur du score (durant une round)
+  if (key == 'D' && mouseX == 630 && mouseY == 217) {
+    debugOn = true;
   }
 }
