@@ -149,6 +149,7 @@ void setup() {
   shopFont = createFont("undertale-deltarune-text-font-extended.otf", 128);
   // Loading Shop Sprites
   shopTopBG = loadImage("shopTopBG.png");
+  shopBottomBG = loadImage("shopBottomBG.png");
   itemKeygen = loadImage("item_keygen.png");
   itemGlasses = loadImage("item_glasses.png");
   itemScarf = loadImage("item_scarf.png");
@@ -506,34 +507,14 @@ void shop() {
   shopTimer = timer(shopTimer); // Simule une frameRate de 1
   textFont(shopFont);
   if (shopTimer <= 0) {
-    for (float x = 0; x<width; x+=width/5) { // Dessine les briques
-      for (float y = 0; y<height; y+=height/15) {
-        if (y<=topScreenHeight) { // Dessine les briques à l'écran supérieur
-          if (floor(random(3))>0) { // Crée le pattern aléatoire des briques
-            fill(COL_SHOP_TOP_BG);
-          } else {
-            fill(COL_SHOP_TOP_STROKE);
-          }
-          stroke(COL_SHOP_TOP_STROKE);
-        } else { // Dessine les briques à l'écran inférieur
-          if (floor(random(3))>0) { // Crée le pattern aléatoire des briques
-            fill(COL_SHOP_BOTTOM_BG);
-          } else {
-            fill(COL_SHOP_BOTTOM_STROKE);
-          }
-          stroke(COL_SHOP_BOTTOM_STROKE);
-        }
-        strokeWeight(4);
-        rect(x, y, width/5, height/12); // Dessine la brique
-      }
-    }
     // Manipule la fenêtre
     windowMove(floor(random(displayWidth/5, displayWidth/5*2)), floor(random(displayHeight/5)));
     windowTitle(str(noise(random(15))*random(30)));
     shopTimer = 4;
   }
-  // Arrière-Plan
+  // Arrière-Plans
   image(shopTopBG, 0, 0, width, topScreenHeight);
+  image(shopBottomBG, 0, topScreenHeight, width, height-topScreenHeight);
   
   // Dialogue --------------------
   // Dialogue basique
