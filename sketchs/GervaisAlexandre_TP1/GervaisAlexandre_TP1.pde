@@ -110,7 +110,7 @@ int kromerAmount = 0; // Montant d'argent
 int nbrShopVisits = 0; // Nombre de visites au shop pour dialogue dynamique
 float shopTimer = 0; // Simule l'effet 1 frame par seconde
 String shopDialogue = "EMPTY STRING"; // Dialogue dans le shop
-final color COL_SPEECH_BUBBLE = color(202, 238, 255);
+final color COL_SPEECH_BUBBLE = color(202, 238, 255, 170);
 int itemKeygenPrice = 1750; // Prix des objets
 int itemGlassesPrice = 1050;
 int itemScarfPrice = 200;
@@ -120,6 +120,8 @@ float deathTime = 0.5; // Temps avant que Keygen est effet
 int transitionHiddenValue; // Permet d'avoir des events secrets
 // Shop Sprites
 PImage shopKeeper;
+PImage shopTopBG;
+PImage shopBottomBG;
 PImage itemKeygen;
 PImage itemGlasses;
 PImage itemScarf;
@@ -146,6 +148,7 @@ void setup() {
   wantedFont = createFont("sm-64-ds-usa-font.otf", 128);
   shopFont = createFont("undertale-deltarune-text-font-extended.otf", 128);
   // Loading Shop Sprites
+  shopTopBG = loadImage("shopTopBG.png");
   itemKeygen = loadImage("item_keygen.png");
   itemGlasses = loadImage("item_glasses.png");
   itemScarf = loadImage("item_scarf.png");
@@ -161,13 +164,13 @@ void setup() {
   topScreenHeight = height/3;
   shopSlotPosXLeft = width/3-(SHOP_SLOT/2);
   shopSlotPosXRight = (width/3)*2-(SHOP_SLOT/2);
-  shopSlotPosYTop = (height-topScreenHeight)-SHOP_SLOT;
+  shopSlotPosYTop = (height-topScreenHeight)*0.9-SHOP_SLOT;
   shopSlotPosYBottom = (height-topScreenHeight)*1.25-SHOP_SLOT;
   shopExitPosX = width/16;
   shopExitPosY = height/12*10.5;
   shopExitWidth = width/16*14;
   shopExitHeight = height/10;
-  shopStatsPosY = topScreenHeight+height/15;
+  shopStatsPosY = topScreenHeight;
   shopStatsWidth = width/6;
   shopStatsHeight = height/16;
   spotlightX = width*-0.5;
@@ -319,7 +322,7 @@ void drawPoster() {
     textAlign(LEFT);
     textFont(shopFont);
     textSize(25);
-    text("$"+kromerAmount, width/10, topScreenHeight-topScreenHeight/16);
+    text("$"+kromerAmount, width/10, topScreenHeight/16*15.5);
     textFont(wantedFont);
   }
   image(posterChar, width/2-(POSTER_SIZE/2), topScreenHeight/3*1.75-(POSTER_SIZE/2), POSTER_SIZE, POSTER_SIZE);
@@ -529,7 +532,9 @@ void shop() {
     windowTitle(str(noise(random(15))*random(30)));
     shopTimer = 4;
   }
-
+  // Arrière-Plan
+  image(shopTopBG, 0, 0, width, topScreenHeight);
+  
   // Dialogue --------------------
   // Dialogue basique
   if (nbrShopVisits == 0) {
@@ -579,7 +584,7 @@ void shop() {
     shopDialogue = "SCORE: "+currentScore+"\nTEMPS RESTANT: "+int(timeLeft)+"s\nCHANCES DE LUIGI: "+int(luigiChance)+"%\nCIBLE AGGRANDITE: "+int(targetSizeUp)+"px\n[KeyGen]: "+isKeygenGot;
   }
   // Dessine le Shopkeeper
-  image(shopKeeper, width-SHOP_KEEPER_SIZE, topScreenHeight-SHOP_KEEPER_SIZE+(height/15), SHOP_KEEPER_SIZE, SHOP_KEEPER_SIZE);
+  image(shopKeeper, width-SHOP_KEEPER_SIZE, topScreenHeight-SHOP_KEEPER_SIZE, SHOP_KEEPER_SIZE, SHOP_KEEPER_SIZE);
   // Speech Bubble
   fill(COL_SPEECH_BUBBLE);
   stroke(COL_SHOP_TOP_STROKE);
@@ -614,16 +619,16 @@ void shop() {
   rect(shopStatsPosX, shopStatsPosY, shopStatsWidth, shopStatsHeight);
   fill(COL_BG);
   textSize(24);
-  text("Stats", shopStatsWidth/2, topScreenHeight+height/9);
+  text("Stats", shopStatsWidth/2, topScreenHeight+shopStatsHeight/3*2);
   // Dessine les prix
-  text(itemGlassesPrice, shopSlotPosXLeft+SHOP_SLOT/2, shopSlotPosYTop+SHOP_SLOT);
-  text(itemScarfPrice, shopSlotPosXRight+SHOP_SLOT/2, shopSlotPosYTop+SHOP_SLOT);
-  text(itemPotionPrice, shopSlotPosXLeft+SHOP_SLOT/2, shopSlotPosYBottom+SHOP_SLOT);
-  text(itemKeygenPrice, shopSlotPosXRight+SHOP_SLOT/2, shopSlotPosYBottom+SHOP_SLOT);
+  text("$"+itemGlassesPrice, shopSlotPosXLeft+SHOP_SLOT/2, shopSlotPosYTop+SHOP_SLOT);
+  text("$"+itemScarfPrice, shopSlotPosXRight+SHOP_SLOT/2, shopSlotPosYTop+SHOP_SLOT);
+  text("$"+itemPotionPrice, shopSlotPosXLeft+SHOP_SLOT/2, shopSlotPosYBottom+SHOP_SLOT);
+  text("$"+itemKeygenPrice, shopSlotPosXRight+SHOP_SLOT/2, shopSlotPosYBottom+SHOP_SLOT);
   // Montre le Nombre d'argent du joueur
   textAlign(LEFT);
   textSize(30);
-  text("$"+kromerAmount, width/10, topScreenHeight);
+  text("$"+kromerAmount, width/10, topScreenHeight/16*15.5);
   hasSeenShop = true; // affiche l'argent hors du shop, ne se reset jamais
   noStroke();
 }
