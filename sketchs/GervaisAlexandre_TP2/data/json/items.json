@@ -1,0 +1,23 @@
+[
+  {
+    "id": 0,
+    "name": "BLANK",
+    "desc": "PLACEHOLDER DESC",
+    "price": 100,
+    "sprite": "../item_placeholder.png"
+  },
+  {
+    "id": 1,
+    "name": "BLANK",
+    "desc": "PLACEHOLDER DESC",
+    "price": 100,
+    "sprite": "../item_placeholder.png"
+  },
+  {
+    "id": 2,
+    "name": "BLANK",
+    "desc": "PLACEHOLDER DESC",
+    "price": 100,
+    "sprite": "../item_placeholder.png"
+  }
+]

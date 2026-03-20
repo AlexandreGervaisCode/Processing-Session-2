@@ -1,0 +1,32 @@
+[
+  {
+    "id": 0,
+    "name": "BLANK",
+    "attack": 5,
+    "defense": 1,
+    "maxHp": 20,
+    "sprite": "../pla_hero0.png",
+    "scaleX": 150,
+    "scaleY": 150
+  },
+  {
+    "id": 1,
+    "name": "BLANK",
+    "attack": 5,
+    "defense": 1,
+    "maxHp": 20,
+    "sprite": "../pla_hero0.png",
+    "scaleX": 150,
+    "scaleY": 150
+  },
+  {
+    "id": 2,
+    "name": "BLANK",
+    "attack": 5,
+    "defense": 1,
+    "maxHp": 20,
+    "sprite": "../pla_hero0.png",
+    "scaleX": 150,
+    "scaleY": 150
+  }
+]

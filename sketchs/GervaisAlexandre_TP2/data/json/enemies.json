@@ -1,0 +1,32 @@
+[
+  {
+    "id": 0,
+    "name": "BLANK",
+    "attack": 5,
+    "defense": 1,
+    "maxHp": 20,
+    "sprite": "../mob_placeholder.png",
+    "scaleX": 100,
+    "scaleY": 100
+  },
+  {
+    "id": 1,
+    "name": "BLANK",
+    "attack": 5,
+    "defense": 1,
+    "maxHp": 20,
+    "sprite": "../mob_placeholder.png",
+    "scaleX": 100,
+    "scaleY": 100
+  },
+  {
+    "id": 2,
+    "name": "BLANK",
+    "attack": 5,
+    "defense": 1,
+    "maxHp": 20,
+    "sprite": "../mob_placeholder.png",
+    "scaleX": 100,
+    "scaleY": 100
+  }
+]

@@ -1,25 +1,33 @@
 class Enemy {
+  int ID = 0;
   // Stats de combat
-  float atk, def, hp, maxHp = 1;
+  int atk, def, hp, maxHp = 1;
   // Placement de l'enemie
   float posX,posY = width/4*3;
   float scaleX, scaleY = 100;
   // Visualisation de l'enemie
   PImage sprite = loadImage("mob_placeholder.png");
+  // Collection de Data sur l'ennemie
+  JSONArray enemies = loadJSONArray("./json/enemies.json");
+  JSONObject selectedEnemy = enemies.getJSONObject(ID);
+  
+  // Timer pour l'animation de mort en frames (30fps)
+  int deathAnimTime = 2*30;
   
   // --------------------
   // CONSTRUCTOR
   // --------------------
-  Enemy (float a, float d, float h, float x, float y, float sx, float sy, String spriteLink) {
-    atk = a;
-    def = d;
-    maxHp = h;
+  Enemy (int mobID) {
+    // Juste avec l'ID, tout ce fait correctement attribuer selon le contenu JSON
+    ID = mobID;
+    selectedEnemy = enemies.getJSONObject(ID);
+    atk = selectedEnemy.getInt("attack");
+    def = selectedEnemy.getInt("defense");
+    maxHp = selectedEnemy.getInt("maxHp");
     hp = maxHp;
-    posX = x;
-    posY = y;
-    scaleX = sx;
-    scaleY = sy;
-    sprite = loadImage(spriteLink);
+    scaleX = selectedEnemy.getFloat("scaleX");
+    scaleY = selectedEnemy.getFloat("scaleY");
+    sprite = loadImage(selectedEnemy.getString("sprite"));
   }
   
   // Affiche l'enemie
@@ -28,8 +36,8 @@ class Enemy {
   }
   
   // Si l'ennemie est endommagé
-  void hurt(float damage) {
-    hp -= damage;
+  void hurt(Player playerAttack) {
+    hp -= playerAttack.getAtk();
     if (isDead()) {
       deathAnim();
     }
@@ -47,7 +55,12 @@ class Enemy {
   }
   // Séquence de mort
   void deathAnim() {
-    // deathAnim here
+    if (scaleX > 0) {
+      scaleX -= scaleX/deathAnimTime;
+    }
+    if (scaleY > 0) {
+      scaleY -= scaleY/deathAnimTime;
+    }
   }
   
   // Retourne les stats
@@ -62,5 +75,8 @@ class Enemy {
   }
   float getMaxHP() {
     return maxHp;
+  }
+  int getID() {
+    return ID;
   }
 }
