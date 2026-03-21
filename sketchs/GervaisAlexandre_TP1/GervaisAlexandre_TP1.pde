@@ -1,7 +1,7 @@
 /*
  * Titre: EDM1700 Travail Pratique 1: "WANTED"
  * Auteur: Alexandre Gervais
- * Version: 1.0
+ * Version: 2.0
  * Instructions: Appuyez sur la tête du personnage recherché avant que la fin.
  * Description du projet: Oh boy. Donc l'utilisateur(trice) est amené a utiliser ses
  talents d'observation pour retrouver un personnage caché. Plus que
@@ -14,11 +14,19 @@
  choses dans des fonctions pour simplifier la lecture. Aussi, un objet dans le
  magasin (Keygen) crash l'application, ceci est intentionnel. C'est pour
  "freak-out" l'utilisateur(trice) et rendre le shop plus "uncanny".
+ 
+ Pour activer le mode Debug (utile pour tester des trucs plus rapidement et pour
+ corriger) Appuyer sur 'D' (Précisement en majuscule) en ayant votre souris par-
+ dessus le coin inférieur droite du numéro du score. Une fois le mode Debug activé,
+ un carré rouge apparaitra en permanence en haut à droite de l'écran.
+ 
+ Les commandes Debug et ce qu'elles font (tout en minuscules) :
+ t = augmente le temps de 100 secondes
+ s = augmente la taille de la cible de +3px
+ g = une fois sur l'écran jaune après avoir trouvé la cible, appuie sur ce bouton
+     pour se faire mettre à 25 points et se faire envoyer au shop
+ k = augment de 1 000 le nombre d'argent possédé
  */
-
-// boucle for de 30 objets inanimés
-// 1 objet animé
-// 1 perso intéractif avec la souris
 
 // Médias --------------------
 // Search Icons
@@ -692,7 +700,7 @@ void keyPressed() {
   }
   // Si D majuscule est appuyé pendant que la souris est sur le coin droit
   // inférieur du score (durant une round)
-  if (key == 'D' && mouseX >= 628 && mouseX <= 631 && mouseY <= 217 && mouseY <= 220) {
+  if (key == 'D' && mouseX >= 625 && mouseX <= 635 && mouseY >= 214 && mouseY <= 224) {
     debugOn = true;
   }
 }
