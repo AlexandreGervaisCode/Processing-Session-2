@@ -1,23 +1,92 @@
 [
   {
     "id": 0,
-    "name": "BLANK",
+    "name": "Ocean Crown",
     "desc": "PLACEHOLDER DESC",
     "price": 100,
-    "sprite": "../item_placeholder.png"
+    "sprite": "../item_placeholder.png",
+    "unlocked": true,
+    "characterSpecific": "SHARK"
   },
   {
     "id": 1,
-    "name": "BLANK",
-    "desc": "PLACEHOLDER DESC",
+    "name": "Ship's Hook",
+    "desc": "Increases critical hit odds.",
     "price": 100,
-    "sprite": "../item_placeholder.png"
+    "sprite": "../item_placeholder.png",
+    "unlocked": false,
+    "characterSpecific": "SHARK"
   },
   {
     "id": 2,
+    "name": "Paper Bag",
+    "desc": "PLACEHOLDER DESC",
+    "price": 100,
+    "sprite": "../item_placeholder.png",
+    "unlocked": true,
+    "characterSpecific": "SHIELD"
+  },
+  {
+    "id": 3,
+    "name": "Spiked Shield",
+    "desc": "Increases thorn damage when hit.",
+    "price": 100,
+    "sprite": "../item_placeholder.png",
+    "unlocked": false,
+    "characterSpecific": "SHIELD"
+  },
+  {
+    "id": 4,
+    "name": "Magic Rifle",
+    "desc": "PLACEHOLDER DESC",
+    "price": 100,
+    "sprite": "../item_placeholder.png",
+    "unlocked": true,
+    "characterSpecific": "SPELLS"
+  },
+  {
+    "id": 5,
+    "name": "Dual Wings",
+    "desc": "Increases odds to dodge incoming attacks.",
+    "price": 100,
+    "sprite": "../item_placeholder.png",
+    "unlocked": false,
+    "characterSpecific": "SPELLS"
+  },
+  {
+    "id": 6,
     "name": "BLANK",
     "desc": "PLACEHOLDER DESC",
     "price": 100,
-    "sprite": "../item_placeholder.png"
+    "sprite": "../item_placeholder.png",
+    "unlocked": true,
+    "characterSpecific": "BLANK"
+  },
+  {
+    "id": 7,
+    "name": "BLANK",
+    "desc": "PLACEHOLDER DESC",
+    "price": 100,
+    "sprite": "../item_placeholder.png",
+    "unlocked": false,
+    "characterSpecific": "BLANK"
+  },
+  {
+    "id": 8,
+    "name": "BLANK",
+    "desc": "PLACEHOLDER DESC",
+    "price": 100,
+    "sprite": "../item_placeholder.png",
+    "unlocked": true,
+    "characterSpecific": "CAMILA"
+  },
+  {
+    "id": 9,
+    "name": "BLANK",
+    "desc": "PLACEHOLDER DESC",
+    "price": 100,
+    "sprite": "../item_placeholder.png",
+    "unlocked": false,
+    "characterSpecific": "CAMILA"
   }
 ]

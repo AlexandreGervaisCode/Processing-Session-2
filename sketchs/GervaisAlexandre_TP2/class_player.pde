@@ -8,6 +8,10 @@ class Player {
   float posY = height/3*2;
   float scaleX = 150;
   float scaleY = 150;
+  // Valeurs effets character-specific
+  int critsOdd = 8; // Chance de coups critique sur 100
+  int thorns = 0; // Dégâts redonner en retour
+  int dodgeOdd = 0; // Chance d'esquiver des coups
   // Visualisation du Joueur
   PImage sprite = loadImage("pla_hero0.png");
   // Collection de Data sur le héro
@@ -26,13 +30,17 @@ class Player {
     scaleX = selectedHero.getFloat("scaleX");
     scaleY = selectedHero.getFloat("scaleY");
     sprite = loadImage(selectedHero.getString("sprite"));
+    // Bonus character-specific
+    critsOdd = selectedHero.getInt("critsOdd");
+    thorns = selectedHero.getInt("thorns");
+    dodgeOdd = selectedHero.getInt("dodgeOdd");
   }
-  
+
   // Affiche le joueur
   void display() {
     image(sprite, posX, posY, scaleX, scaleY);
   }
-  
+
   // Si le joueur est endommagé
   void hurt(Enemy mobAttack) {
     hp -= mobAttack.getAtk();
@@ -46,7 +54,7 @@ class Player {
       deathAnim();
     }
   }
-  
+
   boolean isDead() {
     return hp<=0;
   }
@@ -54,7 +62,7 @@ class Player {
   void deathAnim() {
     // deathAnim here
   }
-  
+
   // Retourne les stats
   float getAtk() {
     return atk;

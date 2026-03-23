@@ -1,0 +1,23 @@
+{
+  "char4_unlocked": false,
+  "char4_exp": 0,
+  "winNbr": 0,
+  "unlockedItems": [],
+  "char3_exp": 0,
+  "char1_lvl": 1,
+  "char1_exp": 0,
+  "char5_unlocked": false,
+  "char5_lvl": 1,
+  "char5_exp": 0,
+  "char3_lvl": 1,
+  "hasWon": false,
+  "defeatNbr": 0,
+  "char2_exp": 0,
+  "char0_lvl": 1,
+  "char2_lvl": 1,
+  "char4_lvl": 1,
+  "char0_exp": 0,
+  "char3_unlocked": false,
+  "mobSlain": 0,
+  "runNbr": 0
+}
