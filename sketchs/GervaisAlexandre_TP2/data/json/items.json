@@ -2,91 +2,218 @@
   {
     "id": 0,
     "name": "Ocean Crown",
-    "desc": "PLACEHOLDER DESC",
+    "desc": "Increase damage by 3 when damage is taken.",
     "price": 100,
-    "sprite": "../item_placeholder.png",
+    "sprite": "items/item_placeholder.png",
     "unlocked": true,
-    "characterSpecific": "SHARK"
+    "characterSpecific": "SHARK",
+    "tags": ["atk", "hitTrigger"]
   },
   {
     "id": 1,
     "name": "Ship's Hook",
-    "desc": "Increases critical hit odds.",
+    "desc": "Increases critical hit odds. Heal 25% of crit damage dealt.",
     "price": 100,
-    "sprite": "../item_placeholder.png",
+    "sprite": "items/item_placeholder.png",
     "unlocked": false,
-    "characterSpecific": "SHARK"
+    "characterSpecific": "SHARK",
+    "tags": ["crit", "heal"]
   },
   {
     "id": 2,
     "name": "Paper Bag",
     "desc": "PLACEHOLDER DESC",
     "price": 100,
-    "sprite": "../item_placeholder.png",
+    "sprite": "items/item_placeholder.png",
     "unlocked": true,
-    "characterSpecific": "SHIELD"
+    "characterSpecific": "SHIELD",
+    "tags": []
   },
   {
     "id": 3,
-    "name": "Spiked Shield",
-    "desc": "Increases thorn damage when hit.",
+    "name": "Vampiric Shield",
+    "desc": "Increases thorn damage. Heal 50% of all thorns damage dealt.",
     "price": 100,
-    "sprite": "../item_placeholder.png",
+    "sprite": "items/item_placeholder.png",
     "unlocked": false,
-    "characterSpecific": "SHIELD"
+    "characterSpecific": "SHIELD",
+    "tags": ["thorn", "heal"]
   },
   {
     "id": 4,
     "name": "Magic Rifle",
     "desc": "PLACEHOLDER DESC",
     "price": 100,
-    "sprite": "../item_placeholder.png",
+    "sprite": "items/item_placeholder.png",
     "unlocked": true,
-    "characterSpecific": "SPELLS"
+    "characterSpecific": "SPELLS",
+    "tags": []
   },
   {
     "id": 5,
     "name": "Dual Wings",
-    "desc": "Increases odds to dodge incoming attacks.",
+    "desc": "Increases odds to dodge incoming attacks. Lower attack of enemy when dodged.",
     "price": 100,
-    "sprite": "../item_placeholder.png",
+    "sprite": "items/item_placeholder.png",
     "unlocked": false,
-    "characterSpecific": "SPELLS"
+    "characterSpecific": "SPELLS",
+    "tags": ["dodge", "mobDebuff"]
   },
   {
     "id": 6,
     "name": "BLANK",
     "desc": "PLACEHOLDER DESC",
     "price": 100,
-    "sprite": "../item_placeholder.png",
+    "sprite": "items/item_placeholder.png",
     "unlocked": true,
-    "characterSpecific": "BLANK"
+    "characterSpecific": "BLANK",
+    "tags": []
   },
   {
     "id": 7,
     "name": "BLANK",
     "desc": "PLACEHOLDER DESC",
     "price": 100,
-    "sprite": "../item_placeholder.png",
+    "sprite": "items/item_placeholder.png",
     "unlocked": false,
-    "characterSpecific": "BLANK"
+    "characterSpecific": "BLANK",
+    "tags": []
   },
   {
     "id": 8,
     "name": "BLANK",
     "desc": "PLACEHOLDER DESC",
     "price": 100,
-    "sprite": "../item_placeholder.png",
+    "sprite": "items/item_placeholder.png",
     "unlocked": true,
-    "characterSpecific": "CAMILA"
+    "characterSpecific": "CAMILA",
+    "tags": []
   },
   {
     "id": 9,
     "name": "BLANK",
     "desc": "PLACEHOLDER DESC",
     "price": 100,
-    "sprite": "../item_placeholder.png",
+    "sprite": "items/item_placeholder.png",
     "unlocked": false,
-    "characterSpecific": "CAMILA"
+    "characterSpecific": "CAMILA",
+    "tags": []
+  },
+  {
+    "id": 10,
+    "name": "Puppet Scarf",
+    "desc": "PLACEHOLDER DESC",
+    "price": 100,
+    "sprite": "items/item_puppetScarf.png",
+    "unlocked": true,
+    "tags": []
+  },
+  {
+    "id": 11,
+    "name": "Dealmaker",
+    "desc": "PLACEHOLDER DESC",
+    "price": 100,
+    "sprite": "items/item_dealmaker.png",
+    "unlocked": true,
+    "tags": []
+  },
+  {
+    "id": 12,
+    "name": "BLANK",
+    "desc": "PLACEHOLDER DESC",
+    "price": 100,
+    "sprite": "items/item_placeholder.png",
+    "unlocked": true,
+    "tags": []
+  },
+  {
+    "id": 13,
+    "name": "BLANK",
+    "desc": "PLACEHOLDER DESC",
+    "price": 100,
+    "sprite": "items/item_placeholder.png",
+    "unlocked": true,
+    "tags": []
+  },
+  {
+    "id": 14,
+    "name": "BLANK",
+    "desc": "PLACEHOLDER DESC",
+    "price": 100,
+    "sprite": "items/item_placeholder.png",
+    "unlocked": true,
+    "tags": []
+  },
+  {
+    "id": 15,
+    "name": "BLANK",
+    "desc": "PLACEHOLDER DESC",
+    "price": 100,
+    "sprite": "items/item_placeholder.png",
+    "unlocked": true,
+    "tags": []
+  },
+  {
+    "id": 16,
+    "name": "BLANK",
+    "desc": "PLACEHOLDER DESC",
+    "price": 100,
+    "sprite": "items/item_placeholder.png",
+    "unlocked": true,
+    "tags": []
+  },
+  {
+    "id": 17,
+    "name": "BLANK",
+    "desc": "PLACEHOLDER DESC",
+    "price": 100,
+    "sprite": "items/item_placeholder.png",
+    "unlocked": true,
+    "tags": []
+  },
+  {
+    "id": 18,
+    "name": "BLANK",
+    "desc": "PLACEHOLDER DESC",
+    "price": 100,
+    "sprite": "items/item_placeholder.png",
+    "unlocked": true,
+    "tags": []
+  },
+  {
+    "id": 19,
+    "name": "BLANK",
+    "desc": "PLACEHOLDER DESC",
+    "price": 100,
+    "sprite": "items/item_placeholder.png",
+    "unlocked": true,
+    "tags": []
+  },
+  {
+    "id": 20,
+    "name": "BLANK",
+    "desc": "PLACEHOLDER DESC",
+    "price": 100,
+    "sprite": "items/item_placeholder.png",
+    "unlocked": true,
+    "tags": []
+  },
+  {
+    "id": 21,
+    "name": "BLANK",
+    "desc": "PLACEHOLDER DESC",
+    "price": 100,
+    "sprite": "items/item_placeholder.png",
+    "unlocked": true,
+    "tags": []
+  },
+  {
+    "id": 22,
+    "name": "BLANK",
+    "desc": "PLACEHOLDER DESC",
+    "price": 100,
+    "sprite": "items/item_placeholder.png",
+    "unlocked": true,
+    "tags": []
   }
 ]

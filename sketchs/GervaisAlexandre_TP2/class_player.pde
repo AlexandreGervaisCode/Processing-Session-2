@@ -13,7 +13,7 @@ class Player {
   int thorns = 0; // Dégâts redonner en retour
   int dodgeOdd = 0; // Chance d'esquiver des coups
   // Visualisation du Joueur
-  PImage sprite = loadImage("pla_hero0.png");
+  PImage sprite = loadImage("heroes/pla_hero0.png");
   // Collection de Data sur le héro
   JSONArray heroes = loadJSONArray("./json/heroes.json");
   JSONObject selectedHero = heroes.getJSONObject(0);
