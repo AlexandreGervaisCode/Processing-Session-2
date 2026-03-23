@@ -4,7 +4,7 @@
     "name": "Ocean Crown",
     "desc": "Increase damage by 3 when damage is taken.",
     "price": 100,
-    "sprite": "items/item_placeholder.png",
+    "sprite": "items/item_oceanCrown.png",
     "unlocked": true,
     "characterSpecific": "SHARK",
     "tags": ["atk", "hitTrigger"]
@@ -14,7 +14,7 @@
     "name": "Ship's Hook",
     "desc": "Increases critical hit odds. Heal 25% of crit damage dealt.",
     "price": 100,
-    "sprite": "items/item_placeholder.png",
+    "sprite": "items/item_shipHook.png",
     "unlocked": false,
     "characterSpecific": "SHARK",
     "tags": ["crit", "heal"]
@@ -24,7 +24,7 @@
     "name": "Paper Bag",
     "desc": "PLACEHOLDER DESC",
     "price": 100,
-    "sprite": "items/item_placeholder.png",
+    "sprite": "items/item_paperBag.png",
     "unlocked": true,
     "characterSpecific": "SHIELD",
     "tags": []
@@ -34,7 +34,7 @@
     "name": "Vampiric Shield",
     "desc": "Increases thorn damage. Heal 50% of all thorns damage dealt.",
     "price": 100,
-    "sprite": "items/item_placeholder.png",
+    "sprite": "items/item_vampiricShield.png",
     "unlocked": false,
     "characterSpecific": "SHIELD",
     "tags": ["thorn", "heal"]
