@@ -66,8 +66,14 @@ void initializeVariables() {
 }
 
 void mousePressed() {
-  isOnHeroSelect = mouseDetection(0, 0, 100, 100);
-  isOnStatsPage = mouseDetection(width-100, height-100, 100, 100);
+  if (isOnTitleScreen) {
+    if (!isOnStatsPage) {
+      isOnHeroSelect = mouseDetection(0, 0, 100, 100);
+    }
+    if (!isOnHeroSelect) {
+      isOnStatsPage = mouseDetection(width-100, height-100, 100, 100);
+    }
+  }
 }
 
 void drawTitleScreen() {
@@ -75,15 +81,15 @@ void drawTitleScreen() {
   rect(0, 0, 200, 200);
   pushMatrix();
   translate(0, overlayScreenY);
-  fill(0,0,0, 50);
-  rect(0,0,width,height);
+  fill(0, 0, 0, 50);
+  rect(0, 0, width, height);
   if (isOnHeroSelect) {
     if (overlayScreenY > 0) {
       overlayScreenY -= height/15;
     } else {
       overlayScreenY = 0;
     }
-    fill(0,255,0);
+    fill(0, 255, 0);
     circle(width/2, height/2, 100);
   } else if (isOnStatsPage) {
     if (overlayScreenY > 0) {
@@ -91,7 +97,7 @@ void drawTitleScreen() {
     } else {
       overlayScreenY = 0;
     }
-    fill(0,0,255);
+    fill(0, 0, 255);
     circle(width/2, height/2, 100);
   } else if (overlayScreenY < height) {
     overlayScreenY += height/15;
@@ -154,7 +160,7 @@ void savefileLoad() {
     savefile.setInt("defeatNbr", 0);
     savefile.setInt("runNbr", 0);
     savefile.setInt("winNbr", 0);
-    
+
     unlockedItems = new JSONArray();
     savefile.setJSONArray("unlockedItems", unlockedItems);
 
