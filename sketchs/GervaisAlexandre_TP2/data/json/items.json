@@ -215,5 +215,23 @@
     "sprite": "items/item_placeholder.png",
     "unlocked": true,
     "tags": []
+  },
+  {
+    "id": 23,
+    "name": "BLANK",
+    "desc": "PLACEHOLDER DESC",
+    "price": 100,
+    "sprite": "items/item_placeholder.png",
+    "unlocked": true,
+    "tags": []
+  },
+  {
+    "id": 24,
+    "name": "BLANK",
+    "desc": "PLACEHOLDER DESC",
+    "price": 100,
+    "sprite": "items/item_placeholder.png",
+    "unlocked": true,
+    "tags": []
   }
 ]
