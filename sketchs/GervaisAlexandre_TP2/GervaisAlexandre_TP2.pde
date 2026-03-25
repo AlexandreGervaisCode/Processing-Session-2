@@ -28,11 +28,7 @@ PImage titleLogo;
 
 // Variables de classes
 Player hero; // Le joueur
-Enemy mob1; // Jusqu'à 5 ennemies peuvent être à l'écran à la fois
-Enemy mob2;
-Enemy mob3;
-Enemy mob4;
-Enemy mob5;
+Enemy[] mobs = new Enemy[5]; // Jusqu'à 5 ennemies peuvent être à l'écran à la fois
 Inventory bag; // L'inventaire
 Shop itemShop; // L'item shop
 
