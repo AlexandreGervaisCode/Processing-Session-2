@@ -7,6 +7,8 @@
  * Notes:
  */
 
+// import processing.sound.*;
+
 // Les Game States
 boolean isPlayerTurn = false;
 boolean isInCombat = false;
@@ -21,9 +23,22 @@ float overlayScreenY;
 JSONObject savefile;
 JSONArray unlockedItems;
 
-// Les assets de Title Screen
+// Les variables de Title Screen
 PImage titleBG;
 PImage titleLogo;
+float logoPosX;
+float logoPosY;
+float logoWidth;
+float logoHeight;
+// Width et Height de tout les boutons dans le main menu
+float startMenuButtonX;
+float startMenuButtonWidth;
+float startMenuButtonHeight;
+float heroSelectButtonY; // position Y du bouton Select Hero
+float statsPageButtonY; // position Y du bouton Stats
+float quitAppButtonY; // position Y du bouton quitter app
+float startMenuTextOffset;
+
 // PImage selectHeroPoster; // Do one for each Hero
 
 // Variables de classes
@@ -59,42 +74,61 @@ void loadBasicAssets() {
 // Initialize les variables dans setup
 void initializeVariables() {
   overlayScreenY = height;
+  // Initialize les position des boutons dans l'écran titre
+  startMenuButtonX = width/10;
+  startMenuButtonWidth = width/3;
+  startMenuButtonHeight = height/12;
+  heroSelectButtonY = height/8*4;
+  statsPageButtonY = height/8*5;
+  quitAppButtonY = height/8*6;
+  startMenuTextOffset = startMenuButtonX+(startMenuButtonWidth/2);
+  logoPosX = width/12;
+  logoPosY = height/12;
+  logoWidth = 500;
+  logoHeight = 150;
 }
 
 void mousePressed() {
   if (isOnTitleScreen) {
+    // Affiche l'écran de personnages
     if (!isOnStatsPage) {
-      isOnHeroSelect = mouseDetection(0, 0, 100, 100);
+      isOnHeroSelect = mouseDetection(startMenuButtonX, heroSelectButtonY, startMenuButtonWidth, startMenuButtonHeight);
     }
+    // Affiche l'écran des stats
     if (!isOnHeroSelect) {
-      isOnStatsPage = mouseDetection(width-100, height-100, 100, 100);
+      isOnStatsPage = mouseDetection(startMenuButtonX, statsPageButtonY, startMenuButtonWidth, startMenuButtonHeight);
+    }
+    // Ferme l'application
+    if (!isOnHeroSelect && !isOnStatsPage && mouseDetection(startMenuButtonX, quitAppButtonY, startMenuButtonWidth, startMenuButtonHeight)) {
+      exit();
     }
   }
 }
 
 void drawTitleScreen() {
   fill(255);
-  rect(0, 0, 200, 200);
+  rect(logoPosX, logoPosY, logoWidth, logoHeight);
+  textSize(24);
+  textAlign(CENTER);
+  // Dessine les boutons
+  rect(startMenuButtonX, heroSelectButtonY, startMenuButtonWidth, startMenuButtonHeight);
+  rect(startMenuButtonX, statsPageButtonY, startMenuButtonWidth, startMenuButtonHeight);
+  rect(startMenuButtonX, quitAppButtonY, startMenuButtonWidth, startMenuButtonHeight);
+  // Écrit le texte dans les boutons
+  fill(0);
+  text("Start Game", startMenuTextOffset, heroSelectButtonY+(startMenuButtonHeight/2));
+  text("Stats", startMenuTextOffset, statsPageButtonY+(startMenuButtonHeight/2));
+  text("Quit", startMenuTextOffset, quitAppButtonY+(startMenuButtonHeight/2));
+  // Écran qui pop up
   pushMatrix();
   translate(0, overlayScreenY);
   fill(0, 0, 0, 50);
   rect(0, 0, width, height);
+  fill(0);
   if (isOnHeroSelect) {
-    if (overlayScreenY > 0) {
-      overlayScreenY -= height/15;
-    } else {
-      overlayScreenY = 0;
-    }
-    fill(0, 255, 0);
-    circle(width/2, height/2, 100);
+    drawHeroSelect();
   } else if (isOnStatsPage) {
-    if (overlayScreenY > 0) {
-      overlayScreenY -= height/15;
-    } else {
-      overlayScreenY = 0;
-    }
-    fill(0, 0, 255);
-    circle(width/2, height/2, 100);
+    statsPage();
   } else if (overlayScreenY < height) {
     overlayScreenY += height/15;
   } else {
@@ -103,9 +137,28 @@ void drawTitleScreen() {
   popMatrix();
 }
 
+void statsPage() {
+  if (overlayScreenY > 0) {
+      overlayScreenY -= height/15;
+    } else {
+      overlayScreenY = 0;
+    }
+    fill(0);
+    textSize(30);
+    textAlign(LEFT);
+    text("Enemies defeated: "+savefile.getInt("mobSlain")+"\nRuns attempts: "+savefile.getInt("runNbr")+"\nSuccessful runs: "+savefile.getInt("winNbr")+"\nDefeats: "+savefile.getInt("defeatNbr"), width/4, height/10);
+}
+
 void drawHeroSelect() {
   // image(heroSelectBG, 0, 0, width, height);
   // for loop to draw all character portraits and names
+  if (overlayScreenY > 0) {
+      overlayScreenY -= height/15;
+    } else {
+      overlayScreenY = 0;
+    }
+    fill(0, 0, 255);
+    circle(width/2, height/2, 100);
 }
 
 // Timer
@@ -116,6 +169,7 @@ float timer(float countdown) {
   return countdown;
 }
 
+// Fonction pour plus facilement et rapidement checker si la souris survol un objet
 boolean mouseDetection(float posX, float posY, float w, float h) {
   return (mouseX > posX && mouseX < posX+w && mouseY > posY && mouseY < posY+h);
 }
