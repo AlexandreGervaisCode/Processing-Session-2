@@ -25,11 +25,10 @@ JSONArray unlockedItems;
 
 // Les variables de Title Screen
 PImage titleBG;
-PImage titleLogo;
-float logoPosX;
-float logoPosY;
-float logoWidth;
-float logoHeight;
+PImage titleStartButton;
+PImage titleOtherButton;
+int darkenBgProgress = 1;
+color colBlack = color(0, 0, 0);
 // Width et Height de tout les boutons dans le main menu
 float startMenuButtonX;
 float startMenuButtonWidth;
@@ -69,23 +68,21 @@ void draw() {
 // Charge en mémoire tout les PImages de base (Perso, ennemies, arrière-plans)
 void loadBasicAssets() {
   // Load all PImages here
+  titleStartButton = loadImage("menus/menu_title_startButton.png");
+  titleOtherButton = loadImage("menus/menu_title_otherButton.png");
 }
 
 // Initialize les variables dans setup
 void initializeVariables() {
   overlayScreenY = height;
   // Initialize les position des boutons dans l'écran titre
-  startMenuButtonX = width/10;
-  startMenuButtonWidth = width/3;
-  startMenuButtonHeight = height/12;
-  heroSelectButtonY = height/8*4;
+  startMenuButtonX = width/20;
+  startMenuButtonWidth = width/10*3;
+  startMenuButtonHeight = height/10;
+  heroSelectButtonY = height/8*3.5;
   statsPageButtonY = height/8*5;
-  quitAppButtonY = height/8*6;
+  quitAppButtonY = height/8*6.5;
   startMenuTextOffset = startMenuButtonX+(startMenuButtonWidth/2);
-  logoPosX = width/12;
-  logoPosY = height/12;
-  logoWidth = 500;
-  logoHeight = 150;
 }
 
 void mousePressed() {
@@ -106,24 +103,22 @@ void mousePressed() {
 }
 
 void drawTitleScreen() {
+  // Dessine les boutons
+  image(titleStartButton, startMenuButtonX, heroSelectButtonY, startMenuButtonWidth, startMenuButtonHeight);
+  image(titleOtherButton, startMenuButtonX, statsPageButtonY, startMenuButtonWidth, startMenuButtonHeight);
+  image(titleOtherButton, startMenuButtonX, quitAppButtonY, startMenuButtonWidth, startMenuButtonHeight);
+  // Écrit le texte dans les boutons
   fill(255);
-  rect(logoPosX, logoPosY, logoWidth, logoHeight);
   textSize(24);
   textAlign(CENTER);
-  // Dessine les boutons
-  rect(startMenuButtonX, heroSelectButtonY, startMenuButtonWidth, startMenuButtonHeight);
-  rect(startMenuButtonX, statsPageButtonY, startMenuButtonWidth, startMenuButtonHeight);
-  rect(startMenuButtonX, quitAppButtonY, startMenuButtonWidth, startMenuButtonHeight);
-  // Écrit le texte dans les boutons
-  fill(0);
   text("Start Game", startMenuTextOffset, heroSelectButtonY+(startMenuButtonHeight/2));
   text("Stats", startMenuTextOffset, statsPageButtonY+(startMenuButtonHeight/2));
   text("Quit", startMenuTextOffset, quitAppButtonY+(startMenuButtonHeight/2));
   // Écran qui pop up
+  fill(colBlack, darkenBgProgress);
+  rect(0, 0, width, height);
   pushMatrix();
   translate(0, overlayScreenY);
-  fill(0, 0, 0, 50);
-  rect(0, 0, width, height);
   fill(0);
   if (isOnHeroSelect) {
     drawHeroSelect();
@@ -131,17 +126,22 @@ void drawTitleScreen() {
     statsPage();
   } else if (overlayScreenY < height) {
     overlayScreenY += height/15;
+    darkenBgProgress -= ceil(70/15);
   } else {
     overlayScreenY = height;
+    darkenBgProgress = 0;
   }
+  println(darkenBgProgress);
   popMatrix();
 }
 
 void statsPage() {
   if (overlayScreenY > 0) {
       overlayScreenY -= height/15;
+      darkenBgProgress += ceil(70/15);
     } else {
       overlayScreenY = 0;
+      darkenBgProgress = 70;
     }
     fill(0);
     textSize(30);
@@ -154,8 +154,10 @@ void drawHeroSelect() {
   // for loop to draw all character portraits and names
   if (overlayScreenY > 0) {
       overlayScreenY -= height/15;
+      darkenBgProgress += ceil(70/15);
     } else {
       overlayScreenY = 0;
+      darkenBgProgress = 70;
     }
     fill(0, 0, 255);
     circle(width/2, height/2, 100);
