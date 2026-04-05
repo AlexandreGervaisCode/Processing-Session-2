@@ -2,7 +2,7 @@
   {
     "id": 0,
     "name": "Ocean Crown",
-    "desc": "Increase damage by 3 when damage is taken.",
+    "desc": "Critical Hits heals by 20% of the Damage dealt.",
     "price": 100,
     "sprite": "items/item_oceanCrown.png",
     "unlocked": true,
@@ -12,7 +12,7 @@
   {
     "id": 1,
     "name": "Ship's Hook",
-    "desc": "Increases critical hit odds. Heal 25% of crit damage dealt.",
+    "desc": "Increases Critical Hit chances by 25%.",
     "price": 100,
     "sprite": "items/item_shipHook.png",
     "unlocked": false,
@@ -22,7 +22,7 @@
   {
     "id": 2,
     "name": "Paper Bag",
-    "desc": "PLACEHOLDER DESC",
+    "desc": "Each turn, start with 15% DEF of Block.",
     "price": 100,
     "sprite": "items/item_paperBag.png",
     "unlocked": true,
@@ -32,7 +32,7 @@
   {
     "id": 3,
     "name": "Vampiric Shield",
-    "desc": "Increases thorn damage. Heal 50% of all thorns damage dealt.",
+    "desc": "Dealt Thorns damage heals by 25% of thorns damage.",
     "price": 100,
     "sprite": "items/item_vampiricShield.png",
     "unlocked": false,
@@ -42,84 +42,84 @@
   {
     "id": 4,
     "name": "Magic Rifle",
-    "desc": "PLACEHOLDER DESC",
+    "desc": "Deal double Damage to enemies with the Poison Status.",
     "price": 100,
     "sprite": "items/item_placeholder.png",
     "unlocked": true,
-    "characterSpecific": "SPELLS",
+    "characterSpecific": "MISSILE",
     "tags": []
   },
   {
     "id": 5,
     "name": "Dual Wings",
-    "desc": "Increases odds to dodge incoming attacks. Lower attack of enemy when dodged.",
+    "desc": "Increase Dodge chance by 15%.",
     "price": 100,
     "sprite": "items/item_placeholder.png",
     "unlocked": false,
-    "characterSpecific": "SPELLS",
+    "characterSpecific": "MISSILE",
     "tags": ["dodge", "mobDebuff"]
   },
   {
     "id": 6,
-    "name": "BLANK",
-    "desc": "PLACEHOLDER DESC",
+    "name": "Pirate Chest",
+    "desc": "Gain $100 for every enemy at the start of a battle.",
     "price": 100,
     "sprite": "items/item_placeholder.png",
     "unlocked": true,
-    "characterSpecific": "BLANK",
+    "characterSpecific": "PROFIT",
     "tags": []
   },
   {
     "id": 7,
-    "name": "BLANK",
-    "desc": "PLACEHOLDER DESC",
+    "name": "Gold Pin",
+    "desc": "Gain 7.5% of your total money when visiting the shop.",
     "price": 100,
     "sprite": "items/item_placeholder.png",
     "unlocked": false,
-    "characterSpecific": "BLANK",
+    "characterSpecific": "PROFIT",
     "tags": []
   },
   {
     "id": 8,
-    "name": "BLANK",
-    "desc": "PLACEHOLDER DESC",
+    "name": "Sharp Bones",
+    "desc": "For the first turn of a battle, have double ATK and double DEF.",
     "price": 100,
     "sprite": "items/item_placeholder.png",
     "unlocked": true,
-    "characterSpecific": "CAMILA",
+    "characterSpecific": "NECROMANCER",
     "tags": []
   },
   {
     "id": 9,
-    "name": "BLANK",
-    "desc": "PLACEHOLDER DESC",
+    "name": "Skull Scepter",
+    "desc": "Defeating an enemy gives +50% ATK for the rest of the battle.",
     "price": 100,
     "sprite": "items/item_placeholder.png",
     "unlocked": false,
-    "characterSpecific": "CAMILA",
+    "characterSpecific": "NECROMANCER",
     "tags": []
   },
   {
     "id": 10,
-    "name": "Puppet Scarf",
-    "desc": "PLACEHOLDER DESC",
+    "name": "Dealmaker",
+    "desc": "Upon defeating a boss, double your total Money.",
     "price": 100,
     "sprite": "items/item_puppetScarf.png",
     "unlocked": true,
-    "tags": []
+    "tags": ["money", "boss"]
   },
   {
     "id": 11,
-    "name": "Dealmaker",
-    "desc": "PLACEHOLDER DESC",
+    "name": "Puppet Scarf",
+    "desc": "Increase reward Money by 10%.",
     "price": 100,
     "sprite": "items/item_dealmaker.png",
     "unlocked": true,
-    "tags": []
+    "tags": ["money"]
   },
   {
     "id": 12,
-    "name": "BLANK",
+    "name": "EMF Reader",
     "desc": "PLACEHOLDER DESC",
     "price": 100,
     "sprite": "items/item_placeholder.png",
@@ -128,8 +128,8 @@
   },
   {
     "id": 13,
-    "name": "BLANK",
-    "desc": "PLACEHOLDER DESC",
+    "name": "Music Box",
+    "desc": "Lower enemy ATK by 15% for the first 3 turns of a battle.",
     "price": 100,
     "sprite": "items/item_placeholder.png",
     "unlocked": true,
@@ -137,8 +137,8 @@
   },
   {
     "id": 14,
-    "name": "BLANK",
-    "desc": "PLACEHOLDER DESC",
+    "name": "Tarot Card",
+    "desc": "Gives a random effect at the beginning of a battle.",
     "price": 100,
     "sprite": "items/item_placeholder.png",
     "unlocked": true,
@@ -146,8 +146,8 @@
   },
   {
     "id": 15,
-    "name": "BLANK",
-    "desc": "PLACEHOLDER DESC",
+    "name": "Star Bit",
+    "desc": "All healing is increased by 10%.",
     "price": 100,
     "sprite": "items/item_placeholder.png",
     "unlocked": true,
@@ -155,8 +155,8 @@
   },
   {
     "id": 16,
-    "name": "BLANK",
-    "desc": "PLACEHOLDER DESC",
+    "name": "Autopsy Report",
+    "desc": "Upon losing all your HP, heal by 10 HP, but lose this item.",
     "price": 100,
     "sprite": "items/item_placeholder.png",
     "unlocked": true,
@@ -164,8 +164,8 @@
   },
   {
     "id": 17,
-    "name": "BLANK",
-    "desc": "PLACEHOLDER DESC",
+    "name": "Attorney's Badge",
+    "desc": "This badge prouves you're an attorney! Start each round with 5 Block.",
     "price": 100,
     "sprite": "items/item_placeholder.png",
     "unlocked": true,
@@ -173,7 +173,7 @@
   },
   {
     "id": 18,
-    "name": "BLANK",
+    "name": "Musical Leek",
     "desc": "PLACEHOLDER DESC",
     "price": 100,
     "sprite": "items/item_placeholder.png",
@@ -182,7 +182,7 @@
   },
   {
     "id": 19,
-    "name": "BLANK",
+    "name": "Walkie-Talkie",
     "desc": "PLACEHOLDER DESC",
     "price": 100,
     "sprite": "items/item_placeholder.png",
@@ -191,8 +191,8 @@
   },
   {
     "id": 20,
-    "name": "BLANK",
-    "desc": "PLACEHOLDER DESC",
+    "name": "Fox Mask",
+    "desc": "Gain +1 ATK for every red card in your hand.",
     "price": 100,
     "sprite": "items/item_placeholder.png",
     "unlocked": true,
@@ -200,7 +200,7 @@
   },
   {
     "id": 21,
-    "name": "BLANK",
+    "name": "Creepy Cupcake",
     "desc": "PLACEHOLDER DESC",
     "price": 100,
     "sprite": "items/item_placeholder.png",
@@ -209,8 +209,8 @@
   },
   {
     "id": 22,
-    "name": "BLANK",
-    "desc": "PLACEHOLDER DESC",
+    "name": "Bear Mask",
+    "desc": "Gives 20% DEF Boost when inflicted with the Fire Status.",
     "price": 100,
     "sprite": "items/item_placeholder.png",
     "unlocked": true,
@@ -218,8 +218,8 @@
   },
   {
     "id": 23,
-    "name": "BLANK",
-    "desc": "PLACEHOLDER DESC",
+    "name": "Gros Michel",
+    "desc": "Add +10 Damage to attacks dealt.",
     "price": 100,
     "sprite": "items/item_placeholder.png",
     "unlocked": true,
@@ -227,7 +227,322 @@
   },
   {
     "id": 24,
-    "name": "BLANK",
+    "name": "Dialphone",
+    "desc": "PLACEHOLDER DESC",
+    "price": 100,
+    "sprite": "items/item_placeholder.png",
+    "unlocked": true,
+    "tags": []
+  },
+  {
+    "id": 25,
+    "name": "Hourglass",
+    "desc": "Gain 10% ATK every round, but start battles at 50% of your max ATK. Maxes out at 150% max ATK.",
+    "price": 100,
+    "sprite": "items/item_placeholder.png",
+    "unlocked": true,
+    "tags": []
+  },
+  {
+    "id": 26,
+    "name": "Shovel Blade",
+    "desc": "PLACEHOLDER DESC",
+    "price": 100,
+    "sprite": "items/item_placeholder.png",
+    "unlocked": true,
+    "tags": []
+  },
+  {
+    "id": 27,
+    "name": "Bomb Burst",
+    "desc": "PLACEHOLDER DESC",
+    "price": 100,
+    "sprite": "items/item_placeholder.png",
+    "unlocked": true,
+    "tags": []
+  },
+  {
+    "id": 28,
+    "name": "Phase Locket",
+    "desc": "PLACEHOLDER DESC",
+    "price": 100,
+    "sprite": "items/item_placeholder.png",
+    "unlocked": true,
+    "tags": []
+  },
+  {
+    "id": 29,
+    "name": "Companion Cube",
+    "desc": "PLACEHOLDER DESC",
+    "price": 100,
+    "sprite": "items/item_placeholder.png",
+    "unlocked": true,
+    "tags": []
+  },
+  {
+    "id": 30,
+    "name": "Teleporter",
+    "desc": "PLACEHOLDER DESC",
+    "price": 100,
+    "sprite": "items/item_placeholder.png",
+    "unlocked": true,
+    "tags": []
+  },
+  {
+    "id": 31,
+    "name": "Emergency Button",
+    "desc": "PLACEHOLDER DESC",
+    "price": 100,
+    "sprite": "items/item_placeholder.png",
+    "unlocked": true,
+    "tags": []
+  },
+  {
+    "id": 32,
+    "name": "Radioactive Sludge",
+    "desc": "The Poison Status now heals you instead of damaging.",
+    "price": 100,
+    "sprite": "items/item_placeholder.png",
+    "unlocked": true,
+    "tags": []
+  },
+  {
+    "id": 33,
+    "name": "Ebony & Ivory",
+    "desc": "PLACEHOLDER DESC",
+    "price": 100,
+    "sprite": "items/item_placeholder.png",
+    "unlocked": true,
+    "tags": []
+  },
+  {
+    "id": 34,
+    "name": "Bing Bong",
+    "desc": "PLACEHOLDER DESC",
+    "price": 100,
+    "sprite": "items/item_placeholder.png",
+    "unlocked": true,
+    "tags": []
+  },
+  {
+    "id": 35,
+    "name": "Backpack",
+    "desc": "PLACEHOLDER DESC",
+    "price": 100,
+    "sprite": "items/item_placeholder.png",
+    "unlocked": true,
+    "tags": []
+  },
+  {
+    "id": 36,
+    "name": "Scout Cannon",
+    "desc": "PLACEHOLDER DESC",
+    "price": 100,
+    "sprite": "items/item_placeholder.png",
+    "unlocked": true,
+    "tags": []
+  },
+  {
+    "id": 37,
+    "name": "M.O.A.B.",
+    "desc": "PLACEHOLDER DESC",
+    "price": 100,
+    "sprite": "items/item_placeholder.png",
+    "unlocked": true,
+    "tags": []
+  },
+  {
+    "id": 38,
+    "name": "Squeaky Hammer",
+    "desc": "PLACEHOLDER DESC",
+    "price": 100,
+    "sprite": "items/item_placeholder.png",
+    "unlocked": true,
+    "tags": []
+  },
+  {
+    "id": 39,
+    "name": "Poker Chips",
+    "desc": "PLACEHOLDER DESC",
+    "price": 100,
+    "sprite": "items/item_placeholder.png",
+    "unlocked": true,
+    "tags": []
+  },
+  {
+    "id": 40,
+    "name": "Microphone",
+    "desc": "PLACEHOLDER DESC",
+    "price": 100,
+    "sprite": "items/item_placeholder.png",
+    "unlocked": true,
+    "tags": []
+  },
+  {
+    "id": 41,
+    "name": "Azure Flute",
+    "desc": "PLACEHOLDER DESC",
+    "price": 100,
+    "sprite": "items/item_placeholder.png",
+    "unlocked": true,
+    "tags": []
+  },
+  {
+    "id": 42,
+    "name": "Letter",
+    "desc": "PLACEHOLDER DESC",
+    "price": 100,
+    "sprite": "items/item_placeholder.png",
+    "unlocked": true,
+    "tags": []
+  },
+  {
+    "id": 43,
+    "name": "Banana Peel",
+    "desc": "PLACEHOLDER DESC",
+    "price": 100,
+    "sprite": "items/item_placeholder.png",
+    "unlocked": true,
+    "tags": []
+  },
+  {
+    "id": 44,
+    "name": "Gas Mask",
+    "desc": "PLACEHOLDER DESC",
+    "price": 100,
+    "sprite": "items/item_placeholder.png",
+    "unlocked": true,
+    "tags": []
+  },
+  {
+    "id": 45,
+    "name": "Empty Container",
+    "desc": "PLACEHOLDER DESC",
+    "price": 100,
+    "sprite": "items/item_placeholder.png",
+    "unlocked": true,
+    "tags": []
+  },
+  {
+    "id": 46,
+    "name": "Chaos Buster",
+    "desc": "PLACEHOLDER DESC",
+    "price": 100,
+    "sprite": "items/item_placeholder.png",
+    "unlocked": true,
+    "tags": []
+  },
+  {
+    "id": 47,
+    "name": "Pumpkin Helmet",
+    "desc": "Increase DEF by 10.",
+    "price": 100,
+    "sprite": "items/item_placeholder.png",
+    "unlocked": true,
+    "tags": []
+  },
+  {
+    "id": 48,
+    "name": "Fruit Basket",
+    "desc": "PLACEHOLDER DESC",
+    "price": 100,
+    "sprite": "items/item_placeholder.png",
+    "unlocked": true,
+    "tags": []
+  },
+  {
+    "id": 49,
+    "name": "Kryptonite",
+    "desc": "Applies Poison Status to all enemies and user every round.",
+    "price": 100,
+    "sprite": "items/item_placeholder.png",
+    "unlocked": true,
+    "tags": []
+  },
+  {
+    "id": 50,
+    "name": "Apparatus",
+    "desc": "PLACEHOLDER DESC",
+    "price": 100,
+    "sprite": "items/item_placeholder.png",
+    "unlocked": true,
+    "tags": []
+  },
+  {
+    "id": 51,
+    "name": "Romanian Ruby",
+    "desc": "PLACEHOLDER DESC",
+    "price": 100,
+    "sprite": "items/item_placeholder.png",
+    "unlocked": true,
+    "tags": []
+  },
+  {
+    "id": 52,
+    "name": "Tunisian Diamond",
+    "desc": "PLACEHOLDER DESC",
+    "price": 100,
+    "sprite": "items/item_placeholder.png",
+    "unlocked": true,
+    "tags": []
+  },
+  {
+    "id": 53,
+    "name": "Norwegian Emerald",
+    "desc": "PLACEHOLDER DESC",
+    "price": 100,
+    "sprite": "items/item_placeholder.png",
+    "unlocked": true,
+    "tags": []
+  },
+  {
+    "id": 54,
+    "name": "Piston Cup",
+    "desc": "PLACEHOLDER DESC",
+    "price": 100,
+    "sprite": "items/item_placeholder.png",
+    "unlocked": true,
+    "tags": []
+  },
+  {
+    "id": 55,
+    "name": "Magnifying Glass",
+    "desc": "PLACEHOLDER DESC",
+    "price": 100,
+    "sprite": "items/item_placeholder.png",
+    "unlocked": true,
+    "tags": []
+  },
+  {
+    "id": 56,
+    "name": "Cactus",
+    "desc": "Gain Thorns equal to half of your DEF.",
+    "price": 100,
+    "sprite": "items/item_placeholder.png",
+    "unlocked": true,
+    "tags": []
+  },
+  {
+    "id": 57,
+    "name": "Medkit",
+    "desc": "Restore 5 HP at the end of each Battle.",
+    "price": 100,
+    "sprite": "items/item_placeholder.png",
+    "unlocked": true,
+    "tags": []
+  },
+  {
+    "id": 58,
+    "name": "Trashcan",
+    "desc": "PLACEHOLDER DESC",
+    "price": 100,
+    "sprite": "items/item_placeholder.png",
+    "unlocked": true,
+    "tags": []
+  },
+  {
+    "id": 59,
+    "name": "Big Potion",
     "desc": "PLACEHOLDER DESC",
     "price": 100,
     "sprite": "items/item_placeholder.png",
