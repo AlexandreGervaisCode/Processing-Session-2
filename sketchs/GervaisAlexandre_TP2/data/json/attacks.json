@@ -1,0 +1,351 @@
+[
+  {
+    "id": 0,
+    "name": "Stab",
+    "desc": "Deal 100% ATK Damage.",
+    "price": 100,
+    "sprite": "items/item_oceanCrown.png",
+    "tags": []
+  },
+  {
+    "id": 1,
+    "name": "Block",
+    "desc": "Add 100% DEF Block.",
+    "price": 100,
+    "sprite": "items/item_shipHook.png",
+    "tags": []
+  },
+  {
+    "id": 2,
+    "name": "Shark Bite",
+    "desc": "Deal 50% ATK Damage, but has +50% to deal a Critical Hit.",
+    "price": 100,
+    "sprite": "items/item_paperBag.png",
+    "unlocked": true,
+    "tags": []
+  },
+  {
+    "id": 3,
+    "name": "Scuttling",
+    "desc": "Deal 75% ATK Damage, but lower enemy ATK by 25%.",
+    "price": 100,
+    "sprite": "items/item_vampiricShield.png",
+    "unlocked": false,
+    "tags": []
+  },
+  {
+    "id": 4,
+    "name": "Sharp Vortex",
+    "desc": "Deal 150% ATK Damage, but lose 5% HP.",
+    "price": 100,
+    "sprite": "items/item_placeholder.png",
+    "unlocked": true,
+    "tags": []
+  },
+  {
+    "id": 5,
+    "name": "Sharp Scales",
+    "desc": "Add 80% DEF Block, but gain 20% ATK of Thorns",
+    "price": 100,
+    "sprite": "items/item_placeholder.png",
+    "unlocked": false,
+    "tags": []
+  },
+  {
+    "id": 6,
+    "name": "Seeing Red",
+    "desc": "Gain +1 Energy next turn. Increase ATK Damage by 15%.",
+    "price": 100,
+    "sprite": "items/item_placeholder.png",
+    "unlocked": true,
+    "tags": []
+  },
+  {
+    "id": 7,
+    "name": "Torpedo Dash",
+    "desc": "Deal 50% ATK Damage to all enemies.",
+    "price": 100,
+    "sprite": "items/item_placeholder.png",
+    "unlocked": false,
+    "tags": []
+  },
+  {
+    "id": 8,
+    "name": "Sharpened Hook",
+    "desc": "Increase critical hit chance by +50% this turn.",
+    "price": 100,
+    "sprite": "items/item_placeholder.png",
+    "unlocked": true,
+    "tags": []
+  },
+  {
+    "id": 9,
+    "name": "Sharp Shield",
+    "desc": "Add 50% DEF Block and +50% Thorns.",
+    "price": 100,
+    "sprite": "items/item_paperBag.png",
+    "unlocked": true,
+    "tags": []
+  },
+  {
+    "id": 10,
+    "name": "Return to Sender",
+    "desc": "Return the Damage received this turn with Thorns.",
+    "price": 100,
+    "sprite": "items/item_vampiricShield.png",
+    "unlocked": false,
+    "tags": []
+  },
+  {
+    "id": 11,
+    "name": "Smooth Shield",
+    "desc": "Gain +50% of the current Block amount, but reduces Thorns to 0 this turn.",
+    "price": 100,
+    "sprite": "items/item_placeholder.png",
+    "unlocked": true,
+    "tags": []
+  },
+  {
+    "id": 12,
+    "name": "Phalanx Formation",
+    "desc": "Get +1 Energy next turn and start next turn with 25% DEF of Block.",
+    "price": 100,
+    "sprite": "items/item_placeholder.png",
+    "unlocked": false,
+    "tags": []
+  },
+  {
+    "id": 13,
+    "name": "Shield Bonk",
+    "desc": "Deal Damage equivalent to the current Block amount.",
+    "price": 100,
+    "sprite": "items/item_placeholder.png",
+    "unlocked": true,
+    "tags": []
+  },
+  {
+    "id": 14,
+    "name": "Cactus Shrapnel",
+    "desc": "Add Block amount to Thorns damage. Reduce Block by 50%.",
+    "price": 100,
+    "sprite": "items/item_placeholder.png",
+    "unlocked": false,
+    "tags": []
+  },
+  {
+    "id": 15,
+    "name": "Heavy Armour",
+    "desc": "Double the current Block amount.",
+    "price": 100,
+    "sprite": "items/item_placeholder.png",
+    "unlocked": true,
+    "tags": []
+  },
+  {
+    "id": 16,
+    "name": "Red Shot",
+    "desc": "Increase ATK by +50% and deal 50% ATK Damage.",
+    "price": 100,
+    "sprite": "items/item_placeholder.png",
+    "unlocked": true,
+    "tags": []
+  },
+  {
+    "id": 17,
+    "name": "Blue Shot",
+    "desc": "Increase DEF by +50% and add 50% DEF Block.",
+    "price": 100,
+    "sprite": "items/item_paperBag.png",
+    "unlocked": true,
+    "tags": []
+  },
+  {
+    "id": 18,
+    "name": "Disarmed",
+    "desc": "Lower all enemies ATK by 33%.",
+    "price": 100,
+    "sprite": "items/item_vampiricShield.png",
+    "unlocked": false,
+    "tags": []
+  },
+  {
+    "id": 19,
+    "name": "Ground-Rooted",
+    "desc": "Heal 25% of full HP, but lower DEF by 50% and Dodge chance to 0% for this turn.",
+    "price": 100,
+    "sprite": "items/item_placeholder.png",
+    "unlocked": true,
+    "tags": []
+  },
+  {
+    "id": 20,
+    "name": "Radioactive Shot",
+    "desc": "Apply Poison Status to and enemy for 3 turns.",
+    "price": 100,
+    "sprite": "items/item_placeholder.png",
+    "unlocked": false,
+    "tags": []
+  },
+  {
+    "id": 21,
+    "name": "Explosive Reagent",
+    "desc": "Deal 100% ATK Damage to all enemies with a Status.",
+    "price": 100,
+    "sprite": "items/item_placeholder.png",
+    "unlocked": true,
+    "tags": []
+  },
+  {
+    "id": 22,
+    "name": "Energy Convertion",
+    "desc": "Add 100% DEF Block for each enemy with a Status.",
+    "price": 100,
+    "sprite": "items/item_placeholder.png",
+    "unlocked": false,
+    "tags": []
+  },
+  {
+    "id": 23,
+    "name": "Counter Attack",
+    "desc": "Dodging will trigger a counter attack dealing 100% of the incoming damage.",
+    "price": 100,
+    "sprite": "items/item_placeholder.png",
+    "unlocked": true,
+    "tags": []
+  },
+  {
+    "id": 24,
+    "name": "Big Shot",
+    "desc": "Deal 200% ATK Damage, but you need to pay $150.",
+    "price": 100,
+    "sprite": "items/item_paperBag.png",
+    "unlocked": true,
+    "tags": []
+  },
+  {
+    "id": 25,
+    "name": "Bought Out",
+    "desc": "Add 200% DEF Block, but you need to pay $150.",
+    "price": 100,
+    "sprite": "items/item_vampiricShield.png",
+    "unlocked": false,
+    "tags": []
+  },
+  {
+    "id": 26,
+    "name": "Lucky Penny",
+    "desc": "Deal 25% ATK Damage, but gain $75.",
+    "price": 100,
+    "sprite": "items/item_placeholder.png",
+    "unlocked": true,
+    "tags": []
+  },
+  {
+    "id": 27,
+    "name": "Interview",
+    "desc": "Lower all enemy ATK by 25% and increase ATK by 25%.",
+    "price": 100,
+    "sprite": "items/item_placeholder.png",
+    "unlocked": false,
+    "tags": []
+  },
+  {
+    "id": 28,
+    "name": "Treasure Flex",
+    "desc": "Deal 20% ATK Damage for every $100. No need to pay!",
+    "price": 100,
+    "sprite": "items/item_placeholder.png",
+    "unlocked": true,
+    "tags": []
+  },
+  {
+    "id": 29,
+    "name": "Private Doctor",
+    "desc": "Heal 35% of your full HP, but you need to pay $1500.",
+    "price": 100,
+    "sprite": "items/item_placeholder.png",
+    "unlocked": false,
+    "tags": []
+  },
+  {
+    "id": 30,
+    "name": "Counter Lawsuit",
+    "desc": "Gain $10 per Block Amount.",
+    "price": 100,
+    "sprite": "items/item_placeholder.png",
+    "unlocked": true,
+    "tags": []
+  },
+  {
+    "id": 31,
+    "name": "Ghostly Apparition",
+    "desc": "Deal 25% ATK Damage and gain +1 Energy next turn.",
+    "price": 100,
+    "sprite": "items/item_placeholder.png",
+    "unlocked": true,
+    "tags": []
+  },
+  {
+    "id": 32,
+    "name": "Yurei's Aura",
+    "desc": "Gain +25% of the current Block amount for every enemy present.",
+    "price": 100,
+    "sprite": "items/item_paperBag.png",
+    "unlocked": true,
+    "tags": []
+  },
+  {
+    "id": 33,
+    "name": "Cold Breeze",
+    "desc": "Gain +25% ATK for every enemy present.",
+    "price": 100,
+    "sprite": "items/item_vampiricShield.png",
+    "unlocked": false,
+    "tags": []
+  },
+  {
+    "id": 34,
+    "name": "Black Magic",
+    "desc": "Remove all Status element inflicted on the user.",
+    "price": 100,
+    "sprite": "items/item_placeholder.png",
+    "unlocked": true,
+    "tags": []
+  },
+  {
+    "id": 35,
+    "name": "Body Shield",
+    "desc": "Deal 50% ATK Damage and gain Block equivalent to the Damage dealt.",
+    "price": 100,
+    "sprite": "items/item_placeholder.png",
+    "unlocked": false,
+    "tags": []
+  },
+  {
+    "id": 36,
+    "name": "Broken Bone",
+    "desc": "Deal 15% of an enemy's current HP.",
+    "price": 100,
+    "sprite": "items/item_placeholder.png",
+    "unlocked": true,
+    "tags": []
+  },
+  {
+    "id": 37,
+    "name": "Corrosive Bomb",
+    "desc": "Each time an enemy is defeated this turn, deal 33% ATK to all enemies.",
+    "price": 100,
+    "sprite": "items/item_placeholder.png",
+    "unlocked": false,
+    "tags": []
+  },
+  {
+    "id": 38,
+    "name": "Blood Glass",
+    "desc": "Heal 20% of the damage dealt this turn.",
+    "price": 100,
+    "sprite": "items/item_placeholder.png",
+    "unlocked": true,
+    "tags": []
+  }
+]
