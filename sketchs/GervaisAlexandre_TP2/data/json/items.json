@@ -44,7 +44,7 @@
     "name": "Magic Rifle",
     "desc": "Deal double Damage to enemies with the Poison Status.",
     "price": 100,
-    "sprite": "items/item_placeholder.png",
+    "sprite": "items/item_magicRifle.png",
     "unlocked": true,
     "characterSpecific": "MISSILE",
     "tags": []
@@ -54,10 +54,10 @@
     "name": "Dual Wings",
     "desc": "Increase Dodge chance by 15%.",
     "price": 100,
-    "sprite": "items/item_placeholder.png",
+    "sprite": "items/item_dualWings.png",
     "unlocked": false,
     "characterSpecific": "MISSILE",
-    "tags": ["dodge", "mobDebuff"]
+    "tags": ["dodge"]
   },
   {
     "id": 6,
@@ -74,7 +74,7 @@
     "name": "Gold Pin",
     "desc": "Gain 7.5% of your total money when visiting the shop.",
     "price": 100,
-    "sprite": "items/item_placeholder.png",
+    "sprite": "items/item_goldPin.png",
     "unlocked": false,
     "characterSpecific": "PROFIT",
     "tags": []
@@ -84,7 +84,7 @@
     "name": "Sharp Bones",
     "desc": "For the first turn of a battle, have double ATK and double DEF.",
     "price": 100,
-    "sprite": "items/item_placeholder.png",
+    "sprite": "items/item_sharpBones.png",
     "unlocked": true,
     "characterSpecific": "NECROMANCER",
     "tags": []
