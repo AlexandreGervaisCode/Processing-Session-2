@@ -167,16 +167,14 @@ void drawTitleScreen() {
   pushMatrix();
   translate(0, overlayScreenY);
   fill(0);
-  if (isOnHeroSelect) {
+  if (isOnHeroSelect) { // Dessine Hero Select
     drawHeroSelect();
-  } else if (isOnStatsPage) {
+  } else if (isOnStatsPage) { // Dessine Stats Page
     statsPage();
-  } else if (overlayScreenY < height) {
-    println("this if");
+  } else if (overlayScreenY < height) { // Animation Lowers
     overlayScreenY += height/15;
     darkenBgProgress -= ceil(70/15);
-  } else {
-    println("the else");
+  } else { // Animation Off
     overlayScreenY = height;
     darkenBgProgress = 0;
   }
@@ -192,10 +190,10 @@ void drawTitleScreen() {
 // M E N U   S T A T S
 // --------------------
 void statsPage() {
-  if (overlayScreenY > 0) {
+  if (overlayScreenY > 0) { // Animation Rising
       overlayScreenY -= height/15;
       darkenBgProgress += ceil(70/15);
-    } else {
+    } else { // Animation Standby
       overlayScreenY = 0;
       darkenBgProgress = 70;
     }
@@ -224,10 +222,10 @@ void drawHeroSelect() {
   }
   // image(heroSelectBG, 0, 0, width, height);
   // for loop to draw all character portraits and names
-  if (overlayScreenY > 0) {
+  if (overlayScreenY > 0) { // Animation Rising
       overlayScreenY -= height/15;
       darkenBgProgress += ceil(70/15);
-    } else {
+    } else { // Animation Standby
       overlayScreenY = 0;
       darkenBgProgress = 70;
     }
