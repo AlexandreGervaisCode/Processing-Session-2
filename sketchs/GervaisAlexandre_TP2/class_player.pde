@@ -9,11 +9,11 @@ class Player {
   float scaleX = 150;
   float scaleY = 150;
   // Valeurs effets character-specific
-  int critsOdd = 8; // Chance de coups critique sur 100
-  int thorns = 0; // Dégâts redonner en retour
-  int dodgeOdd = 0; // Chance d'esquiver des coups
+  int critsOdd = 5; // Chance de coups critique sur 100
+  int thorns, dodgeOdd, lifeSteal = 0;
   // Visualisation du Joueur
   PImage sprite = loadImage("heroes/pla_hero0.png");
+  String name = "EMPTY";
   // Collection de Data sur le héro
   JSONArray heroes = loadJSONArray("./json/heroes.json");
   JSONObject selectedHero = heroes.getJSONObject(0);
@@ -30,10 +30,12 @@ class Player {
     scaleX = selectedHero.getFloat("scaleX");
     scaleY = selectedHero.getFloat("scaleY");
     sprite = loadImage(selectedHero.getString("sprite"));
+    name = selectedHero.getString("name");
     // Bonus character-specific
     critsOdd = selectedHero.getInt("critsOdd");
     thorns = selectedHero.getInt("thorns");
     dodgeOdd = selectedHero.getInt("dodgeOdd");
+    lifeSteal = selectedHero.getInt("lifeSteal");
   }
 
   // Affiche le joueur
@@ -75,6 +77,9 @@ class Player {
   }
   float getMaxHP() {
     return maxHp;
+  }
+  String getName() {
+    return name;
   }
   int getID() {
     return ID;
