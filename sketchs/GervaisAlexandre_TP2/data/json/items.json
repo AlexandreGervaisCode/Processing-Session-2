@@ -64,7 +64,7 @@
     "name": "Pirate Chest",
     "desc": "Gain $100 for every enemy at the start of a battle.",
     "price": 100,
-    "sprite": "items/item_placeholder.png",
+    "sprite": "items/item_pirateChest.png",
     "unlocked": true,
     "characterSpecific": "PROFIT",
     "tags": []
@@ -94,7 +94,7 @@
     "name": "Skull Scepter",
     "desc": "Defeating an enemy gives +50% ATK for the rest of the battle.",
     "price": 100,
-    "sprite": "items/item_placeholder.png",
+    "sprite": "items/item_skullScepter.png",
     "unlocked": false,
     "characterSpecific": "NECROMANCER",
     "tags": []

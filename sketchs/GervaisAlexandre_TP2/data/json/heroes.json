@@ -108,7 +108,7 @@
     "lv2Ability": 15,
     "lv4Ability": 36,
     "lv5Ability": 38,
-    "uniqueItems": ["Ocean Crown", "Ship's Hook", "Paper Bag", "Spiked Shield", "Magic Rifle", "Dual Wings", "Pirate Chest", "Gold Pin", "Skull Scepter", "Sharp Bones"],
+    "uniqueItems": ["Ocean Crown", "Ship's Hook", "Paper Bag", "Spiked Shield", "Magic Rifle", "Dual Wings", "Pirate Chest", "Gold Pin", "Sharp Bones", "Skull Scepter"],
     "critsOdd": 5,
     "thorns": 0,
     "dodgeOdd": 0,
