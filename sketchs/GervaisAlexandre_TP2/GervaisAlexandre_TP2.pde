@@ -43,8 +43,7 @@ float exitBtnW;
 float exitBtnH;
 
 // Écran Choisi ton Héro
-PImage heroBanner0, heroBanner1, heroBanner2, heroBanner3, heroBanner4, heroBanner5;
-PImage[] heroBanners = new PImage[6];
+PImage[] heroBanners;
 float heroSelectX = 200;
 float heroSelectW = 188;
 float heroSelectH = 225;
@@ -92,18 +91,15 @@ void loadBasicAssets() {
   titleBG = loadImage("menus/menu_title_background.png");
   titleStartButton = loadImage("menus/menu_title_startButton.png");
   titleOtherButton = loadImage("menus/menu_title_otherButton.png");
-  heroBanner0 = loadImage("menus/character_banner_jack.png");
-  heroBanner1 = loadImage("menus/character_banner_jack.png");
-  heroBanner2 = loadImage("menus/character_banner_jack.png");
-  heroBanner3 = loadImage("menus/character_banner_profit.png");
-  heroBanner4 = loadImage("menus/character_banner_jack.png");
-  heroBanner5 = loadImage("menus/character_banner_necromancer.png");
-  heroBanners[0] = heroBanner0;
-  heroBanners[1] = heroBanner1;
-  heroBanners[2] = heroBanner2;
-  heroBanners[3] = heroBanner3;
-  heroBanners[4] = heroBanner4;
-  heroBanners[5] = heroBanner5;
+  
+  heroBanners = new PImage[allHeroes.size()];
+  // Load les images Banner
+  for (int i=0; i < allHeroes.size(); i++) {
+    JSONObject currentHero = allHeroes.getJSONObject(i);
+    PImage thisForHero = loadImage(currentHero.getString("bannerSprite"));
+    heroBanners[i] = thisForHero;
+  }
+  println(heroBanners[0]);
 }
 
 // Initialize les variables dans setup

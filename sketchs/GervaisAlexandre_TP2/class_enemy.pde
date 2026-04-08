@@ -1,7 +1,7 @@
 class Enemy {
   int ID = 0;
   // Stats de combat
-  int atk, def, hp, maxHp = 1;
+  int atk, hp, maxHp = 1;
   // Placement de l'enemie
   float posX,posY = width/4*3;
   float scaleX, scaleY = 100;
@@ -22,7 +22,6 @@ class Enemy {
     ID = mobID;
     selectedEnemy = enemies.getJSONObject(ID);
     atk = selectedEnemy.getInt("attack");
-    def = selectedEnemy.getInt("defense");
     maxHp = selectedEnemy.getInt("maxHp");
     hp = maxHp;
     scaleX = selectedEnemy.getFloat("scaleX");
@@ -66,9 +65,6 @@ class Enemy {
   // Retourne les stats
   float getAtk() {
     return atk;
-  }
-  float getDef() {
-    return def;
   }
   float getHP() {
     return hp;
