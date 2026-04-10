@@ -67,6 +67,7 @@ float startMenuTextOffset;
 // Variables Battle
 PImage battleBackground;
 PImage heroSprite;
+int roundNbr = 0;
 
 // PImage selectHeroPoster; // Do one for each Hero
 
@@ -88,12 +89,17 @@ void setup() {
 
 void draw() {
   background(128);
-  if (isOnTitleScreen) {
+  if (isOnTitleScreen) { // Dessine l'écran titre
     isPlayerTurn = false;
     isInCombat = false;
     drawTitleScreen();
-  } else if (isGameStarted) {
+  } else if (isGameStarted) { // Dessine l'écran de combat
     beginGame();
+    
+    // Once the Player has lost the Game
+    if (hero.isDead()) {
+      onGameOver();
+    }
   }
 }
 
@@ -181,6 +187,22 @@ void mousePressed() {
     isOnStatsPage = false;
     isOnHeroSelect = false;
     isInShop = false;
+  }
+}
+
+// --------------------
+// INTÉRACTIONS AVEC LE CLAVIER
+// --------------------
+void keyPressed() {
+  if (isGameStarted) { // FOR DEBUG ONLY
+  int keyInput = int(key)-49; // Ex. Appyer sur la touche 1 redonne 0
+    if (keyInput >= 0 && keyInput <= 8) {
+      bag.receiveItem(floor(random(60)));
+    }
+    println(int(key));
+  }
+  if (isGameStarted && isPlayerTurn) {
+    
   }
 }
 
@@ -306,11 +328,18 @@ void drawHeroSelect() {
 void beginGame() {
   image(battleBackground, 0, 0, width, height);
   hero.display();
+  // bag.itemDisplay();
   // DEBUG INFO
   fill(255, 0, 0);
   textAlign(CENTER);
   textSize(40);
   text(hero.getName(), width/2, height/2);
+}
+
+void onGameOver() {
+  bag.loseMoney(bag.getMoney()); // Réduit l'argent à zéro
+  roundNbr = 0;
+  bag.initializeInventory();
 }
 
 // --------------------
