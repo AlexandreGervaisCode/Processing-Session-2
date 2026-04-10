@@ -64,6 +64,10 @@ float statsPageButtonY; // position Y du bouton Stats
 float quitAppButtonY; // position Y du bouton quitter app
 float startMenuTextOffset;
 
+// Variables Battle
+PImage battleBackground;
+PImage heroSprite;
+
 // PImage selectHeroPoster; // Do one for each Hero
 
 // Variables de classes
@@ -127,6 +131,8 @@ void loadBasicAssets() {
   titleBG = loadImage("menus/menu_title_background.png");
   titleStartButton = loadImage("menus/menu_title_startButton.png");
   titleOtherButton = loadImage("menus/menu_title_otherButton.png");
+  
+  battleBackground = loadImage("backgrounds/DEBUG_battle_bg.png");
 
   heroBanners = new PImage[allHeroes.size()];
   // Load les images Banner
@@ -298,6 +304,9 @@ void drawHeroSelect() {
 }
 
 void beginGame() {
+  image(battleBackground, 0, 0, width, height);
+  hero.display();
+  // DEBUG INFO
   fill(255, 0, 0);
   textAlign(CENTER);
   textSize(40);

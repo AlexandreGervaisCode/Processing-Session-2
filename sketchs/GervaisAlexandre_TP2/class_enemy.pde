@@ -6,7 +6,7 @@ class Enemy {
   float posX,posY = width/4*3;
   float scaleX, scaleY = 100;
   // Visualisation de l'enemie
-  PImage sprite = loadImage("mob_placeholder.png");
+  PImage sprite = loadImage("DEBUG_mob.png");
   // Collection de Data sur l'ennemie
   JSONArray enemies = loadJSONArray("./json/enemies.json");
   JSONObject selectedEnemy = enemies.getJSONObject(ID);

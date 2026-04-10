@@ -4,15 +4,15 @@ class Player {
   // Stats de combat
   int atk, def, hp, maxHp = 1;
   // Placement du joueur
-  float posX = width/4;
-  float posY = height/3*2;
-  float scaleX = 150;
-  float scaleY = 150;
+  float posX = 60;
+  float posY = 305;
+  float scaleX = 300;
+  float scaleY = 250;
   // Valeurs effets character-specific
   int critsOdd = 5; // Chance de coups critique sur 100
   int thorns, dodgeOdd, lifeSteal = 0;
   // Visualisation du Joueur
-  PImage sprite = loadImage("heroes/pla_hero0.png");
+  PImage sprite = loadImage("heroes/DEBUG_hero.png");
   String name = "EMPTY";
   // Collection de Data sur le héro
   JSONArray heroes = loadJSONArray("./json/heroes.json");
@@ -66,16 +66,16 @@ class Player {
   }
 
   // Retourne les stats
-  float getAtk() {
+  int getAtk() {
     return atk;
   }
-  float getDef() {
+  int getDef() {
     return def;
   }
-  float getHP() {
+  int getHP() {
     return hp;
   }
-  float getMaxHP() {
+  int getMaxHP() {
     return maxHp;
   }
   String getName() {
