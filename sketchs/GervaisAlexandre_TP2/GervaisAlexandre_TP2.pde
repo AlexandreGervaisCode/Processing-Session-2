@@ -339,7 +339,7 @@ void beginGame() {
 void onGameOver() {
   bag.loseMoney(bag.getMoney()); // Réduit l'argent à zéro
   roundNbr = 0;
-  bag.initializeInventory();
+  // bag.initializeInventory();
 }
 
 // --------------------
