@@ -122,11 +122,14 @@ void initializeVariables() {
   exitBtnY = height*0.8;
   exitBtnW = width*0.6;
   exitBtnH = height/15;
+  
+  bag = new Inventory();
+  bag.initializeInventory();
 
   // Load les JSONs
   allHeroes = loadJSONArray("./json/heroes.json");
   allMobs = loadJSONArray("./json/enemies.json");
-  allItems = loadJSONArray("./json/items.json");
+  allItems = bag.getAllItems();
 }
 
 // --------------------
@@ -328,7 +331,7 @@ void drawHeroSelect() {
 void beginGame() {
   image(battleBackground, 0, 0, width, height);
   hero.display();
-  // bag.itemDisplay();
+  bag.itemDisplay();
   // DEBUG INFO
   fill(255, 0, 0);
   textAlign(CENTER);

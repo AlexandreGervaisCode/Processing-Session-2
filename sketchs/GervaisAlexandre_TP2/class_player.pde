@@ -12,15 +12,16 @@ class Player {
   int critsOdd = 5; // Chance de coups critique sur 100
   int thorns, dodgeOdd, lifeSteal = 0;
   // Visualisation du Joueur
-  PImage sprite = loadImage("heroes/DEBUG_hero.png");
+  PImage sprite;
   String name = "EMPTY";
   // Collection de Data sur le héro
-  JSONArray heroes = loadJSONArray("./json/heroes.json");
-  JSONObject selectedHero = heroes.getJSONObject(0);
+  JSONArray heroes;
+  JSONObject selectedHero;
   // --------------------
   // CONSTRUCTOR
   // --------------------
   Player (int heroID) {
+    heroes = loadJSONArray("./json/heroes.json");
     ID = heroID;
     selectedHero = heroes.getJSONObject(ID);
     atk = selectedHero.getInt("attack");
