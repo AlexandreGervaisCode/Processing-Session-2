@@ -1,6 +1,15 @@
 [
   {
     "id": 0,
+    "name": "EMPTY",
+    "desc": "NO ITEM",
+    "price": 100,
+    "sprite": "items/DEBUG_item.png",
+    "unlocked": true,
+    "tags": [""]
+  },
+  {
+    "id": 1,
     "name": "Ocean Crown",
     "desc": "Critical Hits heals by 20% of the Damage dealt.",
     "price": 100,
@@ -10,7 +19,7 @@
     "tags": ["atk", "hitTrigger"]
   },
   {
-    "id": 1,
+    "id": 2,
     "name": "Ship's Hook",
     "desc": "Increases Critical Hit chances by 25%.",
     "price": 100,
@@ -20,7 +29,7 @@
     "tags": ["crit", "heal"]
   },
   {
-    "id": 2,
+    "id": 3,
     "name": "Paper Bag",
     "desc": "Each turn, start with 15% DEF of Block.",
     "price": 100,
@@ -30,7 +39,7 @@
     "tags": []
   },
   {
-    "id": 3,
+    "id": 4,
     "name": "Vampiric Shield",
     "desc": "Dealt Thorns damage heals by 25% of thorns damage.",
     "price": 100,
@@ -40,7 +49,7 @@
     "tags": ["thorn", "heal"]
   },
   {
-    "id": 4,
+    "id": 5,
     "name": "Magic Rifle",
     "desc": "Deal double Damage to enemies with the Poison Status.",
     "price": 100,
@@ -50,7 +59,7 @@
     "tags": []
   },
   {
-    "id": 5,
+    "id": 6,
     "name": "Dual Wings",
     "desc": "Increase Dodge chance by 15%.",
     "price": 100,
@@ -60,7 +69,7 @@
     "tags": ["dodge"]
   },
   {
-    "id": 6,
+    "id": 7,
     "name": "Pirate Chest",
     "desc": "Gain $100 for every enemy at the start of a battle.",
     "price": 100,
@@ -70,7 +79,7 @@
     "tags": []
   },
   {
-    "id": 7,
+    "id": 8,
     "name": "Gold Pin",
     "desc": "Gain 7.5% of your total money when visiting the shop.",
     "price": 100,
@@ -80,7 +89,7 @@
     "tags": []
   },
   {
-    "id": 8,
+    "id": 9,
     "name": "Sharp Bones",
     "desc": "For the first turn of a battle, have double ATK and double DEF.",
     "price": 100,
@@ -90,7 +99,7 @@
     "tags": []
   },
   {
-    "id": 9,
+    "id": 10,
     "name": "Skull Scepter",
     "desc": "Defeating an enemy gives +50% ATK for the rest of the battle.",
     "price": 100,
@@ -100,8 +109,8 @@
     "tags": []
   },
   {
-    "id": 10,
-    "name": "Dealmaker",
+    "id": 11,
+    "name": "Puppet Scarf",
     "desc": "Upon defeating a boss, double your total Money.",
     "price": 100,
     "sprite": "items/item_puppetScarf.png",
@@ -109,8 +118,8 @@
     "tags": ["money", "boss"]
   },
   {
-    "id": 11,
-    "name": "Puppet Scarf",
+    "id": 12,
+    "name": "Dealmaker",
     "desc": "Increase reward Money by 10%.",
     "price": 100,
     "sprite": "items/item_dealmaker.png",
@@ -118,7 +127,7 @@
     "tags": ["money"]
   },
   {
-    "id": 12,
+    "id": 13,
     "name": "EMF Reader",
     "desc": "PLACEHOLDER DESC",
     "price": 100,
@@ -127,7 +136,7 @@
     "tags": []
   },
   {
-    "id": 13,
+    "id": 14,
     "name": "Music Box",
     "desc": "Lower enemy ATK by 15% for the first 3 turns of a battle.",
     "price": 100,
@@ -136,7 +145,7 @@
     "tags": []
   },
   {
-    "id": 14,
+    "id": 15,
     "name": "Tarot Card",
     "desc": "Gives a random effect at the beginning of a battle.",
     "price": 100,
@@ -145,7 +154,7 @@
     "tags": []
   },
   {
-    "id": 15,
+    "id": 16,
     "name": "Star Bit",
     "desc": "All healing is increased by 10%.",
     "price": 100,
@@ -154,7 +163,7 @@
     "tags": []
   },
   {
-    "id": 16,
+    "id": 17,
     "name": "Autopsy Report",
     "desc": "Upon losing all your HP, heal by 10 HP, but lose this item.",
     "price": 100,
@@ -163,7 +172,7 @@
     "tags": []
   },
   {
-    "id": 17,
+    "id": 18,
     "name": "Attorney's Badge",
     "desc": "This badge prouves you're an attorney! Start each round with 5 Block.",
     "price": 100,
@@ -172,7 +181,7 @@
     "tags": []
   },
   {
-    "id": 18,
+    "id": 19,
     "name": "Musical Leek",
     "desc": "PLACEHOLDER DESC",
     "price": 100,
@@ -181,7 +190,7 @@
     "tags": []
   },
   {
-    "id": 19,
+    "id": 20,
     "name": "Walkie-Talkie",
     "desc": "PLACEHOLDER DESC",
     "price": 100,
@@ -190,7 +199,7 @@
     "tags": []
   },
   {
-    "id": 20,
+    "id": 21,
     "name": "Fox Mask",
     "desc": "Gain +1 ATK for every red card in your hand.",
     "price": 100,
@@ -199,7 +208,7 @@
     "tags": []
   },
   {
-    "id": 21,
+    "id": 22,
     "name": "Creepy Cupcake",
     "desc": "PLACEHOLDER DESC",
     "price": 100,
@@ -208,7 +217,7 @@
     "tags": []
   },
   {
-    "id": 22,
+    "id": 23,
     "name": "Bear Mask",
     "desc": "Gives 20% DEF Boost when inflicted with the Fire Status.",
     "price": 100,
@@ -217,7 +226,7 @@
     "tags": []
   },
   {
-    "id": 23,
+    "id": 24,
     "name": "Gros Michel",
     "desc": "Add +10 Damage to attacks dealt.",
     "price": 100,
@@ -226,7 +235,7 @@
     "tags": []
   },
   {
-    "id": 24,
+    "id": 25,
     "name": "Dialphone",
     "desc": "PLACEHOLDER DESC",
     "price": 100,
@@ -235,7 +244,7 @@
     "tags": []
   },
   {
-    "id": 25,
+    "id": 26,
     "name": "Hourglass",
     "desc": "Gain 10% ATK every round, but start battles at 50% of your max ATK. Maxes out at 150% max ATK.",
     "price": 100,
@@ -244,7 +253,7 @@
     "tags": []
   },
   {
-    "id": 26,
+    "id": 27,
     "name": "Shovel Blade",
     "desc": "PLACEHOLDER DESC",
     "price": 100,
@@ -253,7 +262,7 @@
     "tags": []
   },
   {
-    "id": 27,
+    "id": 28,
     "name": "Bomb Burst",
     "desc": "PLACEHOLDER DESC",
     "price": 100,
@@ -262,7 +271,7 @@
     "tags": []
   },
   {
-    "id": 28,
+    "id": 29,
     "name": "Phase Locket",
     "desc": "PLACEHOLDER DESC",
     "price": 100,
@@ -271,7 +280,7 @@
     "tags": []
   },
   {
-    "id": 29,
+    "id": 30,
     "name": "Companion Cube",
     "desc": "PLACEHOLDER DESC",
     "price": 100,
@@ -280,7 +289,7 @@
     "tags": []
   },
   {
-    "id": 30,
+    "id": 31,
     "name": "Teleporter",
     "desc": "PLACEHOLDER DESC",
     "price": 100,
@@ -289,7 +298,7 @@
     "tags": []
   },
   {
-    "id": 31,
+    "id": 32,
     "name": "Emergency Button",
     "desc": "PLACEHOLDER DESC",
     "price": 100,
@@ -298,7 +307,7 @@
     "tags": []
   },
   {
-    "id": 32,
+    "id": 33,
     "name": "Radioactive Sludge",
     "desc": "The Poison Status now heals you instead of damaging.",
     "price": 100,
@@ -307,7 +316,7 @@
     "tags": []
   },
   {
-    "id": 33,
+    "id": 34,
     "name": "Ebony & Ivory",
     "desc": "PLACEHOLDER DESC",
     "price": 100,
@@ -316,7 +325,7 @@
     "tags": []
   },
   {
-    "id": 34,
+    "id": 35,
     "name": "Bing Bong",
     "desc": "PLACEHOLDER DESC",
     "price": 100,
@@ -325,7 +334,7 @@
     "tags": []
   },
   {
-    "id": 35,
+    "id": 36,
     "name": "Backpack",
     "desc": "PLACEHOLDER DESC",
     "price": 100,
@@ -334,7 +343,7 @@
     "tags": []
   },
   {
-    "id": 36,
+    "id": 37,
     "name": "Scout Cannon",
     "desc": "PLACEHOLDER DESC",
     "price": 100,
@@ -343,7 +352,7 @@
     "tags": []
   },
   {
-    "id": 37,
+    "id": 38,
     "name": "M.O.A.B.",
     "desc": "PLACEHOLDER DESC",
     "price": 100,
@@ -352,7 +361,7 @@
     "tags": []
   },
   {
-    "id": 38,
+    "id": 39,
     "name": "Squeaky Hammer",
     "desc": "PLACEHOLDER DESC",
     "price": 100,
@@ -361,7 +370,7 @@
     "tags": []
   },
   {
-    "id": 39,
+    "id": 40,
     "name": "Poker Chips",
     "desc": "PLACEHOLDER DESC",
     "price": 100,
@@ -370,7 +379,7 @@
     "tags": []
   },
   {
-    "id": 40,
+    "id": 41,
     "name": "Microphone",
     "desc": "PLACEHOLDER DESC",
     "price": 100,
@@ -379,7 +388,7 @@
     "tags": []
   },
   {
-    "id": 41,
+    "id": 42,
     "name": "Azure Flute",
     "desc": "PLACEHOLDER DESC",
     "price": 100,
@@ -388,7 +397,7 @@
     "tags": []
   },
   {
-    "id": 42,
+    "id": 43,
     "name": "Letter",
     "desc": "PLACEHOLDER DESC",
     "price": 100,
@@ -397,7 +406,7 @@
     "tags": []
   },
   {
-    "id": 43,
+    "id": 44,
     "name": "Banana Peel",
     "desc": "PLACEHOLDER DESC",
     "price": 100,
@@ -406,7 +415,7 @@
     "tags": []
   },
   {
-    "id": 44,
+    "id": 45,
     "name": "Gas Mask",
     "desc": "PLACEHOLDER DESC",
     "price": 100,
@@ -415,7 +424,7 @@
     "tags": []
   },
   {
-    "id": 45,
+    "id": 46,
     "name": "Empty Container",
     "desc": "PLACEHOLDER DESC",
     "price": 100,
@@ -424,7 +433,7 @@
     "tags": []
   },
   {
-    "id": 46,
+    "id": 47,
     "name": "Chaos Buster",
     "desc": "PLACEHOLDER DESC",
     "price": 100,
@@ -433,7 +442,7 @@
     "tags": []
   },
   {
-    "id": 47,
+    "id": 48,
     "name": "Pumpkin Helmet",
     "desc": "Increase DEF by 10.",
     "price": 100,
@@ -442,7 +451,7 @@
     "tags": []
   },
   {
-    "id": 48,
+    "id": 49,
     "name": "Fruit Basket",
     "desc": "PLACEHOLDER DESC",
     "price": 100,
@@ -451,7 +460,7 @@
     "tags": []
   },
   {
-    "id": 49,
+    "id": 50,
     "name": "Kryptonite",
     "desc": "Applies Poison Status to all enemies and user every round.",
     "price": 100,
@@ -460,7 +469,7 @@
     "tags": []
   },
   {
-    "id": 50,
+    "id": 51,
     "name": "Apparatus",
     "desc": "PLACEHOLDER DESC",
     "price": 100,
@@ -469,7 +478,7 @@
     "tags": []
   },
   {
-    "id": 51,
+    "id": 52,
     "name": "Romanian Ruby",
     "desc": "PLACEHOLDER DESC",
     "price": 100,
@@ -478,7 +487,7 @@
     "tags": []
   },
   {
-    "id": 52,
+    "id": 53,
     "name": "Tunisian Diamond",
     "desc": "PLACEHOLDER DESC",
     "price": 100,
@@ -487,7 +496,7 @@
     "tags": []
   },
   {
-    "id": 53,
+    "id": 54,
     "name": "Norwegian Emerald",
     "desc": "PLACEHOLDER DESC",
     "price": 100,
@@ -496,7 +505,7 @@
     "tags": []
   },
   {
-    "id": 54,
+    "id": 55,
     "name": "Piston Cup",
     "desc": "PLACEHOLDER DESC",
     "price": 100,
@@ -505,7 +514,7 @@
     "tags": []
   },
   {
-    "id": 55,
+    "id": 56,
     "name": "Magnifying Glass",
     "desc": "PLACEHOLDER DESC",
     "price": 100,
@@ -514,7 +523,7 @@
     "tags": []
   },
   {
-    "id": 56,
+    "id": 57,
     "name": "Cactus",
     "desc": "Gain Thorns equal to half of your DEF.",
     "price": 100,
@@ -523,7 +532,7 @@
     "tags": []
   },
   {
-    "id": 57,
+    "id": 58,
     "name": "Medkit",
     "desc": "Restore 5 HP at the end of each Battle.",
     "price": 100,
@@ -532,7 +541,7 @@
     "tags": []
   },
   {
-    "id": 58,
+    "id": 59,
     "name": "Trashcan",
     "desc": "PLACEHOLDER DESC",
     "price": 100,
@@ -541,7 +550,7 @@
     "tags": []
   },
   {
-    "id": 59,
+    "id": 60,
     "name": "Big Potion",
     "desc": "PLACEHOLDER DESC",
     "price": 100,

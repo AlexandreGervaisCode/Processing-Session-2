@@ -1,26 +1,27 @@
 class Inventory {
   int money;
-  JSONArray allItems;
+  JSONArray itemsJsonFile;
   JSONObject emptyItem;
   JSONObject[] heldItemsArr;
+  JSONObject[] allItems;
   PImage[] heldItemSprites;
   color itemHoverBubble;
   color itemHoverText;
   Inventory() {
     money = 0;
-    allItems = loadJSONArray("json/items.json");
-    emptyItem = allItems.getJSONObject(0);
+    itemsJsonFile = loadJSONArray("json/items.json");
     heldItemsArr = new JSONObject[6];
     heldItemSprites = new PImage[6];
     itemHoverBubble = color(100, 100, 100, 170);
     itemHoverText = color(255, 255, 255);
+    allItems = new JSONObject[61];
   }
 
   void receiveItem(int itemID) {
-    // JSONObject gainedItem = allItems.getJSONObject(itemID);
+    // JSONObject gainedItem = itemsJsonFile.getJSONObject(itemID);
     for (int i = 0; i < heldItemsArr.length; i++) {
       if (heldItemsArr[i] == emptyItem) {
-        heldItemsArr[i] = allItems.getJSONObject(itemID);
+        heldItemsArr[i] = allItems[itemID];
         heldItemSprites[i] = loadImage(heldItemsArr[i].getString("sprite"));
         i = heldItemsArr.length;
       }
@@ -93,7 +94,15 @@ class Inventory {
   }
 
   void initializeInventory() {
-    emptyItem = allItems.getJSONObject(0);
+    // Crée un array facilement comparable avec tout dedans
+    for (int i = 0; i < allItems.length; i++) {
+      allItems[i] = itemsJsonFile.getJSONObject(i);
+    }
+    
+    // Assigne une variable qui peut facilement checker si un inventory slot est vide
+    emptyItem = allItems[0];
+    
+    // Crée l'inventaire en le remplissant d'éléments vides
     for (int i = 0; i < heldItemsArr.length; i++) {
       heldItemsArr[i] = emptyItem;
       heldItemSprites[i] = loadImage(heldItemsArr[i].getString("sprite"));
@@ -103,7 +112,7 @@ class Inventory {
   JSONObject[] getHeldItems() {
     return heldItemsArr;
   }
-  JSONArray getAllItems() {
+  JSONObject[] getAllItems() {
     return allItems;
   }
 }

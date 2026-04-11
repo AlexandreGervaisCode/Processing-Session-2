@@ -28,7 +28,7 @@ JSONArray unlockedItems;
 // Les Fichiers JSON
 JSONArray allHeroes;
 JSONArray allMobs;
-JSONArray allItems;
+JSONObject[] allItems;
 
 // Les variables de Title Screen
 PImage titleBG;
@@ -70,6 +70,14 @@ float startMenuTextOffset;
 PImage battleBackground;
 PImage heroSprite;
 int roundNbr = 0;
+int energyLeft = 3;
+
+// Battle Display
+float hudProgressPosX; // Position X, Y, Width, Height de roundNbr et Money
+float hudProgressPosY;
+float hudProgressWidth;
+float hudProgressHeight;
+float hudProgressGutter; // Distance verticale entre roundNbr et Money
 
 // Font
 PFont descFont;
@@ -400,7 +408,9 @@ void beginGame() {
   image(battleBackground, 0, 0, width, height);
   hero.display();
   bag.itemDisplay();
-  // DEBUG INFO
+  
+  
+  // DEBUG INFO --------------------
   fill(255, 0, 0);
   textAlign(CENTER);
   textSize(40);
@@ -410,7 +420,7 @@ void beginGame() {
 void onGameOver() {
   bag.loseMoney(bag.getMoney()); // Réduit l'argent à zéro
   roundNbr = 0;
-  // bag.initializeInventory();
+  bag.initializeInventory();
 }
 
 // --------------------
