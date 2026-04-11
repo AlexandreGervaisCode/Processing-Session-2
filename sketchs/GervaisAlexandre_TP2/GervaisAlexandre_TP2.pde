@@ -17,6 +17,7 @@ boolean isInShop = false;
 boolean isOnTitleScreen = true;
 boolean isOnHeroSelect = false;
 boolean isOnStatsPage = false;
+boolean oneFrameExecution = false; // utile pour executer du code pendant 1 frame
 
 // Permet de slide up des overlays dans le main menu
 float overlayScreenY;
@@ -24,11 +25,18 @@ float overlayScreenY;
 // Si l'utilisateur a déjà joué
 JSONObject savefile;
 JSONArray unlockedItems;
+int statMobKills;
+int statRunNbr;
+int statRunWinNbr;
+int statRunLoseNbr;
+int statMoneyGained;
+int statLevelBeaten;
 
 // Les Fichiers JSON
 JSONArray allHeroes;
 JSONArray allMobs;
 JSONObject[] allItems;
+JSONArray allAttacks;
 
 // Les variables de Title Screen
 PImage titleBG;
@@ -48,6 +56,8 @@ float exitBtnY;
 float exitBtnW;
 float exitBtnH;
 char titleLastScreen; // Garder un écran afficher quand l'animation quit se passe
+PImage titleSign; // Panneau d'arrière-plan quand t'es dans un menu
+PImage titleSignPage;
 
 // Écran Choisi ton Héro
 PImage[] heroBanners;
@@ -71,6 +81,8 @@ PImage battleBackground;
 PImage heroSprite;
 int roundNbr = 0;
 int energyLeft = 3;
+ArrayList<JSONObject> fullAbilityDeck;
+ArrayList<JSONObject> currentAbilityHand;
 
 // Battle Display
 float hudProgressPosX; // Position X, Y, Width, Height de roundNbr et Money
@@ -138,6 +150,10 @@ void initializeVariables() {
   descFont = createFont("fonts/undertale-deltarune-text-font-extended.otf", 50);
   textFont(descFont);
 
+  // Array Lists des abilités obtenues
+  fullAbilityDeck = new ArrayList<JSONObject>();
+  currentAbilityHand = new ArrayList<JSONObject>();
+
   // Inventaire
   bag = new Inventory();
   bag.initializeInventory();
@@ -146,6 +162,7 @@ void initializeVariables() {
   allHeroes = loadJSONArray("./json/heroes.json");
   allMobs = loadJSONArray("./json/enemies.json");
   allItems = bag.getAllItems();
+  allAttacks = loadJSONArray("./json/attacks.json");
 }
 
 // --------------------
@@ -156,6 +173,8 @@ void loadBasicAssets() {
   titleBG = loadImage("menus/menu_title_background.png");
   titleStartButton = loadImage("menus/menu_title_startButton.png");
   titleOtherButton = loadImage("menus/menu_title_otherButton.png");
+  titleSign = loadImage("menus/menu_title_sign.png");
+  titleSignPage = loadImage("menus/menu_title_signPage.png");
 
   battleBackground = loadImage("backgrounds/DEBUG_battle_bg.png");
 
@@ -195,7 +214,7 @@ void mousePressed() {
         boolean isThisHeroSelected = false;
         if (i < heroBanners.length/2) {
           isThisHeroSelected = mouseDetection((heroSelectX*(i+1))+(heroSelectXOffset*i), height/15*2, heroSelectW, heroSelectH);
-        } else {
+        } else if (savefile.getBoolean("char"+i+"_unlocked")) {
           isThisHeroSelected = mouseDetection((heroSelectX*(i-3+1))+(heroSelectXOffset*(i-3)), height/15*7, heroSelectW, heroSelectH);
         }
         if (isThisHeroSelected) {
@@ -271,6 +290,8 @@ void drawTitleScreen() {
   translate(0, overlayScreenY);
   fill(0);
 
+  image(titleSign, 0, 0, width, height); // Image du panneau dans l'arrière-plan
+
   if (isOnHeroSelect) { // Dessine Hero Select
     drawHeroSelect();
   } else if (isOnStatsPage) { // Dessine Stats Page
@@ -308,15 +329,17 @@ void drawTitleScreen() {
 // M E N U   S T A T S
 // --------------------
 void statsPage() {
+  image(titleSignPage, 0, 0, width, height); // Page en arrière-plan
+
   fill(0);
   textSize(30);
-
+  textLeading(66);
   textAlign(LEFT); // Affiche le nom des stats
-  text("Enemies defeated:"+"\nRuns attempts:"+"\nSuccessful runs:"+"\nDefeats:", width/5, height/5);
+  text("Enemies defeated:"+"\nRuns attempts:"+"\nSuccessful runs:"+"\nDefeats:"+"\nMoney gained:"+"\nLevels conquered:"+"\nItems discovered:", width/5, height/5);
 
   textAlign(RIGHT); // Affiche les stats sortis du fichier sauvegarde
-  text(savefile.getInt("mobSlain")+"\n"+savefile.getInt("runNbr")+"\n"+savefile.getInt("winNbr")+"\n"+savefile.getInt("defeatNbr"), width*0.8, height/5);
-
+  text(savefile.getInt("mobSlain")+"\n"+savefile.getInt("runNbr")+"\n"+savefile.getInt("winNbr")+"\n"+savefile.getInt("defeatNbr")+"\n$"+savefile.getInt("moneyGained")+"\n"+savefile.getInt("levelBeaten")+"/5\n"+unlockedItems.size()+"/60", width*0.8, height/5);
+  textLeading(48);
   if (isOnStatsPage) { // Si l'écran n'est pas en cours d'être quitter
     if (overlayScreenY > 0) { // Animation Rising
       overlayScreenY -= height/15;
@@ -368,28 +391,39 @@ void drawHeroSelect() {
       yPos = height/15*7; // Position Y de la carte
 
       rect(xPos, yPos, heroSelectW, heroSelectH); // Backdrop
-      image(heroBanners[i], xPos, yPos, heroSelectW, heroSelectW/2); // Image héro
+      if (savefile.getBoolean("char"+i+"_unlocked")) {
+        image(heroBanners[i], xPos, yPos, heroSelectW, heroSelectW/2); // Image héro
 
-      fill(COL_WHITE); // Nom héro
-      text(currentHero.getString("name"), xPos+heroSelectW/2, height/15*9.25);
+        fill(COL_WHITE); // Nom héro
+        text(currentHero.getString("name"), xPos+heroSelectW/2, height/15*9.25);
 
-      textSize(10); // Description héro
-      text(currentHero.getString("description"), xPos, height/15*9.4, heroSelectW-textOffset, heroSelectH/3);
+        textSize(10); // Description héro
+        text(currentHero.getString("description"), xPos, height/15*9.4, heroSelectW-textOffset, heroSelectH/3);
 
-      fill(COL_GRAY); // Bar d'exp vide
-      rect(xPos+heroSelectW/10, height/15*10.5, heroSelectW/5*4, heroSelectH/32);
-      fill(COL_DEF); // Bar d'exp pleine
-      rect(xPos+heroSelectW/10, height/15*10.5, map(savefile.getInt("char"+i+"_exp"), 0, (savefile.getInt("char"+i+"_lvl")+1)*100, 0, heroSelectW/5*4), heroSelectH/32);
-      fill(COL_WHITE); // Texte niveau
-      textSize(12);
-      text("Lv"+savefile.getInt("char"+i+"_lvl"), xPos+heroSelectW/10, height/15*10.65);
+        fill(COL_GRAY); // Bar d'exp vide
+        rect(xPos+heroSelectW/10, height/15*10.5, heroSelectW/5*4, heroSelectH/32);
+        fill(COL_DEF); // Bar d'exp pleine
+        rect(xPos+heroSelectW/10, height/15*10.5, map(savefile.getInt("char"+i+"_exp"), 0, (savefile.getInt("char"+i+"_lvl")+1)*100, 0, heroSelectW/5*4), heroSelectH/32);
+        fill(COL_WHITE); // Texte niveau
+        textSize(12);
+        text("Lv"+savefile.getInt("char"+i+"_lvl"), xPos+heroSelectW/10, height/15*10.65);
 
-      textSize(11); // Stats
-      text("ATK:"+currentHero.getInt("attack")+"  DEF:"+currentHero.getInt("defense")+"  HP:"+currentHero.getInt("maxHp"), xPos+heroSelectW/2, height/15*11.25);
+        textSize(11); // Stats
+        text("ATK:"+currentHero.getInt("attack")+"  DEF:"+currentHero.getInt("defense")+"  HP:"+currentHero.getInt("maxHp"), xPos+heroSelectW/2, height/15*11.25);
+      } else {
+        textSize(28);
+        fill(COL_WHITE); // texte ???
+        text("???", xPos+heroSelectW/2, yPos+yPos/6);
+
+        textSize(12); // Description de comment débloquer
+        text(currentHero.getString("unlockRequirement"), xPos, height/15*9.4, heroSelectW-textOffset, heroSelectH/3);
+      }
     }
     if (mouseDetection(xPos, yPos, heroSelectW, heroSelectH)) {
-      fill(COL_HOVER);
-      rect(xPos, yPos, heroSelectW, heroSelectH);
+      if (i <= 2 || savefile.getBoolean("char"+i+"_unlocked")) {
+        fill(COL_HOVER);
+        rect(xPos, yPos, heroSelectW, heroSelectH);
+      }
     }
   }
 
@@ -408,8 +442,8 @@ void beginGame() {
   image(battleBackground, 0, 0, width, height);
   hero.display();
   bag.itemDisplay();
-  
-  
+
+
   // DEBUG INFO --------------------
   fill(255, 0, 0);
   textAlign(CENTER);
@@ -436,6 +470,11 @@ float timer(float countdown) {
 // Fonction pour plus facilement et rapidement checker si la souris survol un objet
 boolean mouseDetection(float posX, float posY, float w, float h) {
   return (mouseX > posX && mouseX < posX+w && mouseY > posY && mouseY < posY+h);
+}
+
+// Dessine une carte attaque
+void drawAbilityCard(float cardX, float cardY, float cardW, float cardH, JSONObject cardAbility, int handIndex) {
+  // ea
 }
 
 // --------------------
@@ -474,6 +513,8 @@ void savefileLoad() {
     savefile.setInt("defeatNbr", 0);
     savefile.setInt("runNbr", 0);
     savefile.setInt("winNbr", 0);
+    savefile.setInt("moneyGained", 0);
+    savefile.setInt("levelBeaten", 0);
 
     unlockedItems = new JSONArray();
     savefile.setJSONArray("unlockedItems", unlockedItems);
@@ -482,6 +523,20 @@ void savefileLoad() {
   } else {
     unlockedItems = savefile.getJSONArray("unlockedItems");
   }
+  statMobKills = savefile.getInt("mobSlain");
+  statRunLoseNbr = savefile.getInt("defeatNbr");
+  statRunNbr = savefile.getInt("runNbr");
+  statRunWinNbr = savefile.getInt("winNbr");
+  statMoneyGained = savefile.getInt("moneyGained");
+  statLevelBeaten = savefile.getInt("levelBeaten");
+}
+
+// Sauvegarde un stat augmenté et met à jour la variable contenant la valeur
+int statIncrease(int stat, int amountGained, String savefileField) {
+  stat += amountGained;
+  savefile.setInt(savefileField, stat);
+  saveGame();
+  return stat;
 }
 
 void saveGame() { // Sauvegarde le progrès
