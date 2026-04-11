@@ -65,12 +65,12 @@ class Inventory {
             bubblePosX = frameXPos; // Position X de item 1
           }
           fill(itemHoverBubble);
-          rect(bubblePosX, bubblePosY, itemFrameSize*2, itemFrameSize, 10);
+          rect(bubblePosX, bubblePosY, itemFrameSize*2, itemFrameSize*1.2, 10);
           fill(itemHoverText);
-          textSize(12);
-          textAlign(CENTER);
-          text(heldItemsArr[i].getString("name"), bubblePosX+textOffset/2, bubblePosY+textOffset/2, itemFrameSize*2-textOffset, itemFrameSize-textOffset-itemFrameSize/5*4);
-          text(heldItemsArr[i].getString("desc"), bubblePosX+textOffset/2, bubblePosY+textOffset/2+itemFrameSize/5, itemFrameSize*2-textOffset, itemFrameSize-textOffset-itemFrameSize/5);
+          textSize(11);
+          text(heldItemsArr[i].getString("name"), bubblePosX+textOffset/2, bubblePosY+textOffset/2, itemFrameSize*2-textOffset, itemFrameSize-textOffset-itemFrameSize/5*3);
+          textSize(10);
+          text(heldItemsArr[i].getString("desc"), bubblePosX+textOffset/2, bubblePosY+textOffset/2+itemFrameSize/5, itemFrameSize*2-textOffset, itemFrameSize-textOffset-itemFrameSize/10);
         }
       }
     }
@@ -83,6 +83,7 @@ class Inventory {
         elementRemoved = true;
       } else if (elementRemoved) { // Si l'index de l'objet viens après celui enlevé
         heldItemsArr[i-1] = heldItemsArr[i]; // Réduit l'index des objets
+        heldItemSprites[i-1] = heldItemSprites[i]; // Réduit l'index des sprites
         if (i == heldItemsArr.length-1) {
           heldItemsArr[i] = emptyItem; // Réduit la taille du tableau
           heldItemSprites[i] = loadImage(heldItemsArr[i].getString("sprite"));

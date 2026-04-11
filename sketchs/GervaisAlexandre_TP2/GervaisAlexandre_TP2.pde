@@ -47,6 +47,7 @@ float exitBtnX; // Emplacement des boutons Quitter
 float exitBtnY;
 float exitBtnW;
 float exitBtnH;
+char titleLastScreen; // Garder un écran afficher quand l'animation quit se passe
 
 // Écran Choisi ton Héro
 PImage[] heroBanners;
@@ -54,6 +55,7 @@ float heroSelectX = 200;
 float heroSelectW = 188;
 float heroSelectH = 225;
 float heroSelectXOffset = 6;
+final color COL_HOVER = color(0, 0, 0, 30); // couleur de survolement
 
 // Width et Height de tout les boutons dans le main menu
 float startMenuButtonX;
@@ -69,7 +71,8 @@ PImage battleBackground;
 PImage heroSprite;
 int roundNbr = 0;
 
-// PImage selectHeroPoster; // Do one for each Hero
+// Font
+PFont descFont;
 
 // Variables de classes
 Player hero; // Le joueur
@@ -95,7 +98,7 @@ void draw() {
     drawTitleScreen();
   } else if (isGameStarted) { // Dessine l'écran de combat
     beginGame();
-    
+
     // Once the Player has lost the Game
     if (hero.isDead()) {
       onGameOver();
@@ -122,7 +125,12 @@ void initializeVariables() {
   exitBtnY = height*0.8;
   exitBtnW = width*0.6;
   exitBtnH = height/15;
-  
+
+  // Font
+  descFont = createFont("fonts/undertale-deltarune-text-font-extended.otf", 50);
+  textFont(descFont);
+
+  // Inventaire
   bag = new Inventory();
   bag.initializeInventory();
 
@@ -140,7 +148,7 @@ void loadBasicAssets() {
   titleBG = loadImage("menus/menu_title_background.png");
   titleStartButton = loadImage("menus/menu_title_startButton.png");
   titleOtherButton = loadImage("menus/menu_title_otherButton.png");
-  
+
   battleBackground = loadImage("backgrounds/DEBUG_battle_bg.png");
 
   heroBanners = new PImage[allHeroes.size()];
@@ -161,6 +169,12 @@ void mousePressed() {
     if (!isOnStatsPage && !isOnHeroSelect) {
       isOnHeroSelect = mouseDetection(startMenuButtonX, heroSelectButtonY, startMenuButtonWidth, startMenuButtonHeight);
       isOnStatsPage = mouseDetection(startMenuButtonX, statsPageButtonY, startMenuButtonWidth, startMenuButtonHeight);
+      if (isOnHeroSelect) {
+        titleLastScreen = 'h'; // Met le last screen check a Hero
+      }
+      if (isOnStatsPage) {
+        titleLastScreen = 's'; // Met le last screen check a Stats
+      }
     }
 
     // Ferme l'application
@@ -198,14 +212,15 @@ void mousePressed() {
 // --------------------
 void keyPressed() {
   if (isGameStarted) { // FOR DEBUG ONLY
-  int keyInput = int(key)-49; // Ex. Appyer sur la touche 1 redonne 0
+    int keyInput = int(key)-49; // Ex. Appyer sur la touche 1 redonne 0
     if (keyInput >= 0 && keyInput <= 8) {
       bag.receiveItem(floor(random(60)));
+    } else if (keyInput == -1) {
+      bag.loseHeldItem(0);
     }
     println(int(key));
   }
   if (isGameStarted && isPlayerTurn) {
-    
   }
 }
 
@@ -215,40 +230,69 @@ void keyPressed() {
 void drawTitleScreen() {
   // Dessine l'arrière-plan
   image(titleBG, 0, 0, width, height);
+
   // Dessine les boutons
   image(titleStartButton, startMenuButtonX, heroSelectButtonY, startMenuButtonWidth, startMenuButtonHeight);
   image(titleOtherButton, startMenuButtonX, statsPageButtonY, startMenuButtonWidth, startMenuButtonHeight);
   image(titleOtherButton, startMenuButtonX, quitAppButtonY, startMenuButtonWidth, startMenuButtonHeight);
+
   // Écrit le texte dans les boutons
-  fill(255);
+  fill(COL_WHITE);
   textSize(24);
   textAlign(CENTER);
   text("Start Game", startMenuTextOffset, heroSelectButtonY+(startMenuButtonHeight/2));
   text("Stats", startMenuTextOffset, statsPageButtonY+(startMenuButtonHeight/2));
   text("Quit", startMenuTextOffset, quitAppButtonY+(startMenuButtonHeight/2));
+
+  // Détection de survolement des boutons de l'écran titre
+  if (!isOnHeroSelect && !isOnStatsPage) {
+    fill(COL_HOVER);
+    if (mouseDetection(startMenuButtonX, heroSelectButtonY, startMenuButtonWidth, startMenuButtonHeight)) {
+      rect(startMenuButtonX, heroSelectButtonY, startMenuButtonWidth, startMenuButtonHeight);
+    } else if (mouseDetection(startMenuButtonX, statsPageButtonY, startMenuButtonWidth, startMenuButtonHeight)) {
+      rect(startMenuButtonX, statsPageButtonY, startMenuButtonWidth, startMenuButtonHeight);
+    } else if (mouseDetection(startMenuButtonX, quitAppButtonY, startMenuButtonWidth, startMenuButtonHeight)) {
+      rect(startMenuButtonX, quitAppButtonY, startMenuButtonWidth, startMenuButtonHeight);
+    }
+  }
+
   // Écran qui pop up
   fill(COL_BLACK, darkenBgProgress);
   rect(0, 0, width, height);
   pushMatrix();
   translate(0, overlayScreenY);
   fill(0);
+
   if (isOnHeroSelect) { // Dessine Hero Select
     drawHeroSelect();
   } else if (isOnStatsPage) { // Dessine Stats Page
     statsPage();
   } else if (overlayScreenY < height) { // Animation Lowers
+    if (titleLastScreen == 'h') { // Dessine l'écran héro
+      drawHeroSelect();
+    } else if (titleLastScreen == 's') { // Dessine l'écran stats
+      statsPage();
+    }
     overlayScreenY += height/15;
     darkenBgProgress -= ceil(70/15);
   } else { // Animation Off
     overlayScreenY = height;
     darkenBgProgress = 0;
   }
+
+  // Bouton Quitter
   fill(COL_EXIT_BTN);
   rect(exitBtnX, exitBtnY, exitBtnW, exitBtnH);
   fill(COL_BLACK);
   textSize(24);
   textAlign(CENTER);
   text("EXIT", exitBtnX+(exitBtnW/2), exitBtnY+(exitBtnH/2));
+
+  // Si le bouton Exit est survolé
+  if (mouseDetection(exitBtnX, exitBtnY, exitBtnW, exitBtnH)) {
+    fill(COL_HOVER);
+    rect(exitBtnX, exitBtnY, exitBtnW, exitBtnH);
+  }
   popMatrix();
 }
 
@@ -256,75 +300,99 @@ void drawTitleScreen() {
 // M E N U   S T A T S
 // --------------------
 void statsPage() {
-  if (overlayScreenY > 0) { // Animation Rising
-    overlayScreenY -= height/15;
-    darkenBgProgress += ceil(70/15);
-  } else { // Animation Standby
-    overlayScreenY = 0;
-    darkenBgProgress = 70;
-  }
   fill(0);
   textSize(30);
-  textAlign(LEFT);
+
+  textAlign(LEFT); // Affiche le nom des stats
   text("Enemies defeated:"+"\nRuns attempts:"+"\nSuccessful runs:"+"\nDefeats:", width/5, height/5);
-  textAlign(RIGHT);
+
+  textAlign(RIGHT); // Affiche les stats sortis du fichier sauvegarde
   text(savefile.getInt("mobSlain")+"\n"+savefile.getInt("runNbr")+"\n"+savefile.getInt("winNbr")+"\n"+savefile.getInt("defeatNbr"), width*0.8, height/5);
+
+  if (isOnStatsPage) { // Si l'écran n'est pas en cours d'être quitter
+    if (overlayScreenY > 0) { // Animation Rising
+      overlayScreenY -= height/15;
+      darkenBgProgress += ceil(70/15);
+    } else { // Animation Standby
+      overlayScreenY = 0;
+      darkenBgProgress = 70;
+    }
+  }
 }
 
 // --------------------
 // H E R O   S E L E C T
 // --------------------
 void drawHeroSelect() {
-  for (int i=0; i < heroBanners.length; i++) {
+  for (int i=0; i < heroBanners.length; i++) { // Loop tout les héros
     float xPos;
+    float yPos;
+    float textOffset = 2;
     fill(COL_DARK);
     textSize(16);
     textAlign(CENTER);
-    JSONObject currentHero = allHeroes.getJSONObject(i);
-    if (i < heroBanners.length/2) {
-      xPos = (heroSelectX*(i+1))+(heroSelectXOffset*i);
-      rect(xPos, height/15*2, heroSelectW, heroSelectH);
-      image(heroBanners[i], xPos, height/15*2, heroSelectW, heroSelectW/2);
-      fill(COL_WHITE);
+    JSONObject currentHero = allHeroes.getJSONObject(i); // Collecte le héro actuel
+    if (i < heroBanners.length/2) { // Si c'est la top row
+      xPos = (heroSelectX*(i+1))+(heroSelectXOffset*i); // Position X de la carte
+      yPos = height/15*2; // Position Y de la carte
+
+      rect(xPos, yPos, heroSelectW, heroSelectH); // Backdrop
+      image(heroBanners[i], xPos, yPos, heroSelectW, heroSelectW/2); // Image héro
+
+      fill(COL_WHITE); // Nom héro
       text(currentHero.getString("name"), xPos+heroSelectW/2, height/15*4.25);
-      textSize(12);
-      text(currentHero.getString("description"), xPos, height/15*4.5, heroSelectW, heroSelectH/3);
-      fill(COL_GRAY);
+
+      textSize(10); // Description héro
+      text(currentHero.getString("description"), xPos, height/15*4.4, heroSelectW-textOffset, heroSelectH/3);
+
+      fill(COL_GRAY); // Bar d'exp vide
       rect(xPos+heroSelectW/10, height/15*5.5, heroSelectW/5*4, heroSelectH/32);
-      fill(COL_DEF);
+      fill(COL_DEF); // Bar d'exp pleine
       rect(xPos+heroSelectW/10, height/15*5.5, map(savefile.getInt("char"+i+"_exp"), 0, (savefile.getInt("char"+i+"_lvl")+1)*100, 0, heroSelectW/5*4), heroSelectH/32);
-      fill(COL_WHITE);
-      textSize(14);
-      text("Lv"+savefile.getInt("char"+i+"_lvl"), xPos+heroSelectW/10, height/15*5.65);
-      textSize(13);
-      text("ATK: "+currentHero.getInt("attack")+"  DEF: "+currentHero.getInt("defense")+"  HP: "+currentHero.getInt("maxHp"), xPos+heroSelectW/2, height/15*6.25);
-    } else {
-      xPos = (heroSelectX*(i-3+1))+(heroSelectXOffset*(i-3));
-      rect(xPos, height/15*7, heroSelectW, heroSelectH);
-      image(heroBanners[i], xPos, height/15*7, heroSelectW, heroSelectW/2);
-      fill(COL_WHITE);
-      text(currentHero.getString("name"), xPos+heroSelectW/2, height/15*9.25);
+      fill(COL_WHITE); // Texte niveau
       textSize(12);
-      text(currentHero.getString("description"), xPos, height/15*9.5, heroSelectW, heroSelectH/3);
-      fill(COL_GRAY);
+      text("Lv"+savefile.getInt("char"+i+"_lvl"), xPos+heroSelectW/10, height/15*5.65);
+
+      textSize(11); // Stats
+      text("ATK:"+currentHero.getInt("attack")+"  DEF:"+currentHero.getInt("defense")+"  HP:"+currentHero.getInt("maxHp"), xPos+heroSelectW/2, height/15*6.25);
+    } else {
+      xPos = (heroSelectX*(i-3+1))+(heroSelectXOffset*(i-3)); // Position X de la carte
+      yPos = height/15*7; // Position Y de la carte
+
+      rect(xPos, yPos, heroSelectW, heroSelectH); // Backdrop
+      image(heroBanners[i], xPos, yPos, heroSelectW, heroSelectW/2); // Image héro
+
+      fill(COL_WHITE); // Nom héro
+      text(currentHero.getString("name"), xPos+heroSelectW/2, height/15*9.25);
+
+      textSize(10); // Description héro
+      text(currentHero.getString("description"), xPos, height/15*9.4, heroSelectW-textOffset, heroSelectH/3);
+
+      fill(COL_GRAY); // Bar d'exp vide
       rect(xPos+heroSelectW/10, height/15*10.5, heroSelectW/5*4, heroSelectH/32);
-      fill(COL_DEF);
+      fill(COL_DEF); // Bar d'exp pleine
       rect(xPos+heroSelectW/10, height/15*10.5, map(savefile.getInt("char"+i+"_exp"), 0, (savefile.getInt("char"+i+"_lvl")+1)*100, 0, heroSelectW/5*4), heroSelectH/32);
-      fill(COL_WHITE);
-      textSize(14);
+      fill(COL_WHITE); // Texte niveau
+      textSize(12);
       text("Lv"+savefile.getInt("char"+i+"_lvl"), xPos+heroSelectW/10, height/15*10.65);
-      textSize(13);
-      text("ATK: "+currentHero.getInt("attack")+"  DEF: "+currentHero.getInt("defense")+"  HP: "+currentHero.getInt("maxHp"), xPos+heroSelectW/2, height/15*11.25);
+
+      textSize(11); // Stats
+      text("ATK:"+currentHero.getInt("attack")+"  DEF:"+currentHero.getInt("defense")+"  HP:"+currentHero.getInt("maxHp"), xPos+heroSelectW/2, height/15*11.25);
+    }
+    if (mouseDetection(xPos, yPos, heroSelectW, heroSelectH)) {
+      fill(COL_HOVER);
+      rect(xPos, yPos, heroSelectW, heroSelectH);
     }
   }
-  // image(heroSelectBG, 0, 0, width, height);
-  // for loop to draw all character portraits and names
-  if (overlayScreenY > 0) { // Animation Rising
-    overlayScreenY -= height/15;
-    darkenBgProgress += ceil(70/15);
-  } else { // Animation Standby
-    overlayScreenY = 0;
-    darkenBgProgress = 70;
+
+  if (isOnHeroSelect) { // Si l'écran n'est pas en cours d'être quitter
+    if (overlayScreenY > 0) { // Animation Rising
+      overlayScreenY -= height/15;
+      darkenBgProgress += ceil(70/15);
+    } else { // Animation Standby
+      overlayScreenY = 0;
+      darkenBgProgress = 70;
+    }
   }
 }
 
