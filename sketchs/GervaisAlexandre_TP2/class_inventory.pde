@@ -7,6 +7,7 @@ class Inventory {
   PImage[] heldItemSprites;
   color itemHoverBubble;
   color itemHoverText;
+  PImage itemFrame;
   Inventory() {
     money = 0;
     itemsJsonFile = loadJSONArray("json/items.json");
@@ -15,6 +16,7 @@ class Inventory {
     itemHoverBubble = color(100, 100, 100, 170);
     itemHoverText = color(255, 255, 255);
     allItems = new JSONObject[61];
+    itemFrame = loadImage("./menus/battle_item_frame.png");
   }
 
   void receiveItem(int itemID) {
@@ -51,10 +53,9 @@ class Inventory {
       if (heldItemsArr[i] != emptyItem) {
         float frameXPos = startOffset + (itemFrameSize*i) + (itemGutterSize*i);
         float imageCenterX = frameXPos + itemFrameBorder; // Centrer en X
-        // À Remplacer fill() et square() une fois que l'itemframe asset est fait
-        // image(itemFrame, heldItemsArr, startOffset, itemFrameSize, itemFrameSize);
-        fill(179, 127, 86);
-        square(frameXPos, startOffset, itemFrameSize);
+        
+        // L'item Frame vide
+        image(itemFrame, frameXPos, startOffset, itemFrameSize, itemFrameSize);
         image(heldItemSprites[i], imageCenterX, imageCenterY);
 
         // Hover Check

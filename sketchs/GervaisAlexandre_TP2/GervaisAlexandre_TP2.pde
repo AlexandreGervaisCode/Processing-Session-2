@@ -78,18 +78,26 @@ float startMenuTextOffset;
 
 // Variables Battle
 PImage battleBackground;
+PImage battleForeground;
 PImage heroSprite;
+PImage energyCounter;
 int roundNbr = 0;
 int energyLeft = 3;
+int maxEnergy = 3;
 ArrayList<JSONObject> fullAbilityDeck;
 ArrayList<JSONObject> currentAbilityHand;
+float energyCounterPosX = 10; // Positionnement du energy counter
+float energyCounterPosY = 95;
+float energyCounterSize = 80;
 
 // Battle Display
 float hudProgressPosX; // Position X, Y, Width, Height de roundNbr et Money
 float hudProgressPosY;
 float hudProgressWidth;
 float hudProgressHeight;
+float hudProgressRounded; // À quel point rounded que le rect est
 float hudProgressGutter; // Distance verticale entre roundNbr et Money
+color hudProgressColor = color(0, 0, 0, 100);
 
 // Font
 PFont descFont;
@@ -146,6 +154,14 @@ void initializeVariables() {
   exitBtnW = width*0.6;
   exitBtnH = height/15;
 
+  // Position des éléments HUD dans les combat
+  hudProgressPosX = width*0.79; // Position X, Y, Width, Height de roundNbr et Money
+  hudProgressPosY = height/75;
+  hudProgressWidth = width*0.2;
+  hudProgressHeight = height/15;
+  hudProgressRounded = 15;
+  hudProgressGutter = hudProgressPosY+hudProgressHeight;
+  
   // Font
   descFont = createFont("fonts/undertale-deltarune-text-font-extended.otf", 50);
   textFont(descFont);
@@ -176,7 +192,9 @@ void loadBasicAssets() {
   titleSign = loadImage("menus/menu_title_sign.png");
   titleSignPage = loadImage("menus/menu_title_signPage.png");
 
-  battleBackground = loadImage("backgrounds/DEBUG_battle_bg.png");
+  battleBackground = loadImage("backgrounds/DEBUG_background.png");
+  battleForeground = loadImage("backgrounds/DEBUG_foreground.png");
+  energyCounter = loadImage("menus/battle_energy_sphere.png");
 
   heroBanners = new PImage[allHeroes.size()];
   // Load les images Banner
@@ -439,11 +457,27 @@ void drawHeroSelect() {
 }
 
 void beginGame() {
-  image(battleBackground, 0, 0, width, height);
-  hero.display();
-  bag.itemDisplay();
-
-
+  image(battleBackground, 0, 0, width, height); // Arrière-plan
+  hero.display(); // Affiche le héro sprite
+  bag.itemDisplay(); // affiche tout les items
+  // ENEMY DISPLAY HERE
+  image(battleForeground, 0, 0, width, height); // Avant-plan
+  
+  fill(hudProgressColor); // Rectangles Round et Money
+  rect(hudProgressPosX, hudProgressPosY, hudProgressWidth, hudProgressHeight, hudProgressRounded);
+  rect(hudProgressPosX, hudProgressPosY+hudProgressGutter, hudProgressWidth, hudProgressHeight, hudProgressRounded);
+  
+  fill(COL_WHITE); // Texte Round et Money
+  textAlign(CENTER);
+  textSize(28);
+  text("ROUND "+roundNbr, hudProgressPosX+hudProgressWidth/2, hudProgressPosY+hudProgressHeight/6*4);
+  text("$"+bag.getMoney(), hudProgressPosX+hudProgressWidth/2, hudProgressPosY+hudProgressHeight/6*4+hudProgressGutter);
+  
+  // Nombre d'énergie
+  image(energyCounter, energyCounterPosX, energyCounterPosY, energyCounterSize, energyCounterSize);
+  textSize(26);
+  fill(COL_BLACK); // Texte nombre d'énergie
+  text(energyLeft+"/"+maxEnergy, energyCounterPosX+energyCounterSize/2, energyCounterPosY+energyCounterSize/5*3);
   // DEBUG INFO --------------------
   fill(255, 0, 0);
   textAlign(CENTER);
@@ -473,7 +507,7 @@ boolean mouseDetection(float posX, float posY, float w, float h) {
 }
 
 // Dessine une carte attaque
-void drawAbilityCard(float cardX, float cardY, float cardW, float cardH, JSONObject cardAbility, int handIndex) {
+void drawAbilityCard(float cardX, float cardY, JSONObject cardAbility, int handIndex) {
   // ea
 }
 
