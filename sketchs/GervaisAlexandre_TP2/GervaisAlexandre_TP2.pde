@@ -459,6 +459,13 @@ void drawHeroSelect() {
 void beginGame() {
   image(battleBackground, 0, 0, width, height); // Arrière-plan
   hero.display(); // Affiche le héro sprite
+  
+  // Nombre d'énergie
+  image(energyCounter, energyCounterPosX, energyCounterPosY, energyCounterSize, energyCounterSize);
+  textSize(26);
+  fill(COL_BLACK); // Texte nombre d'énergie
+  text(energyLeft+"/"+maxEnergy, energyCounterPosX+energyCounterSize/2, energyCounterPosY+energyCounterSize/5*3);
+  
   bag.itemDisplay(); // affiche tout les items
   // ENEMY DISPLAY HERE
   image(battleForeground, 0, 0, width, height); // Avant-plan
@@ -473,11 +480,6 @@ void beginGame() {
   text("ROUND "+roundNbr, hudProgressPosX+hudProgressWidth/2, hudProgressPosY+hudProgressHeight/6*4);
   text("$"+bag.getMoney(), hudProgressPosX+hudProgressWidth/2, hudProgressPosY+hudProgressHeight/6*4+hudProgressGutter);
   
-  // Nombre d'énergie
-  image(energyCounter, energyCounterPosX, energyCounterPosY, energyCounterSize, energyCounterSize);
-  textSize(26);
-  fill(COL_BLACK); // Texte nombre d'énergie
-  text(energyLeft+"/"+maxEnergy, energyCounterPosX+energyCounterSize/2, energyCounterPosY+energyCounterSize/5*3);
   // DEBUG INFO --------------------
   fill(255, 0, 0);
   textAlign(CENTER);
