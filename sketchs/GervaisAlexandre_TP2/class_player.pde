@@ -8,6 +8,10 @@ class Player {
   float posY = 305;
   float scaleX = 300;
   float scaleY = 250;
+  color white = color(255);
+  color healthBar = color(0, 0, 0, 100);
+  float healthHeight = 50;
+  float healthOffset = 20+healthHeight;
   // Valeurs effets character-specific
   int critsOdd = 5; // Chance de coups critique sur 100
   int thorns, dodgeOdd, lifeSteal = 0;
@@ -42,6 +46,12 @@ class Player {
   // Affiche le joueur
   void display() {
     image(sprite, posX, posY, scaleX, scaleY);
+    fill(healthBar);
+    rect(posX+scaleX/4, posY-healthOffset, scaleX/2, healthHeight, 15);
+    fill(white);
+    textSize(24);
+    textAlign(CENTER);
+    text(hp+"/"+maxHp, posX+scaleX/2, posY-healthOffset+healthHeight/3*2);
   }
 
   // Si le joueur est endommagé
