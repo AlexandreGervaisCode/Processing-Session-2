@@ -66,6 +66,7 @@ float heroSelectW = 188;
 float heroSelectH = 225;
 float heroSelectXOffset = 6;
 final color COL_HOVER = color(0, 0, 0, 30); // couleur de survolement
+JSONObject selectedHero; // Héro choisi
 
 // Width et Height de tout les boutons dans le main menu
 float startMenuButtonX;
@@ -84,8 +85,9 @@ PImage energyCounter;
 int roundNbr = 0;
 int energyLeft = 3;
 int maxEnergy = 3;
-ArrayList<JSONObject> fullAbilityDeck;
-ArrayList<JSONObject> currentAbilityHand;
+IntList fullAbilityDeck; // Contient TOUTES les cartes en inventaire
+IntList currentAbilityDeck; // Contient toutes les cartes non discartés
+IntList currentAbilityHand; // Contient toutes les cartes dans les mains
 float energyCounterPosX = 10; // Positionnement du energy counter
 float energyCounterPosY = 95;
 float energyCounterSize = 80;
@@ -98,6 +100,13 @@ float hudProgressHeight;
 float hudProgressRounded; // À quel point rounded que le rect est
 float hudProgressGutter; // Distance verticale entre roundNbr et Money
 color hudProgressColor = color(0, 0, 0, 100);
+
+// Variables des cartes Ability
+float battleCardPosX;
+float battleCardPosY;
+float battleCardWidth;
+float battleCardHeight;
+float battleCardGutter;
 
 // Font
 PFont descFont;
@@ -125,7 +134,7 @@ void draw() {
     isInCombat = false;
     drawTitleScreen();
   } else if (isGameStarted) { // Dessine l'écran de combat
-    beginGame();
+    battle();
 
     // Once the Player has lost the Game
     if (hero.isDead()) {
@@ -161,14 +170,22 @@ void initializeVariables() {
   hudProgressHeight = height/15;
   hudProgressRounded = 15;
   hudProgressGutter = hudProgressPosY+hudProgressHeight;
-  
+
+  // Cartes Ability
+  battleCardPosX = width*0.015;
+  battleCardPosY = height*0.74;
+  battleCardWidth = width*0.13;
+  battleCardHeight = height*0.24;
+  battleCardGutter = width*0.04;
+
   // Font
   descFont = createFont("fonts/undertale-deltarune-text-font-extended.otf", 50);
   textFont(descFont);
 
   // Array Lists des abilités obtenues
-  fullAbilityDeck = new ArrayList<JSONObject>();
-  currentAbilityHand = new ArrayList<JSONObject>();
+  fullAbilityDeck = new IntList();
+  currentAbilityDeck = new IntList();
+  currentAbilityHand = new IntList();
 
   // Inventaire
   bag = new Inventory();
@@ -240,6 +257,30 @@ void mousePressed() {
           isOnTitleScreen = false;
           isOnHeroSelect = false;
           isGameStarted = true;
+          oneFrameExecution = true;
+          selectedHero = hero.getSelectedHero();
+
+          // Ajoute les cartes ability appropriées
+          JSONArray getAbilityList = selectedHero.getJSONArray("abilityList");
+          for (int j = 0; j < getAbilityList.size(); j++) {
+            fullAbilityDeck.append(getAbilityList.getInt(j));
+          }
+          if (savefile.getInt("char"+hero.getID()+"_lvl") >= 1) {
+            fullAbilityDeck.append(selectedHero.getInt("lv1Ability"));
+            if (savefile.getInt("char"+hero.getID()+"_lvl") >= 2) {
+              fullAbilityDeck.append(selectedHero.getInt("lv2Ability"));
+              if (savefile.getInt("char"+hero.getID()+"_lvl") >= 4) {
+                fullAbilityDeck.append(selectedHero.getInt("lv4Ability"));
+                if (savefile.getInt("char"+hero.getID()+"_lvl") == 5) {
+                  fullAbilityDeck.append(selectedHero.getInt("lv5Ability"));
+                }
+              }
+            }
+          }
+          // Ajoute le full deck au current deck débuter
+          for (int j = 0; j < fullAbilityDeck.size(); j++) {
+            currentAbilityDeck.append(fullAbilityDeck.get(j));
+          }
         }
       }
     }
@@ -263,7 +304,6 @@ void keyPressed() {
     } else if (keyInput == -1) {
       bag.loseHeldItem(0);
     }
-    println(int(key));
   }
   if (isGameStarted && isPlayerTurn) {
   }
@@ -456,30 +496,42 @@ void drawHeroSelect() {
   }
 }
 
-void beginGame() {
+// --------------------
+// B A T T L E   S C R E E N
+// --------------------
+void battle() {
+  if (oneFrameExecution) {
+    rerollAbilityHand();
+    oneFrameExecution = false;
+  }
   image(battleBackground, 0, 0, width, height); // Arrière-plan
   hero.display(); // Affiche le héro sprite
-  
+
   // Nombre d'énergie
   image(energyCounter, energyCounterPosX, energyCounterPosY, energyCounterSize, energyCounterSize);
   textSize(26);
   fill(COL_BLACK); // Texte nombre d'énergie
   text(energyLeft+"/"+maxEnergy, energyCounterPosX+energyCounterSize/2, energyCounterPosY+energyCounterSize/5*3);
-  
+
   bag.itemDisplay(); // affiche tout les items
   // ENEMY DISPLAY HERE
   image(battleForeground, 0, 0, width, height); // Avant-plan
-  
+
   fill(hudProgressColor); // Rectangles Round et Money
   rect(hudProgressPosX, hudProgressPosY, hudProgressWidth, hudProgressHeight, hudProgressRounded);
   rect(hudProgressPosX, hudProgressPosY+hudProgressGutter, hudProgressWidth, hudProgressHeight, hudProgressRounded);
-  
+
   fill(COL_WHITE); // Texte Round et Money
   textAlign(CENTER);
   textSize(28);
   text("ROUND "+roundNbr, hudProgressPosX+hudProgressWidth/2, hudProgressPosY+hudProgressHeight/6*4);
   text("$"+bag.getMoney(), hudProgressPosX+hudProgressWidth/2, hudProgressPosY+hudProgressHeight/6*4+hudProgressGutter);
-  
+
+  // Cartes ability
+  for (int i = 0; i < currentAbilityHand.size(); i++) {
+    drawAbilityCard(battleCardPosX + battleCardWidth*i + battleCardGutter*i, allAttacks.getJSONObject(currentAbilityHand.get(i)), i);
+  }
+
   // DEBUG INFO --------------------
   fill(255, 0, 0);
   textAlign(CENTER);
@@ -509,8 +561,38 @@ boolean mouseDetection(float posX, float posY, float w, float h) {
 }
 
 // Dessine une carte attaque
-void drawAbilityCard(float cardX, float cardY, JSONObject cardAbility, int handIndex) {
-  // ea
+void drawAbilityCard(float cardX, JSONObject cardAbility, int handIndex) {
+  color cardColor;
+  if (cardAbility.getInt("colorType") == 0) { // Applique la couleur rouge
+    cardColor = COL_ATK;
+  } else if (cardAbility.getInt("colorType") == 1) { // Applique la couleur bleu
+    cardColor = COL_DEF;
+  } else { // Applique la couleur jaune
+    cardColor = COL_STATUS;
+  }
+  fill(cardColor);
+  rect(cardX, battleCardPosY, battleCardWidth, battleCardHeight);
+  fill(COL_WHITE);
+  rect(cardX+battleCardWidth/10, battleCardPosY+battleCardHeight/4, battleCardWidth*0.95, battleCardHeight*0.7);
+}
+
+void useAbility() {
+  // ability use
+}
+
+void rerollAbilityHand() {
+  currentAbilityHand.clear(); // Vide la main de l'utilisateur
+  currentAbilityDeck.shuffle(); // Mélange le deck
+  for (int i = 0; i < 6; i++) { // Rempli la main de l'utilisateur
+    if (currentAbilityDeck.size() <= 0) { // Si le deck est vide, rempli-le
+      currentAbilityDeck = fullAbilityDeck;
+      currentAbilityDeck.shuffle();
+    }
+    currentAbilityHand.append(currentAbilityDeck.get(0));
+    currentAbilityDeck.remove(0);
+  }
+  // shuffle deck
+  // add from deck to hand while removing from deck. If deck size = 0, deck = full deck
 }
 
 // --------------------

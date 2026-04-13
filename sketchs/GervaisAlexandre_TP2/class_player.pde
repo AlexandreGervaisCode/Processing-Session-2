@@ -95,4 +95,7 @@ class Player {
   int getID() {
     return ID;
   }
+  JSONObject getSelectedHero() {
+    return selectedHero;
+  }
 }
