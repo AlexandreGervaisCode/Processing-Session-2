@@ -174,9 +174,9 @@ void initializeVariables() {
   // Cartes Ability
   battleCardPosX = width*0.015;
   battleCardPosY = height*0.74;
-  battleCardWidth = width*0.13;
+  battleCardWidth = width*0.14;
   battleCardHeight = height*0.24;
-  battleCardGutter = width*0.04;
+  battleCardGutter = width*0.026;
 
   // Font
   descFont = createFont("fonts/undertale-deltarune-text-font-extended.otf", 50);
@@ -303,6 +303,9 @@ void keyPressed() {
       bag.receiveItem(floor(random(60)));
     } else if (keyInput == -1) {
       bag.loseHeldItem(0);
+    }
+    if (key == 'r') {
+      rerollAbilityHand();
     }
   }
   if (isGameStarted && isPlayerTurn) {
@@ -563,6 +566,7 @@ boolean mouseDetection(float posX, float posY, float w, float h) {
 // Dessine une carte attaque
 void drawAbilityCard(float cardX, JSONObject cardAbility, int handIndex) {
   color cardColor;
+  float inputCircleSize = battleCardWidth*0.22;
   if (cardAbility.getInt("colorType") == 0) { // Applique la couleur rouge
     cardColor = COL_ATK;
   } else if (cardAbility.getInt("colorType") == 1) { // Applique la couleur bleu
@@ -570,10 +574,36 @@ void drawAbilityCard(float cardX, JSONObject cardAbility, int handIndex) {
   } else { // Applique la couleur jaune
     cardColor = COL_STATUS;
   }
-  fill(cardColor);
+  // Arrière-plan de la carte et de la description
+  fill(cardColor); // Carte
   rect(cardX, battleCardPosY, battleCardWidth, battleCardHeight);
+  fill(COL_WHITE); // Description
+  rect(cardX+battleCardWidth/12, battleCardPosY+battleCardHeight*0.45, battleCardWidth/6*5, battleCardHeight*0.5);
+
+  // Info sur l'ability
+  fill(COL_BLACK);
+  textAlign(CENTER);
+  textSize(11); // Nom de l'attaque
+  text(cardAbility.getString("name"), cardX+battleCardWidth/2, battleCardPosY+battleCardHeight*0.53, battleCardWidth/6*5);
+
+  textSize(10); // Description de l'attaque
+  text(cardAbility.getString("desc"), cardX+battleCardWidth/12, battleCardPosY+battleCardHeight*0.57, battleCardWidth/6*5, battleCardHeight*0.5);
+
+  // Image Placeholder
+  fill(COL_DARK);
+  rect(cardX+battleCardWidth/12, battleCardPosY+battleCardHeight*0.05, battleCardWidth/6*5, battleCardHeight*0.35);
+
+  // Input Circle
+  stroke(cardColor);
+  strokeWeight(4);
+  fill(COL_DARK);
+  circle(cardX+battleCardWidth/2, battleCardPosY, inputCircleSize);
+  noStroke();
+
+  // Texte qui dit quel touche appuyer pour utiliser
   fill(COL_WHITE);
-  rect(cardX+battleCardWidth/10, battleCardPosY+battleCardHeight/4, battleCardWidth*0.95, battleCardHeight*0.7);
+  textSize(18);
+  text(handIndex+1, cardX+battleCardWidth/2, battleCardPosY+battleCardHeight*0.035);
 }
 
 void useAbility() {
@@ -585,7 +615,9 @@ void rerollAbilityHand() {
   currentAbilityDeck.shuffle(); // Mélange le deck
   for (int i = 0; i < 6; i++) { // Rempli la main de l'utilisateur
     if (currentAbilityDeck.size() <= 0) { // Si le deck est vide, rempli-le
-      currentAbilityDeck = fullAbilityDeck;
+      for (int j = 0; j < fullAbilityDeck.size(); j++) {
+        currentAbilityDeck.set(j, fullAbilityDeck.get(j));
+      }
       currentAbilityDeck.shuffle();
     }
     currentAbilityHand.append(currentAbilityDeck.get(0));

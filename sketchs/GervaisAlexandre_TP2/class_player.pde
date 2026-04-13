@@ -5,7 +5,7 @@ class Player {
   int atk, def, hp, maxHp = 1;
   // Placement du joueur
   float posX = 60;
-  float posY = 305;
+  float posY;
   float scaleX = 300;
   float scaleY = 250;
   color white = color(255);
@@ -34,6 +34,7 @@ class Player {
     hp = maxHp;
     scaleX = selectedHero.getFloat("scaleX");
     scaleY = selectedHero.getFloat("scaleY");
+    posY = 600-scaleY;
     sprite = loadImage(selectedHero.getString("sprite"));
     name = selectedHero.getString("name");
     // Bonus character-specific

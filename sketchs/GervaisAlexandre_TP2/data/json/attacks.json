@@ -109,7 +109,7 @@
   },
   {
     "id": 10,
-    "name": "Return to Sender",
+    "name": "Barbed Armour",
     "desc": "Return the Damage received this turn with Thorns.",
     "type": ["returnDmg"],
     "typeAmount": [100],
@@ -131,7 +131,7 @@
   },
   {
     "id": 12,
-    "name": "Phalanx Formation",
+    "name": "Phalanx Block",
     "desc": "Get +1 Energy next turn and start next turn with 25% DEF of Block.",
     "type": ["energy", "nextTurnDefBlock"],
     "typeAmount": [1, 25],
@@ -219,7 +219,7 @@
   },
   {
     "id": 20,
-    "name": "Radioactive Shot",
+    "name": "Sludge Shot",
     "desc": "Apply Poison Status to an enemy for 3 turns.",
     "type": ["statusInflict"],
     "typeAmount": [3],
@@ -230,7 +230,7 @@
   },
   {
     "id": 21,
-    "name": "Explosive Reagent",
+    "name": "Fatal Reagent",
     "desc": "Deal 100% ATK Damage to all enemies with a Status.",
     "type": ["ATKstatus"],
     "typeAmount": [100],
@@ -241,7 +241,7 @@
   },
   {
     "id": 22,
-    "name": "Energy Convertion",
+    "name": "Energy Transfer",
     "desc": "Add 100% DEF Block for each enemy with a Status.",
     "type": ["DEFstatus"],
     "typeAmount": [100],
@@ -340,7 +340,7 @@
   },
   {
     "id": 31,
-    "name": "Ghostly Apparition",
+    "name": "Apparition",
     "desc": "Deal 25% ATK Damage and gain +1 Energy next turn.",
     "type": ["ATK", "energy"],
     "typeAmount": [25, 1],
