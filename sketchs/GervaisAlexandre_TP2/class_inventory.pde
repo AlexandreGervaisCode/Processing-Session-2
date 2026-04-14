@@ -34,8 +34,9 @@ class Inventory {
     return money;
   }
 
-  void gainMoney(int amount) {
+  void gainMoney(int amount, JSONObject savefile) {
     money += amount;
+    savefile.setInt("moneyGained", savefile.getInt("moneyGained")+amount);
   }
 
   void loseMoney(int amount) {

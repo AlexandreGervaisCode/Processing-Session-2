@@ -34,7 +34,7 @@ class Player {
     hp = maxHp;
     scaleX = selectedHero.getFloat("scaleX");
     scaleY = selectedHero.getFloat("scaleY");
-    posY = 600-scaleY;
+    posY = height*0.8-scaleY;
     sprite = loadImage(selectedHero.getString("sprite"));
     name = selectedHero.getString("name");
     // Bonus character-specific
@@ -57,7 +57,13 @@ class Player {
 
   // Si le joueur est endommagé
   void hurt(Enemy mobAttack) {
-    hp -= mobAttack.getAtk();
+    hp -= floor(random(mobAttack.getAtk()*0.85, mobAttack.getAtk()*1.15));
+    if (isDead()) {
+      deathAnim();
+    }
+  }
+  void hurt(int recoil) {
+    hp -= ceil(maxHp/(100/recoil));
     if (isDead()) {
       deathAnim();
     }
@@ -98,5 +104,17 @@ class Player {
   }
   JSONObject getSelectedHero() {
     return selectedHero;
+  }
+  int getCritsOdd() {
+    return critsOdd;
+  }
+  int getThorns() {
+    return thorns;
+  }
+  int getDodgeOdd() {
+    return dodgeOdd;
+  }
+  int getLifeSteal() {
+    return lifeSteal;
   }
 }

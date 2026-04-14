@@ -78,19 +78,30 @@ float quitAppButtonY; // position Y du bouton quitter app
 float startMenuTextOffset;
 
 // Variables Battle
-PImage battleBackground;
-PImage battleForeground;
-PImage heroSprite;
-PImage energyCounter;
-int roundNbr = 0;
-int energyLeft = 3;
-int maxEnergy = 3;
+PImage battleBackground; // Arrière-plan du combat
+PImage battleForeground; // Avant-plan du combat
+PImage heroSprite; // Sprite du héro
+PImage energyCounter; // Sprite du visuel de nombre d'énergie
+int roundNbr = 0; // Rendu à la round combien
+int energyLeft = 3; // L'énergie restante pour ce tour
+int maxEnergy = 3; // L'énergie maximale (sans l'influence d'items)
 IntList fullAbilityDeck; // Contient TOUTES les cartes en inventaire
 IntList currentAbilityDeck; // Contient toutes les cartes non discartés
 IntList currentAbilityHand; // Contient toutes les cartes dans les mains
 float energyCounterPosX = 10; // Positionnement du energy counter
 float energyCounterPosY = 95;
 float energyCounterSize = 80;
+
+// Buff de stats du joueur
+int bonusPlayerATK = 0; // Stats augmentés par les objets/effets d'abilités
+int bonusPlayerDEF = 0;
+int playerBlock = 0; // Nombre de dégâts bloquer ce tour
+int bonusPlayerCrits = 0;
+int bonusPlayerDodge = 0;
+int bonusPlayerThorns = 0;
+int bonusPlayerLifeSteal = 0;
+
+float enemyTurnTimer;
 
 // Battle Display
 float hudProgressPosX; // Position X, Y, Width, Height de roundNbr et Money
@@ -102,18 +113,20 @@ float hudProgressGutter; // Distance verticale entre roundNbr et Money
 color hudProgressColor = color(0, 0, 0, 100);
 
 // Variables des cartes Ability
-float battleCardPosX;
+float battleCardPosX; // Position, Grandeur et espace entre les cartes
 float battleCardPosY;
 float battleCardWidth;
 float battleCardHeight;
 float battleCardGutter;
+boolean isAbilitySelected = false; // Check si une abilité est sélectionnée
+int abilitySelectedIndex = 0;
 
 // Font
 PFont descFont;
 
 // Variables de classes
 Player hero; // Le joueur
-Enemy[] mobs = new Enemy[5]; // Jusqu'à 5 ennemies peuvent être à l'écran à la fois
+ArrayList<Enemy> mobs = new ArrayList<Enemy>(); // Jusqu'à 5 ennemies peuvent être à l'écran à la fois
 Inventory bag; // L'inventaire
 Shop itemShop; // L'item shop
 
@@ -133,13 +146,18 @@ void draw() {
     isPlayerTurn = false;
     isInCombat = false;
     drawTitleScreen();
-  } else if (isGameStarted) { // Dessine l'écran de combat
-    battle();
-
+  } else if (isGameStarted && !isInCombat && !isInShop) { // Dessine l'écran de combat
+    isInCombat = true;
+    isInShop = false;
+    oneFrameExecution = true;
     // Once the Player has lost the Game
     if (hero.isDead()) {
       onGameOver();
     }
+  } else if (isInCombat) {
+    battle();
+  } else if (isInShop) {
+    // nothing yet
   }
 }
 
@@ -257,7 +275,7 @@ void mousePressed() {
           isOnTitleScreen = false;
           isOnHeroSelect = false;
           isGameStarted = true;
-          oneFrameExecution = true;
+          isPlayerTurn = true;
           selectedHero = hero.getSelectedHero();
 
           // Ajoute les cartes ability appropriées
@@ -298,18 +316,46 @@ void mousePressed() {
 // --------------------
 void keyPressed() {
   if (isGameStarted) { // FOR DEBUG ONLY
-    int keyInput = int(key)-49; // Ex. Appyer sur la touche 1 redonne 0
-    if (keyInput >= 0 && keyInput <= 8) {
+    if (key == 'i') {
       bag.receiveItem(floor(random(60)));
-    } else if (keyInput == -1) {
+    } else if (key == 'o') {
       bag.loseHeldItem(0);
     }
     if (key == 'r') {
       rerollAbilityHand();
     }
   }
+
+
   if (isGameStarted && isPlayerTurn) {
+    int keyInput = int(key)-49; // Ex. Appyer sur la touche 1 redonne 0
+    if (isAbilitySelected && keyInput == abilitySelectedIndex) {
+      useAbility(currentAbilityHand.get(abilitySelectedIndex));
+      currentAbilityHand.remove(abilitySelectedIndex);
+      isAbilitySelected = false;
+      energyLeft--;
+    } else if (keyInput >= 0 && keyInput <= currentAbilityHand.size()-1) {
+      abilitySelectedIndex = keyInput;
+      isAbilitySelected = true;
+    }
   }
+}
+
+// --------------------
+// T I M E R
+// --------------------
+float timer(float countdown) {
+  if (countdown > 0) {
+    countdown-=1/frameRate;
+  }
+  return countdown;
+}
+
+// --------------------
+// M O U S E   D E T E C T I O N
+// --------------------
+boolean mouseDetection(float posX, float posY, float w, float h) {
+  return (mouseX > posX && mouseX < posX+w && mouseY > posY && mouseY < posY+h);
 }
 
 // --------------------
@@ -400,7 +446,6 @@ void statsPage() {
 
   textAlign(RIGHT); // Affiche les stats sortis du fichier sauvegarde
   text(savefile.getInt("mobSlain")+"\n"+savefile.getInt("runNbr")+"\n"+savefile.getInt("winNbr")+"\n"+savefile.getInt("defeatNbr")+"\n$"+savefile.getInt("moneyGained")+"\n"+savefile.getInt("levelBeaten")+"/5\n"+unlockedItems.size()+"/60", width*0.8, height/5);
-  textLeading(48);
   if (isOnStatsPage) { // Si l'écran n'est pas en cours d'être quitter
     if (overlayScreenY > 0) { // Animation Rising
       overlayScreenY -= height/15;
@@ -504,12 +549,65 @@ void drawHeroSelect() {
 // --------------------
 void battle() {
   if (oneFrameExecution) {
-    rerollAbilityHand();
+    rerollAbilityHand(); // Génère les cartes en main
+
+    for (int i = 0; i < floor(random(1, 4)); i++) { // Génère les ennemies
+      spawnMobs();
+    }
+    energyLeft = maxEnergy; // Rempli l'énergie
+
+    roundNbr++; // Augmente le numéro de la round
+
     oneFrameExecution = false;
   }
-  image(battleBackground, 0, 0, width, height); // Arrière-plan
-  hero.display(); // Affiche le héro sprite
 
+  image(battleBackground, 0, 0, width, height); // Arrière-plan
+
+  if (mobs.size() > 0) { // Tant qu'il y a encore des ennemies présent
+    hero.display(); // Affiche le héro sprite
+
+    // L'ordre est fait a l'envers pour ne pas aller hors du range de l'array après avoir effacé un mob
+    for (int i = mobs.size()-1; i >= 0; i--) { // check si un mob est mort
+      removeMob(i);
+    }
+
+    for (int i = 0; i < mobs.size(); i++) {
+      mobs.get(i).display(i);
+    }
+
+    image(battleForeground, 0, 0, width, height); // Avant-plan
+
+    if (isPlayerTurn) {
+      playerTurn();
+      enemyTurnTimer = 2*mobs.size();
+    } else {
+      enemyTurn();
+    }
+
+    isPlayerTurn = (energyLeft > 0);
+  } else {
+    // HERE WOULD BE THE SHOP SEND
+    /*
+    isInShop = true;
+     isInCombat = false;
+     oneFrameExecution = true;
+     */
+
+    // THIS RESTARTS A BATTLE INSTEAD OF SHOP FOR NOW
+    oneFrameExecution = true;
+  }
+
+  // DEBUG INFO --------------------
+  fill(255, 0, 0);
+  textAlign(RIGHT);
+  textSize(30);
+  text(hero.getName(), width, height*0.2);
+}
+
+// --------------------
+// VISUELS PRÉSENTS LORS DU TOUR DU JOUEUR
+// --------------------
+void playerTurn() {
   // Nombre d'énergie
   image(energyCounter, energyCounterPosX, energyCounterPosY, energyCounterSize, energyCounterSize);
   textSize(26);
@@ -517,8 +615,6 @@ void battle() {
   text(energyLeft+"/"+maxEnergy, energyCounterPosX+energyCounterSize/2, energyCounterPosY+energyCounterSize/5*3);
 
   bag.itemDisplay(); // affiche tout les items
-  // ENEMY DISPLAY HERE
-  image(battleForeground, 0, 0, width, height); // Avant-plan
 
   fill(hudProgressColor); // Rectangles Round et Money
   rect(hudProgressPosX, hudProgressPosY, hudProgressWidth, hudProgressHeight, hudProgressRounded);
@@ -532,14 +628,20 @@ void battle() {
 
   // Cartes ability
   for (int i = 0; i < currentAbilityHand.size(); i++) {
-    drawAbilityCard(battleCardPosX + battleCardWidth*i + battleCardGutter*i, allAttacks.getJSONObject(currentAbilityHand.get(i)), i);
+    drawAbilityCard(battleCardPosX + battleCardWidth*i + battleCardGutter*i, battleCardPosY, allAttacks.getJSONObject(currentAbilityHand.get(i)), i);
   }
+}
 
-  // DEBUG INFO --------------------
-  fill(255, 0, 0);
-  textAlign(CENTER);
-  textSize(40);
-  text(hero.getName(), width/2, height/2);
+// --------------------
+// TOUR DES ENEMIES
+// --------------------
+void enemyTurn() {
+  enemyTurnTimer = timer(enemyTurnTimer);
+  if (enemyTurnTimer<=0) {
+    energyLeft = maxEnergy;
+    rerollAbilityHand();
+    isPlayerTurn = true;
+  }
 }
 
 void onGameOver() {
@@ -548,23 +650,8 @@ void onGameOver() {
   bag.initializeInventory();
 }
 
-// --------------------
-// T I M E R
-// --------------------
-float timer(float countdown) {
-  if (countdown > 0) {
-    countdown-=1/frameRate;
-  }
-  return countdown;
-}
-
-// Fonction pour plus facilement et rapidement checker si la souris survol un objet
-boolean mouseDetection(float posX, float posY, float w, float h) {
-  return (mouseX > posX && mouseX < posX+w && mouseY > posY && mouseY < posY+h);
-}
-
 // Dessine une carte attaque
-void drawAbilityCard(float cardX, JSONObject cardAbility, int handIndex) {
+void drawAbilityCard(float cardX, float cardY, JSONObject cardAbility, int handIndex) {
   color cardColor;
   float inputCircleSize = battleCardWidth*0.22;
   if (cardAbility.getInt("colorType") == 0) { // Applique la couleur rouge
@@ -574,40 +661,53 @@ void drawAbilityCard(float cardX, JSONObject cardAbility, int handIndex) {
   } else { // Applique la couleur jaune
     cardColor = COL_STATUS;
   }
+
+  if (isAbilitySelected && abilitySelectedIndex == handIndex) {
+    cardY-=cardY*0.1;
+  }
   // Arrière-plan de la carte et de la description
   fill(cardColor); // Carte
-  rect(cardX, battleCardPosY, battleCardWidth, battleCardHeight);
+  rect(cardX, cardY, battleCardWidth, battleCardHeight);
   fill(COL_WHITE); // Description
-  rect(cardX+battleCardWidth/12, battleCardPosY+battleCardHeight*0.45, battleCardWidth/6*5, battleCardHeight*0.5);
+  rect(cardX+battleCardWidth/12, cardY+battleCardHeight*0.45, battleCardWidth/6*5, battleCardHeight*0.5);
 
   // Info sur l'ability
   fill(COL_BLACK);
   textAlign(CENTER);
   textSize(11); // Nom de l'attaque
-  text(cardAbility.getString("name"), cardX+battleCardWidth/2, battleCardPosY+battleCardHeight*0.53, battleCardWidth/6*5);
+  text(cardAbility.getString("name"), cardX+battleCardWidth/2, cardY+battleCardHeight*0.53, battleCardWidth/6*5);
 
   textSize(10); // Description de l'attaque
-  text(cardAbility.getString("desc"), cardX+battleCardWidth/12, battleCardPosY+battleCardHeight*0.57, battleCardWidth/6*5, battleCardHeight*0.5);
+  textLeading(10);
+  text(cardAbility.getString("desc"), cardX+battleCardWidth/12, cardY+battleCardHeight*0.57, battleCardWidth/6*5, battleCardHeight*0.5);
 
   // Image Placeholder
   fill(COL_DARK);
-  rect(cardX+battleCardWidth/12, battleCardPosY+battleCardHeight*0.05, battleCardWidth/6*5, battleCardHeight*0.35);
+  rect(cardX+battleCardWidth/12, cardY+battleCardHeight*0.05, battleCardWidth/6*5, battleCardHeight*0.35);
 
   // Input Circle
   stroke(cardColor);
   strokeWeight(4);
   fill(COL_DARK);
-  circle(cardX+battleCardWidth/2, battleCardPosY, inputCircleSize);
+  circle(cardX+battleCardWidth/2, cardY, inputCircleSize);
   noStroke();
 
   // Texte qui dit quel touche appuyer pour utiliser
   fill(COL_WHITE);
   textSize(18);
-  text(handIndex+1, cardX+battleCardWidth/2, battleCardPosY+battleCardHeight*0.035);
+  text(handIndex+1, cardX+battleCardWidth/2, cardY+battleCardHeight*0.035);
 }
 
-void useAbility() {
-  // ability use
+void useAbility(int ability) {
+  JSONObject usedAbility = allAttacks.getJSONObject(ability);
+  JSONArray typeArray = usedAbility.getJSONArray("type");
+  JSONArray typeAmountArray = usedAbility.getJSONArray("typeAmount");
+
+  for (int i = 0; i < typeArray.size(); i++) {
+    String type = typeArray.getString(i).trim();
+    int typeAmount = typeAmountArray.getInt(i);
+    attackCheck(type, typeAmount);
+  }
 }
 
 void rerollAbilityHand() {
@@ -623,8 +723,91 @@ void rerollAbilityHand() {
     currentAbilityHand.append(currentAbilityDeck.get(0));
     currentAbilityDeck.remove(0);
   }
-  // shuffle deck
-  // add from deck to hand while removing from deck. If deck size = 0, deck = full deck
+}
+
+void spawnMobs() {
+  mobs.add(new Enemy(floor(random(allMobs.size()))));
+}
+
+void damageMob(int mobIndex, int heroAtk) {
+  mobs.get(mobIndex).hurt(heroAtk);
+  if (mobs.get(mobIndex).isDead()) {
+    removeMob(mobIndex);
+  }
+}
+
+// Si le mob est complètement mort, enlève-le de l'array mobs
+void removeMob(int mobIndex) {
+  if (mobs.get(mobIndex).deathCheck()) {
+    bag.gainMoney(mobs.get(mobIndex).getMoneyDrop(), savefile); // Gagne l'argent droppé par le mob
+
+    // Gagne de l'exp si le héro n'est pas déjà au niveau maximum
+    if (savefile.getInt("char"+hero.getID()+"_lvl") < 5) {
+      savefile.setInt("char"+hero.getID()+"_exp", savefile.getInt("char"+hero.getID()+"_exp")+mobs.get(mobIndex).getExpDrop()); // Gagne l'exp droppé par le mob
+      
+      if (savefile.getInt("char"+hero.getID()+"_exp") >= (savefile.getInt("char"+hero.getID()+"_lvl")+1)*100) { // Si le personnage a Level up
+        savefile.setInt("char"+hero.getID()+"_exp", savefile.getInt("char"+hero.getID()+"_exp") - (savefile.getInt("char"+hero.getID()+"_lvl")+1)*100);
+        savefile.setInt("char"+hero.getID()+"_lvl", savefile.getInt("char"+hero.getID()+"_lvl")+1);
+      }
+    } else {
+      savefile.setInt("char"+hero.getID()+"_exp", (savefile.getInt("char"+hero.getID()+"_lvl")+1)*100);
+    }
+    saveGame();
+    mobs.remove(mobIndex);
+  }
+}
+
+// --------------------
+// LISTE DE TOUTES LES ATTAQUES
+// --------------------
+void attackCheck(String type, int typeAmount) {
+  // Ceci sera une longue liste qui check chacun des types d'abilités.
+  // Pas super optimale, mais c'est le mieux dont j'ai réussi à penser à
+
+  // Attaque du joueur (s'applique seulement si c'est une attaque)
+  int playerATK = ceil((hero.getAtk()+bonusPlayerATK)*typeAmount/100);
+  // Défense du joueur (s'applique seulement si c'est une capacité défensive)
+  int playerDEF = ceil((hero.getDef()+bonusPlayerDEF)*typeAmount/100);
+  // Effets spéciaux du joueur
+  int playerCrits = hero.getCritsOdd()+bonusPlayerCrits;
+  int playerThorns = hero.getThorns()+bonusPlayerThorns;
+  int playerDodge = hero.getDodgeOdd()+bonusPlayerDodge;
+  int playerLifeSteal = hero.getLifeSteal()+bonusPlayerLifeSteal;
+  println(type);
+  if (type.equals("ATK")) { // Simple attaque
+    if (random(100) <= playerCrits) { // Si le joueur pogne un coup critique
+      playerATK = ceil(playerATK*=2);
+    }
+    mobs.get(0).hurt(playerATK);
+  } else if (type.equals("DEF")) {
+    playerBlock += playerDEF;
+  } else if (type.equals("critOneTime")) { // Coup critique avec chances augmentés
+    if (random(100) <= playerCrits+typeAmount) { // Si le joueur pogne un coup critique
+      playerATK = ceil(playerATK*=2);
+    }
+    mobs.get(0).hurt(playerATK);
+  } else if (type.equals("mobAtkDebuff")) {
+    mobs.get(0).debuffedAtk(typeAmount);
+  } else if (type.equals("recoil")) {
+    hero.hurt(typeAmount);
+  } else if (type.equals("thornsAdd")) {
+    bonusPlayerThorns += ceil(playerATK*typeAmount/100);
+  } else if (type.equals("energy")) {
+    // ENERGY FOR NEXT TURN
+  } else if (type.equals("ATKbuff")) {
+    bonusPlayerATK += ceil(playerATK*typeAmount/100);
+  } else if (type.equals("multiTarget")) {
+    for (int j = 0; j < mobs.size(); j++) {
+      if (random(100) <= playerCrits) { // Si le joueur pogne un coup critique
+        playerATK = ceil(((hero.getAtk()+bonusPlayerATK)*typeAmount/100)*2);
+      } else { // La formule ATK doit être réécrite pour éviter bonus critique par dessus bonus critique
+        playerATK = ceil((hero.getAtk()+bonusPlayerATK)*typeAmount/100);
+      }
+      mobs.get(j).hurt(playerATK);
+    }
+  } else if (type.equals("crit")) {
+    bonusPlayerCrits += typeAmount;
+  }
 }
 
 // --------------------

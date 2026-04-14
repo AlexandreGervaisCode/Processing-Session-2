@@ -3,19 +3,23 @@
     "id": 0,
     "name": "BLANK",
     "attack": 5,
-    "maxHp": 20,
+    "maxHp": 100,
     "sprite": "mobs/DEBUG_mob.png",
     "scaleX": 100,
-    "scaleY": 100
+    "scaleY": 100,
+    "expDrop": 10,
+    "moneyDrop": 75
   },
   {
     "id": 1,
     "name": "BLANK",
     "attack": 5,
-    "maxHp": 20,
+    "maxHp": 50,
     "sprite": "mobs/DEBUG_mob.png",
-    "scaleX": 100,
-    "scaleY": 100
+    "scaleX": 125,
+    "scaleY": 150,
+    "expDrop": 10,
+    "moneyDrop": 75
   },
   {
     "id": 2,
@@ -23,7 +27,9 @@
     "attack": 5,
     "maxHp": 20,
     "sprite": "mobs/DEBUG_mob.png",
-    "scaleX": 100,
-    "scaleY": 100
+    "scaleX": 150,
+    "scaleY": 200,
+    "expDrop": 10,
+    "moneyDrop": 75
   }
 ]
