@@ -2,7 +2,7 @@ class Player {
   // Valeurs par défaut
   int ID = 0;
   // Stats de combat
-  int atk, def, hp, maxHp = 1;
+  int atk, maxAtk, def, hp, maxHp = 1;
   // Placement du joueur
   float posX = 60;
   float posY;
@@ -29,6 +29,7 @@ class Player {
     ID = heroID;
     selectedHero = heroes.getJSONObject(ID);
     atk = selectedHero.getInt("attack");
+    maxAtk = atk;
     def = selectedHero.getInt("defense");
     maxHp = selectedHero.getInt("maxHp");
     hp = maxHp;
@@ -45,7 +46,7 @@ class Player {
   }
 
   // Affiche le joueur
-  void display() {
+  void display(int blockAmount) {
     image(sprite, posX, posY, scaleX, scaleY);
     fill(healthBar);
     rect(posX+scaleX/4, posY-healthOffset, scaleX/2, healthHeight, 15);
@@ -53,16 +54,20 @@ class Player {
     textSize(24);
     textAlign(CENTER);
     text(hp+"/"+maxHp, posX+scaleX/2, posY-healthOffset+healthHeight/3*2);
+    
+    if (blockAmount > 0) {
+      text("Block "+blockAmount, posX+scaleX/2, posY-healthOffset-healthHeight/3);
+    }
   }
 
   // Si le joueur est endommagé
-  void hurt(Enemy mobAttack) {
-    hp -= floor(random(mobAttack.getAtk()*0.85, mobAttack.getAtk()*1.15));
+  void hurt(int leftOverDamage) {
+      hp -= leftOverDamage;
     if (isDead()) {
       deathAnim();
     }
   }
-  void hurt(int recoil) {
+  void recoil(int recoil) {
     hp -= ceil(maxHp/(100/recoil));
     if (isDead()) {
       deathAnim();
@@ -95,6 +100,9 @@ class Player {
   }
   int getMaxHP() {
     return maxHp;
+  }
+  void resetAtk() {
+    atk = maxAtk;
   }
   String getName() {
     return name;

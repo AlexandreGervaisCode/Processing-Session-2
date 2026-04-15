@@ -120,6 +120,7 @@ float battleCardHeight;
 float battleCardGutter;
 boolean isAbilitySelected = false; // Check si une abilité est sélectionnée
 int abilitySelectedIndex = 0;
+IntList mobAbilitiesThisTurn; // Les abilités que les mobs vont utiliser
 
 // Font
 PFont descFont;
@@ -204,6 +205,8 @@ void initializeVariables() {
   fullAbilityDeck = new IntList();
   currentAbilityDeck = new IntList();
   currentAbilityHand = new IntList();
+
+  mobAbilitiesThisTurn = new IntList();
 
   // Inventaire
   bag = new Inventory();
@@ -551,12 +554,17 @@ void battle() {
   if (oneFrameExecution) {
     rerollAbilityHand(); // Génère les cartes en main
 
-    for (int i = 0; i < floor(random(1, 4)); i++) { // Génère les ennemies
+    for (int i = 0; i < floor(random(4)); i++) { // Génère les ennemies
       spawnMobs();
+      mobAbilitiesThisTurn.set(i, mobs.get(i).selectAction());
     }
     energyLeft = maxEnergy; // Rempli l'énergie
 
     roundNbr++; // Augmente le numéro de la round
+    
+    playerBlock = 0; // Reset le nombre de block
+
+    isAbilitySelected = false; // Déselecte si une abilité était précédement sélectionnée
 
     oneFrameExecution = false;
   }
@@ -564,7 +572,7 @@ void battle() {
   image(battleBackground, 0, 0, width, height); // Arrière-plan
 
   if (mobs.size() > 0) { // Tant qu'il y a encore des ennemies présent
-    hero.display(); // Affiche le héro sprite
+    hero.display(playerBlock); // Affiche le héro sprite
 
     // L'ordre est fait a l'envers pour ne pas aller hors du range de l'array après avoir effacé un mob
     for (int i = mobs.size()-1; i >= 0; i--) { // check si un mob est mort
@@ -638,9 +646,38 @@ void playerTurn() {
 void enemyTurn() {
   enemyTurnTimer = timer(enemyTurnTimer);
   if (enemyTurnTimer<=0) {
+
+    // TEMPORARY FOR MOB ABILITY UNTIL I FIGURE OUT A BETTER METHOD
+    for (int i = 0; i < mobAbilitiesThisTurn.size(); i++) {
+      if (mobAbilitiesThisTurn.get(i) == 0) { // If an attack is selected
+        int leftOverDmg = mobs.get(i).getAtk() - playerBlock;
+        playerBlock -= mobs.get(i).getAtk();
+        if (playerBlock < 0) {
+          playerBlock = 0;
+        }
+        if (leftOverDmg > 0) {
+          hero.hurt(leftOverDmg);
+        }
+      } else if (mobAbilitiesThisTurn.get(i) == 1) { // if a defense is selected
+        mobs.get(i).increaseBlock();
+      }
+      println(mobAbilitiesThisTurn.get(i));
+    }
+
+    mobAbilitiesThisTurn.clear();
+    for (int i = 0; i < mobs.size(); i++) {
+      mobAbilitiesThisTurn.set(i, mobs.get(i).selectAction());
+    }
+
+    // Reset les paramètres pour la fin du tour.
     energyLeft = maxEnergy;
     rerollAbilityHand();
     isPlayerTurn = true;
+    bonusPlayerCrits = 0;
+    bonusPlayerDodge = 0;
+    bonusPlayerLifeSteal = 0;
+    bonusPlayerThorns = 0;
+    playerBlock = 0;
   }
 }
 
@@ -744,7 +781,7 @@ void removeMob(int mobIndex) {
     // Gagne de l'exp si le héro n'est pas déjà au niveau maximum
     if (savefile.getInt("char"+hero.getID()+"_lvl") < 5) {
       savefile.setInt("char"+hero.getID()+"_exp", savefile.getInt("char"+hero.getID()+"_exp")+mobs.get(mobIndex).getExpDrop()); // Gagne l'exp droppé par le mob
-      
+
       if (savefile.getInt("char"+hero.getID()+"_exp") >= (savefile.getInt("char"+hero.getID()+"_lvl")+1)*100) { // Si le personnage a Level up
         savefile.setInt("char"+hero.getID()+"_exp", savefile.getInt("char"+hero.getID()+"_exp") - (savefile.getInt("char"+hero.getID()+"_lvl")+1)*100);
         savefile.setInt("char"+hero.getID()+"_lvl", savefile.getInt("char"+hero.getID()+"_lvl")+1);
@@ -752,8 +789,10 @@ void removeMob(int mobIndex) {
     } else {
       savefile.setInt("char"+hero.getID()+"_exp", (savefile.getInt("char"+hero.getID()+"_lvl")+1)*100);
     }
+    savefile.setInt("mobSlain", savefile.getInt("mobSlain")+1);
     saveGame();
     mobs.remove(mobIndex);
+    mobAbilitiesThisTurn.remove(mobIndex);
   }
 }
 
@@ -773,7 +812,6 @@ void attackCheck(String type, int typeAmount) {
   int playerThorns = hero.getThorns()+bonusPlayerThorns;
   int playerDodge = hero.getDodgeOdd()+bonusPlayerDodge;
   int playerLifeSteal = hero.getLifeSteal()+bonusPlayerLifeSteal;
-  println(type);
   if (type.equals("ATK")) { // Simple attaque
     if (random(100) <= playerCrits) { // Si le joueur pogne un coup critique
       playerATK = ceil(playerATK*=2);
@@ -789,7 +827,7 @@ void attackCheck(String type, int typeAmount) {
   } else if (type.equals("mobAtkDebuff")) {
     mobs.get(0).debuffedAtk(typeAmount);
   } else if (type.equals("recoil")) {
-    hero.hurt(typeAmount);
+    hero.recoil(typeAmount);
   } else if (type.equals("thornsAdd")) {
     bonusPlayerThorns += ceil(playerATK*typeAmount/100);
   } else if (type.equals("energy")) {

@@ -1,7 +1,8 @@
 class Enemy {
   int ID = 0;
   // Stats de combat
-  int initialAtk, atk, hp, maxHp = 1;
+  int initialAtk, atk, def, hp, maxHp = 1;
+  int block = 0;
   // Placement de l'enemie
   float posX = width*0.45;
   float posY;
@@ -20,6 +21,9 @@ class Enemy {
   // Timer pour l'animation de mort en frames (30fps)
   float deathAnimTime = 2*30;
 
+  // Sert à déterminer l'action dont l'evnemies va faire ce tour-ci
+  int enemyAction = 0;
+
   // --------------------
   // CONSTRUCTOR
   // --------------------
@@ -30,6 +34,7 @@ class Enemy {
     selectedEnemy = enemies.getJSONObject(ID);
     atk = selectedEnemy.getInt("attack");
     initialAtk = atk;
+    def = selectedEnemy.getInt("defense");
     maxHp = selectedEnemy.getInt("maxHp");
     hp = maxHp;
     scaleX = selectedEnemy.getFloat("scaleX");
@@ -47,17 +52,32 @@ class Enemy {
     float mobOffset = posX+(maxScaleX*mobIndex)+mobGutter*mobIndex;
     float hpDisplayConstrain = constrain(scaleX, 120, 150); // Pour pas que HP sort de son display
     image(sprite, mobOffset, posY, scaleX, scaleY);
-    fill(healthBar);
-    rect(mobOffset-((hpDisplayConstrain-scaleX)/2), posY-healthOffset, hpDisplayConstrain, healthHeight, 15);
-    fill(white);
-    textSize(24);
-    textAlign(CENTER);
-    text(hp+"/"+maxHp, mobOffset+scaleX/2, posY-healthOffset+healthHeight/3*2);
+    if (hp > 0) {
+      fill(healthBar);
+      rect(mobOffset-((hpDisplayConstrain-scaleX)/2), posY-healthOffset, hpDisplayConstrain, healthHeight, 15);
+      fill(white);
+      textSize(24);
+      textAlign(CENTER);
+      text(hp+"/"+maxHp, mobOffset+scaleX/2, posY-healthOffset+healthHeight/3*2);
+
+      // Affiche l'action prochaine de l'ennemie
+      if (enemyAction == 0) {
+        text("ATK " + atk, mobOffset+scaleX/2, posY-healthOffset-healthHeight/3);
+      } else if (enemyAction == 1) {
+        text("DEF " + def, mobOffset+scaleX/2, posY-healthOffset-healthHeight/3);
+      }
+    }
   }
 
   // Si l'ennemie est endommagé
   void hurt(int playerAttack) {
-    hp -= playerAttack;
+    if (playerAttack - block > 0) {
+      hp -= (playerAttack - block);
+    }
+    block -= playerAttack;
+    if (block < 0) {
+      block = 0;
+    }
   }
   void hurt() {
     hp -= 1;
@@ -66,7 +86,6 @@ class Enemy {
   boolean deathCheck() {
     if (isDead()) {
       deathAnim();
-      println("isDead");
     }
     return deathAnim();
   }
@@ -94,14 +113,21 @@ class Enemy {
   }
 
   // Retourne les stats
-  float getAtk() {
+  int getAtk() {
     return atk;
   }
-  float getHP() {
+  int getHP() {
     return hp;
   }
-  float getMaxHP() {
+  int getMaxHP() {
     return maxHp;
+  }
+  int getBlock() {
+    return block;
+  }
+  void turnEnd() {
+    atk = initialAtk;
+    block = 0;
   }
   int getID() {
     return ID;
@@ -111,5 +137,12 @@ class Enemy {
   }
   int getExpDrop() { // Drop un montant d'exp un peu aléatoire
     return ceil(random(expDrop*0.9, expDrop*1.1));
+  }
+  int selectAction() {
+    enemyAction = floor(random(2));
+    return enemyAction;
+  }
+  void increaseBlock() {
+    block += def;
   }
 }
