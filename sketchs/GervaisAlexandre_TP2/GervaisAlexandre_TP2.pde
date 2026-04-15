@@ -292,7 +292,7 @@ void mousePressed() {
         } else if (savefile.getBoolean("char"+i+"_unlocked")) {
           isThisHeroSelected = mouseDetection((heroSelectX*(i-3+1))+(heroSelectXOffset*(i-3)), height/15*7, heroSelectW, heroSelectH);
         }
-        if (isThisHeroSelected) {
+        if (isThisHeroSelected) { // Créer le héro et commence la partie
           hero = new Player(i);
           isOnTitleScreen = false;
           isOnHeroSelect = false;
@@ -349,7 +349,7 @@ void keyPressed() {
   }
 
 
-  if (isGameStarted && isPlayerTurn) {
+  if (isGameStarted && isPlayerTurn) { // Si c'est le tour du joueur
     int keyInput = int(key)-49; // Ex. Appyer sur la touche 1 redonne 0
     if (isAbilitySelected && keyInput == abilitySelectedIndex) {
       useAbility(currentAbilityHand.get(abilitySelectedIndex));
@@ -604,10 +604,10 @@ void battle() {
 
     image(battleForeground, 0, 0, width, height); // Avant-plan
 
-    if (isPlayerTurn) {
+    if (isPlayerTurn) { // Si c'est le tour du joueur
       playerTurn();
-      enemyTurnTimer = 2*mobs.size();
-    } else {
+      enemyTurnTimer = 2*mobs.size(); // Reset le timer pour le tour de l'ennemie
+    } else { // Tour des ennemies
       enemyTurn();
     }
 
@@ -700,7 +700,7 @@ void enemyTurn() {
   }
 }
 
-void onGameOver() {
+void onGameOver() { // Quand le joueur perd (PAS ENCORE FONCTIONNEL)
   bag.loseMoney(bag.getMoney()); // Réduit l'argent à zéro
   roundNbr = 0;
   bag.initializeInventory();
@@ -718,7 +718,7 @@ void drawAbilityCard(float cardX, float cardY, JSONObject cardAbility, int handI
     cardColor = COL_STATUS;
   }
 
-  if (isAbilitySelected && abilitySelectedIndex == handIndex) {
+  if (isAbilitySelected && abilitySelectedIndex == handIndex) { // Monte la carte sélectionnée
     cardY-=cardY*0.1;
   }
   // Arrière-plan de la carte et de la description
@@ -754,19 +754,19 @@ void drawAbilityCard(float cardX, float cardY, JSONObject cardAbility, int handI
   text(handIndex+1, cardX+battleCardWidth/2, cardY+battleCardHeight*0.035);
 }
 
-void useAbility(int ability) {
+void useAbility(int ability) { // Quand une attaque est utilisée
   JSONObject usedAbility = allAttacks.getJSONObject(ability);
   JSONArray typeArray = usedAbility.getJSONArray("type");
   JSONArray typeAmountArray = usedAbility.getJSONArray("typeAmount");
 
-  for (int i = 0; i < typeArray.size(); i++) {
+  for (int i = 0; i < typeArray.size(); i++) { // Va chercher les infos sur l'attaque
     String type = typeArray.getString(i).trim();
     int typeAmount = typeAmountArray.getInt(i);
-    attackCheck(type, typeAmount);
+    attackCheck(type, typeAmount); // Fait l'attaque
   }
 }
 
-void rerollAbilityHand() {
+void rerollAbilityHand() { // Donne des nouvelles abilitées
   currentAbilityHand.clear(); // Vide la main de l'utilisateur
   currentAbilityDeck.shuffle(); // Mélange le deck
   for (int i = 0; i < 6; i++) { // Rempli la main de l'utilisateur
@@ -781,20 +781,20 @@ void rerollAbilityHand() {
   }
 }
 
-void spawnMobs() {
+void spawnMobs() { // Fait apparaître un ennemie aléatoire
   mobs.add(new Enemy(floor(random(allMobs.size()))));
 }
 
-void damageMob(int mobIndex, int heroAtk) {
+void damageMob(int mobIndex, int heroAtk) { // Endommage l'ennemie
   mobs.get(mobIndex).hurt(heroAtk);
-  if (mobs.get(mobIndex).isDead()) {
+  if (mobs.get(mobIndex).isDead()) { // Enlève l'ennemie s'il est mort
     removeMob(mobIndex);
   }
 }
 
 // Si le mob est complètement mort, enlève-le de l'array mobs
 void removeMob(int mobIndex) {
-  if (mobs.get(mobIndex).deathCheck()) {
+  if (mobs.get(mobIndex).deathCheck()) { // Vérifie si l'animation de mort est finie
     bag.gainMoney(mobs.get(mobIndex).getMoneyDrop(), savefile); // Gagne l'argent droppé par le mob
 
     // Gagne de l'exp si le héro n'est pas déjà au niveau maximum
@@ -802,16 +802,16 @@ void removeMob(int mobIndex) {
       savefile.setInt("char"+hero.getID()+"_exp", savefile.getInt("char"+hero.getID()+"_exp")+mobs.get(mobIndex).getExpDrop()); // Gagne l'exp droppé par le mob
 
       if (savefile.getInt("char"+hero.getID()+"_exp") >= (savefile.getInt("char"+hero.getID()+"_lvl")+1)*100) { // Si le personnage a Level up
-        savefile.setInt("char"+hero.getID()+"_exp", savefile.getInt("char"+hero.getID()+"_exp") - (savefile.getInt("char"+hero.getID()+"_lvl")+1)*100);
-        savefile.setInt("char"+hero.getID()+"_lvl", savefile.getInt("char"+hero.getID()+"_lvl")+1);
+        savefile.setInt("char"+hero.getID()+"_exp", savefile.getInt("char"+hero.getID()+"_exp") - (savefile.getInt("char"+hero.getID()+"_lvl")+1)*100); // Reset le nombre d'exp
+        savefile.setInt("char"+hero.getID()+"_lvl", savefile.getInt("char"+hero.getID()+"_lvl")+1); // Augmente le niveau
       }
-    } else {
+    } else { // si le héro ne level up pas, fait que gagner le nombre d'exp
       savefile.setInt("char"+hero.getID()+"_exp", (savefile.getInt("char"+hero.getID()+"_lvl")+1)*100);
     }
-    savefile.setInt("mobSlain", savefile.getInt("mobSlain")+1);
-    saveGame();
-    mobs.remove(mobIndex);
-    mobAbilitiesThisTurn.remove(mobIndex);
+    savefile.setInt("mobSlain", savefile.getInt("mobSlain")+1); // Augmente le stat de nombre de mobs tués
+    saveGame(); // Sauvegarde dans le fichier savefile
+    mobs.remove(mobIndex); // Enlève le mob
+    mobAbilitiesThisTurn.remove(mobIndex); // Enlève l'attaque du mob qui s'en venait
   }
 }
 
@@ -826,7 +826,8 @@ void attackCheck(String type, int typeAmount) {
   int playerATK = ceil((hero.getAtk()+bonusPlayerATK)*typeAmount/100);
   // Défense du joueur (s'applique seulement si c'est une capacité défensive)
   int playerDEF = ceil((hero.getDef()+bonusPlayerDEF)*typeAmount/100);
-  // Effets spéciaux du joueur
+  
+  // Effets spéciaux du joueur (MAJORITAIREMENT PAS INTÉGRÉ ENCORE)
   int playerCrits = hero.getCritsOdd()+bonusPlayerCrits;
   int playerThorns = hero.getThorns()+bonusPlayerThorns;
   int playerDodge = hero.getDodgeOdd()+bonusPlayerDodge;
@@ -836,24 +837,24 @@ void attackCheck(String type, int typeAmount) {
       playerATK = ceil(playerATK*=2);
     }
     mobs.get(0).hurt(playerATK);
-  } else if (type.equals("DEF")) {
+  } else if (type.equals("DEF")) { // Augmente la défense
     playerBlock += playerDEF;
   } else if (type.equals("critOneTime")) { // Coup critique avec chances augmentés
     if (random(100) <= playerCrits+typeAmount) { // Si le joueur pogne un coup critique
       playerATK = ceil(playerATK*=2);
     }
     mobs.get(0).hurt(playerATK);
-  } else if (type.equals("mobAtkDebuff")) {
+  } else if (type.equals("mobAtkDebuff")) { // Baisse l'attaque d'un ennemie
     mobs.get(0).debuffedAtk(typeAmount);
-  } else if (type.equals("recoil")) {
+  } else if (type.equals("recoil")) { // Reçois des dégâts en attaquant
     hero.recoil(typeAmount);
-  } else if (type.equals("thornsAdd")) {
+  } else if (type.equals("thornsAdd")) { // Ajoute des dégâts quand l'ennemie t'attaque
     bonusPlayerThorns += ceil(playerATK*typeAmount/100);
-  } else if (type.equals("energy")) {
+  } else if (type.equals("energy")) { // Augmente le nombre d'énergie prochain tour (PAS ENCORE INTÉGRÉ)
     // ENERGY FOR NEXT TURN
-  } else if (type.equals("ATKbuff")) {
+  } else if (type.equals("ATKbuff")) { // Augmente l'atk du joueur pour ce tour
     bonusPlayerATK += ceil(playerATK*typeAmount/100);
-  } else if (type.equals("multiTarget")) {
+  } else if (type.equals("multiTarget")) { // Attaque tout les ennemies présents
     for (int j = 0; j < mobs.size(); j++) {
       if (random(100) <= playerCrits) { // Si le joueur pogne un coup critique
         playerATK = ceil(((hero.getAtk()+bonusPlayerATK)*typeAmount/100)*2);
@@ -862,7 +863,7 @@ void attackCheck(String type, int typeAmount) {
       }
       mobs.get(j).hurt(playerATK);
     }
-  } else if (type.equals("crit")) {
+  } else if (type.equals("crit")) { // Augmente les chances de faire un coup critique ce tour
     bonusPlayerCrits += typeAmount;
   }
 }
@@ -875,6 +876,7 @@ void savefileLoad() {
   savefile = loadJSONObject("json/savefile.json");
   if (savefile == null) { // Crée le fichier de sauvegarde
     savefile = new JSONObject();
+    
     // Met les tout les persos au niveau 1, 0 exp. Perso 3, 4 et 5 sont locked
     savefile.setInt("char0_exp", 0);
     savefile.setInt("char0_lvl", 0);
@@ -906,6 +908,7 @@ void savefileLoad() {
     savefile.setInt("moneyGained", 0);
     savefile.setInt("levelBeaten", 0);
 
+    // Sauvegarde les items débloqués
     unlockedItems = new JSONArray();
     savefile.setJSONArray("unlockedItems", unlockedItems);
 
@@ -913,6 +916,8 @@ void savefileLoad() {
   } else {
     unlockedItems = savefile.getJSONArray("unlockedItems");
   }
+  
+  // Met les valeurs sur la stat page dans des variables
   statMobKills = savefile.getInt("mobSlain");
   statRunLoseNbr = savefile.getInt("defeatNbr");
   statRunNbr = savefile.getInt("runNbr");
