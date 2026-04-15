@@ -2,9 +2,28 @@
  * Titre: EDM1700 Projet Final: "Crumbling Thalasso"
  * Auteur: Alexandre Gervais
  * Version: 1.0
- * Instructions:
- * Description du projet :
- * Notes:
+ * Instructions: Utiliser la souris pour naviguer dans les menus et le clavier pour
+                 naviguer les combats.
+ * Description du projet : Un jeu rogue-lite qui se joue tour par tour dans lequel
+                           l'utilisateur(trice) est amené(e) à éliminer des vagues
+                           d'ennemies jusqu'à se rendre au boss final.
+ * Notes: LISTE D'ASPECTS DU JEU QUI NE SONT PAS TERMINÉES DANS LE PROTOTYPE:
+   - Fonctionnement des objets
+   - Le magasin au complet
+   - Pouvoir choisir sa cible lors d'un combat
+   - Manque un display approprié pour les status
+   - Les boosts de défenses des ennemies ne se reset pas après le tour du joueur
+   - Seulement le héro "SHARK" à un sprite de combat et des attaques fonctionnelles
+   - L'attaque "Seeing Red" du héro "SHARK" manque la fonction d'énergie supplémentaire
+   - Aucune ennemie possède un sprite. Tous utilise le sprite placeholder
+   - Arrière-plan de combat n'est pas final, c'est un placeholder
+   - Le système de zones
+   - Audio
+   
+   Est-ce que je trouve ça réalistique que pour la remise du travail final que j'ai
+   tout cela de fini? Non, mais je devrais être capable de majoritairement tout faire
+   sauf le système de zone, l'audio et l'implimentation de quelques des
+   héros à débloquer.
  */
 
 // import processing.sound.*;
