@@ -9,6 +9,7 @@ class Enemy {
   float scaleX, scaleY = 100;
   int moneyDrop, expDrop;
   color white = color(255);
+  color colTargeted = color(255, 0, 0, 170);
   color healthBar = color(0, 0, 0, 100);
   float healthHeight = 50;
   float healthOffset = 20+healthHeight;
@@ -23,6 +24,9 @@ class Enemy {
 
   // Sert à déterminer l'action dont l'evnemies va faire ce tour-ci
   int enemyAction = 0;
+  // Quelle position que l'ennemie occupe
+  float mobOffset;
+  int enemyArrayCurrentIndex;
 
   // --------------------
   // CONSTRUCTOR
@@ -46,12 +50,13 @@ class Enemy {
   }
 
   // Affiche l'enemie
-  void display(int mobIndex) {
+  void display(int mobIndex, boolean isTarget, int mobTargetedIndex, boolean isAbilitySelected) {
     float maxScaleX = 150;
     float mobGutter = 25;
-    float mobOffset = posX+(maxScaleX*mobIndex)+mobGutter*mobIndex;
+    mobOffset = posX+(maxScaleX*mobIndex)+mobGutter*mobIndex;
     float hpDisplayConstrain = constrain(scaleX, 120, 150); // Pour pas que HP sort de son display
     image(sprite, mobOffset, posY, scaleX, scaleY);
+    enemyArrayCurrentIndex = mobIndex;
     if (hp > 0) {
       fill(healthBar);
       rect(mobOffset-((hpDisplayConstrain-scaleX)/2), posY-healthOffset, hpDisplayConstrain, healthHeight, 15);
@@ -66,7 +71,20 @@ class Enemy {
       } else if (enemyAction == 1) {
         text("DEF " + def, mobOffset+scaleX/2, posY-healthOffset-healthHeight/3);
       }
+      
+      // Affiche si l'ennemie est ciblé
+      if (isMobHovered() && mobIndex == mobTargetedIndex && isAbilitySelected && isTarget) {
+        stroke(colTargeted);
+        strokeWeight(8);
+        noFill();
+        circle(mobOffset+scaleX/2, posY+scaleY/2, scaleX*1.2);
+        noStroke();
+      }
     }
+  }
+  
+  boolean isMobHovered() {
+    return (mouseX >= mobOffset && mouseX <= mobOffset+scaleX && mouseY >= posY && mouseY <= posY+scaleY);
   }
 
   // Si l'ennemie est endommagé
@@ -141,6 +159,9 @@ class Enemy {
   int selectAction() {
     enemyAction = floor(random(2));
     return enemyAction;
+  }
+  int getEnemyArrayCurrentIndex() {
+    return enemyArrayCurrentIndex;
   }
   void increaseBlock() {
     block += def;

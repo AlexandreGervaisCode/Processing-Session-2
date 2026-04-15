@@ -3,27 +3,25 @@
  * Auteur: Alexandre Gervais
  * Version: 1.0
  * Instructions: Utiliser la souris pour naviguer dans les menus et le clavier pour
-                 naviguer les combats.
+ naviguer les combats.
  * Description du projet : Un jeu rogue-lite qui se joue tour par tour dans lequel
-                           l'utilisateur(trice) est amené(e) à éliminer des vagues
-                           d'ennemies jusqu'à se rendre au boss final.
+ l'utilisateur(trice) est amené(e) à éliminer des vagues
+ d'ennemies jusqu'à se rendre au boss final.
  * Notes: LISTE D'ASPECTS DU JEU QUI NE SONT PAS TERMINÉES DANS LE PROTOTYPE:
-   - Fonctionnement des objets
-   - Le magasin au complet
-   - Pouvoir choisir sa cible lors d'un combat
-   - Manque un display approprié pour les status
-   - Les boosts de défenses des ennemies ne se reset pas après le tour du joueur
-   - Seulement le héro "SHARK" à un sprite de combat et des attaques fonctionnelles
-   - L'attaque "Seeing Red" du héro "SHARK" manque la fonction d'énergie supplémentaire
-   - Aucune ennemie possède un sprite. Tous utilise le sprite placeholder
-   - Arrière-plan de combat n'est pas final, c'est un placeholder
-   - Le système de zones
-   - Audio
-   
-   Est-ce que je trouve ça réalistique que pour la remise du travail final que j'ai
-   tout cela de fini? Non, mais je devrais être capable de majoritairement tout faire
-   sauf le système de zone, l'audio et l'implimentation de quelques des
-   héros à débloquer.
+ - Fonctionnement des objets
+ - Le magasin au complet
+ - Manque un display approprié pour les status
+ - Les boosts de défenses des ennemies ne se reset pas après le tour du joueur
+ - Seulement le héro "SHARK" à un sprite de combat et des attaques fonctionnelles
+ - Aucune ennemie possède un sprite. Tous utilise le sprite placeholder
+ - Arrière-plan de combat n'est pas final, c'est un placeholder
+ - Le système de zones
+ - Audio
+ 
+ Est-ce que je trouve ça réalistique que pour la remise du travail final que j'ai
+ tout cela de fini? Non, mais je devrais être capable de majoritairement tout faire
+ sauf le système de zone, l'audio et l'implimentation de quelques des
+ héros à débloquer.
  */
 
 // import processing.sound.*;
@@ -119,6 +117,7 @@ int bonusPlayerCrits = 0;
 int bonusPlayerDodge = 0;
 int bonusPlayerThorns = 0;
 int bonusPlayerLifeSteal = 0;
+int bonusPlayerEnergy = 0;
 
 float enemyTurnTimer;
 
@@ -140,6 +139,8 @@ float battleCardGutter;
 boolean isAbilitySelected = false; // Check si une abilité est sélectionnée
 int abilitySelectedIndex = 0;
 IntList mobAbilitiesThisTurn; // Les abilités que les mobs vont utiliser
+int mobTargeted; // Quel ennemie est la cible de l'attaque
+boolean isMobTargeted; // Si un ennemie est ciblé (Sert pour les visuels)
 
 // Font
 PFont descFont;
@@ -325,6 +326,23 @@ void mousePressed() {
       }
     }
   }
+
+  if (isInCombat && isPlayerTurn) {
+    for (int i = 0; i < mobs.size(); i++) {
+      if (isAbilitySelected && isMobTargeted && mobs.get(i).isMobHovered()) {
+        useAbility(currentAbilityHand.get(abilitySelectedIndex), mobTargeted);
+        currentAbilityHand.remove(abilitySelectedIndex);
+        isAbilitySelected = false;
+        energyLeft--;
+      }
+    }
+    for (int i = 0; i < currentAbilityHand.size(); i++) {
+      if (mouseDetection(battleCardPosX + battleCardWidth*i + battleCardGutter*i, battleCardPosY, battleCardWidth, battleCardHeight)) {
+        abilitySelectedIndex = i;
+        isAbilitySelected = true;
+      }
+    }
+  }
   // Check pour si le bouton Exit a été appuyé dans les écrans appropriés
   if ((isOnStatsPage || isOnHeroSelect || isInShop) && mouseDetection(exitBtnX, exitBtnY, exitBtnW, exitBtnH)) {
     isOnStatsPage = false;
@@ -351,12 +369,12 @@ void keyPressed() {
 
   if (isGameStarted && isPlayerTurn) { // Si c'est le tour du joueur
     int keyInput = int(key)-49; // Ex. Appyer sur la touche 1 redonne 0
-    if (isAbilitySelected && keyInput == abilitySelectedIndex) {
-      useAbility(currentAbilityHand.get(abilitySelectedIndex));
-      currentAbilityHand.remove(abilitySelectedIndex);
-      isAbilitySelected = false;
-      energyLeft--;
-    } else if (keyInput >= 0 && keyInput <= currentAbilityHand.size()-1) {
+    /*if (isAbilitySelected && keyInput == abilitySelectedIndex) {
+     useAbility(currentAbilityHand.get(abilitySelectedIndex));
+     currentAbilityHand.remove(abilitySelectedIndex);
+     isAbilitySelected = false;
+     energyLeft--;
+     } else */    if (keyInput >= 0 && keyInput <= currentAbilityHand.size()-1) {
       abilitySelectedIndex = keyInput;
       isAbilitySelected = true;
     }
@@ -573,14 +591,14 @@ void battle() {
   if (oneFrameExecution) {
     rerollAbilityHand(); // Génère les cartes en main
 
-    for (int i = 0; i < floor(random(4)); i++) { // Génère les ennemies
+    for (int i = 0; i < floor(random(1, 4)); i++) { // Génère les ennemies
       spawnMobs();
       mobAbilitiesThisTurn.set(i, mobs.get(i).selectAction());
     }
     energyLeft = maxEnergy; // Rempli l'énergie
 
     roundNbr++; // Augmente le numéro de la round
-    
+
     playerBlock = 0; // Reset le nombre de block
 
     isAbilitySelected = false; // Déselecte si une abilité était précédement sélectionnée
@@ -599,7 +617,7 @@ void battle() {
     }
 
     for (int i = 0; i < mobs.size(); i++) {
-      mobs.get(i).display(i);
+      mobs.get(i).display(i, isMobTargeted, mobTargeted, isAbilitySelected);
     }
 
     image(battleForeground, 0, 0, width, height); // Avant-plan
@@ -657,12 +675,23 @@ void playerTurn() {
   for (int i = 0; i < currentAbilityHand.size(); i++) {
     drawAbilityCard(battleCardPosX + battleCardWidth*i + battleCardGutter*i, battleCardPosY, allAttacks.getJSONObject(currentAbilityHand.get(i)), i);
   }
+
+  // Check quel ennemie est la cible
+  for (int i = 0; i < mobs.size(); i++) {
+    if (isAbilitySelected) {
+      if (mobs.get(i).isMobHovered()) {
+        mobTargeted = mobs.get(i).getEnemyArrayCurrentIndex();
+        isMobTargeted = true;
+      }
+    }
+  }
 }
 
 // --------------------
 // TOUR DES ENEMIES
 // --------------------
 void enemyTurn() {
+  isMobTargeted = false;
   enemyTurnTimer = timer(enemyTurnTimer);
   if (enemyTurnTimer<=0) {
 
@@ -689,7 +718,7 @@ void enemyTurn() {
     }
 
     // Reset les paramètres pour la fin du tour.
-    energyLeft = maxEnergy;
+    energyLeft = maxEnergy + bonusPlayerEnergy;
     rerollAbilityHand();
     isPlayerTurn = true;
     bonusPlayerCrits = 0;
@@ -697,6 +726,7 @@ void enemyTurn() {
     bonusPlayerLifeSteal = 0;
     bonusPlayerThorns = 0;
     playerBlock = 0;
+    bonusPlayerEnergy = 0;
   }
 }
 
@@ -754,7 +784,7 @@ void drawAbilityCard(float cardX, float cardY, JSONObject cardAbility, int handI
   text(handIndex+1, cardX+battleCardWidth/2, cardY+battleCardHeight*0.035);
 }
 
-void useAbility(int ability) { // Quand une attaque est utilisée
+void useAbility(int ability, int mobIndex) { // Quand une attaque est utilisée
   JSONObject usedAbility = allAttacks.getJSONObject(ability);
   JSONArray typeArray = usedAbility.getJSONArray("type");
   JSONArray typeAmountArray = usedAbility.getJSONArray("typeAmount");
@@ -762,7 +792,7 @@ void useAbility(int ability) { // Quand une attaque est utilisée
   for (int i = 0; i < typeArray.size(); i++) { // Va chercher les infos sur l'attaque
     String type = typeArray.getString(i).trim();
     int typeAmount = typeAmountArray.getInt(i);
-    attackCheck(type, typeAmount); // Fait l'attaque
+    attackCheck(type, typeAmount, mobIndex); // Fait l'attaque
   }
 }
 
@@ -818,7 +848,7 @@ void removeMob(int mobIndex) {
 // --------------------
 // LISTE DE TOUTES LES ATTAQUES
 // --------------------
-void attackCheck(String type, int typeAmount) {
+void attackCheck(String type, int typeAmount, int mobIndex) {
   // Ceci sera une longue liste qui check chacun des types d'abilités.
   // Pas super optimale, mais c'est le mieux dont j'ai réussi à penser à
 
@@ -826,7 +856,7 @@ void attackCheck(String type, int typeAmount) {
   int playerATK = ceil((hero.getAtk()+bonusPlayerATK)*typeAmount/100);
   // Défense du joueur (s'applique seulement si c'est une capacité défensive)
   int playerDEF = ceil((hero.getDef()+bonusPlayerDEF)*typeAmount/100);
-  
+
   // Effets spéciaux du joueur (MAJORITAIREMENT PAS INTÉGRÉ ENCORE)
   int playerCrits = hero.getCritsOdd()+bonusPlayerCrits;
   int playerThorns = hero.getThorns()+bonusPlayerThorns;
@@ -836,22 +866,22 @@ void attackCheck(String type, int typeAmount) {
     if (random(100) <= playerCrits) { // Si le joueur pogne un coup critique
       playerATK = ceil(playerATK*=2);
     }
-    mobs.get(0).hurt(playerATK);
+    mobs.get(mobIndex).hurt(playerATK);
   } else if (type.equals("DEF")) { // Augmente la défense
     playerBlock += playerDEF;
   } else if (type.equals("critOneTime")) { // Coup critique avec chances augmentés
     if (random(100) <= playerCrits+typeAmount) { // Si le joueur pogne un coup critique
       playerATK = ceil(playerATK*=2);
     }
-    mobs.get(0).hurt(playerATK);
+    mobs.get(mobIndex).hurt(playerATK);
   } else if (type.equals("mobAtkDebuff")) { // Baisse l'attaque d'un ennemie
-    mobs.get(0).debuffedAtk(typeAmount);
+    mobs.get(mobIndex).debuffedAtk(typeAmount);
   } else if (type.equals("recoil")) { // Reçois des dégâts en attaquant
     hero.recoil(typeAmount);
   } else if (type.equals("thornsAdd")) { // Ajoute des dégâts quand l'ennemie t'attaque
     bonusPlayerThorns += ceil(playerATK*typeAmount/100);
-  } else if (type.equals("energy")) { // Augmente le nombre d'énergie prochain tour (PAS ENCORE INTÉGRÉ)
-    // ENERGY FOR NEXT TURN
+  } else if (type.equals("energy")) { // Augmente le nombre d'énergie prochain tour
+    bonusPlayerEnergy++;
   } else if (type.equals("ATKbuff")) { // Augmente l'atk du joueur pour ce tour
     bonusPlayerATK += ceil(playerATK*typeAmount/100);
   } else if (type.equals("multiTarget")) { // Attaque tout les ennemies présents
@@ -866,6 +896,7 @@ void attackCheck(String type, int typeAmount) {
   } else if (type.equals("crit")) { // Augmente les chances de faire un coup critique ce tour
     bonusPlayerCrits += typeAmount;
   }
+  isMobTargeted = false;
 }
 
 // --------------------
@@ -876,7 +907,7 @@ void savefileLoad() {
   savefile = loadJSONObject("json/savefile.json");
   if (savefile == null) { // Crée le fichier de sauvegarde
     savefile = new JSONObject();
-    
+
     // Met les tout les persos au niveau 1, 0 exp. Perso 3, 4 et 5 sont locked
     savefile.setInt("char0_exp", 0);
     savefile.setInt("char0_lvl", 0);
@@ -916,7 +947,7 @@ void savefileLoad() {
   } else {
     unlockedItems = savefile.getJSONArray("unlockedItems");
   }
-  
+
   // Met les valeurs sur la stat page dans des variables
   statMobKills = savefile.getInt("mobSlain");
   statRunLoseNbr = savefile.getInt("defeatNbr");
