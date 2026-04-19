@@ -131,7 +131,7 @@
     "name": "EMF Reader",
     "desc": "PLACEHOLDER DESC",
     "price": 100,
-    "sprite": "items/DEBUG_item.png",
+    "sprite": "items/item_emfReader.png",
     "unlocked": true,
     "tags": []
   },
@@ -140,7 +140,7 @@
     "name": "Music Box",
     "desc": "Lower enemy ATK by 15% for the first 3 turns of a battle.",
     "price": 100,
-    "sprite": "items/DEBUG_item.png",
+    "sprite": "items/item_musicBox.png",
     "unlocked": true,
     "tags": []
   },
@@ -149,7 +149,7 @@
     "name": "Tarot Card",
     "desc": "Gives a random effect at the beginning of a battle.",
     "price": 100,
-    "sprite": "items/DEBUG_item.png",
+    "sprite": "items/item_tarotCard.png",
     "unlocked": true,
     "tags": []
   },
@@ -158,7 +158,7 @@
     "name": "Star Bit",
     "desc": "All healing is increased by 10%.",
     "price": 100,
-    "sprite": "items/DEBUG_item.png",
+    "sprite": "items/item_starBit.png",
     "unlocked": true,
     "tags": []
   },
@@ -167,7 +167,7 @@
     "name": "Autopsy Report",
     "desc": "Upon losing all your HP, heal by 10 HP, but lose this item.",
     "price": 100,
-    "sprite": "items/DEBUG_item.png",
+    "sprite": "items/item_autopsyReport.png",
     "unlocked": true,
     "tags": []
   },
@@ -176,7 +176,7 @@
     "name": "Attorney's Badge",
     "desc": "This badge prouves you're an attorney! Start each round with 5 Block.",
     "price": 100,
-    "sprite": "items/DEBUG_item.png",
+    "sprite": "items/item_attorneyBadge.png",
     "unlocked": true,
     "tags": []
   },
@@ -185,7 +185,7 @@
     "name": "Musical Leek",
     "desc": "PLACEHOLDER DESC",
     "price": 100,
-    "sprite": "items/DEBUG_item.png",
+    "sprite": "items/item_musicalLeek.png",
     "unlocked": true,
     "tags": []
   },
@@ -194,7 +194,7 @@
     "name": "Walkie-Talkie",
     "desc": "PLACEHOLDER DESC",
     "price": 100,
-    "sprite": "items/DEBUG_item.png",
+    "sprite": "items/item_walkieTalkie.png",
     "unlocked": true,
     "tags": []
   },
@@ -203,7 +203,7 @@
     "name": "Fox Mask",
     "desc": "Gain +1 ATK for every red card in your hand.",
     "price": 100,
-    "sprite": "items/DEBUG_item.png",
+    "sprite": "items/item_foxMask.png",
     "unlocked": true,
     "tags": []
   },
@@ -212,7 +212,7 @@
     "name": "Creepy Cupcake",
     "desc": "PLACEHOLDER DESC",
     "price": 100,
-    "sprite": "items/DEBUG_item.png",
+    "sprite": "items/item_cupcake.png",
     "unlocked": true,
     "tags": []
   },
@@ -221,7 +221,7 @@
     "name": "Bear Mask",
     "desc": "Gives 20% DEF Boost when inflicted with the Fire Status.",
     "price": 100,
-    "sprite": "items/DEBUG_item.png",
+    "sprite": "items/item_bearMask.png",
     "unlocked": true,
     "tags": []
   },
@@ -230,7 +230,7 @@
     "name": "Gros Michel",
     "desc": "Add +10 Damage to attacks dealt.",
     "price": 100,
-    "sprite": "items/DEBUG_item.png",
+    "sprite": "items/item_grosMichel.png",
     "unlocked": true,
     "tags": []
   },
@@ -239,7 +239,7 @@
     "name": "Dialphone",
     "desc": "PLACEHOLDER DESC",
     "price": 100,
-    "sprite": "items/DEBUG_item.png",
+    "sprite": "items/item_dialphone.png",
     "unlocked": true,
     "tags": []
   },
@@ -248,7 +248,7 @@
     "name": "Hourglass",
     "desc": "Gain 10% ATK every round, but start battles at 50% of your max ATK. Maxes out at 150% max ATK.",
     "price": 100,
-    "sprite": "items/DEBUG_item.png",
+    "sprite": "items/item_hourglass.png",
     "unlocked": true,
     "tags": []
   },
@@ -257,7 +257,7 @@
     "name": "Shovel Blade",
     "desc": "PLACEHOLDER DESC",
     "price": 100,
-    "sprite": "items/DEBUG_item.png",
+    "sprite": "items/item_shovelBlade.png",
     "unlocked": true,
     "tags": []
   },
@@ -266,7 +266,7 @@
     "name": "Bomb Burst",
     "desc": "PLACEHOLDER DESC",
     "price": 100,
-    "sprite": "items/DEBUG_item.png",
+    "sprite": "items/item_bombBurst.png",
     "unlocked": true,
     "tags": []
   },
@@ -275,7 +275,7 @@
     "name": "Phase Locket",
     "desc": "PLACEHOLDER DESC",
     "price": 100,
-    "sprite": "items/DEBUG_item.png",
+    "sprite": "items/item_phaseLocket.png",
     "unlocked": true,
     "tags": []
   },
@@ -284,7 +284,7 @@
     "name": "Companion Cube",
     "desc": "PLACEHOLDER DESC",
     "price": 100,
-    "sprite": "items/DEBUG_item.png",
+    "sprite": "items/item_companionCube.png",
     "unlocked": true,
     "tags": []
   },
@@ -293,7 +293,7 @@
     "name": "Teleporter",
     "desc": "PLACEHOLDER DESC",
     "price": 100,
-    "sprite": "items/DEBUG_item.png",
+    "sprite": "items/item_teleporter.png",
     "unlocked": true,
     "tags": []
   },
@@ -302,7 +302,7 @@
     "name": "Emergency Button",
     "desc": "PLACEHOLDER DESC",
     "price": 100,
-    "sprite": "items/DEBUG_item.png",
+    "sprite": "items/item_emergencyButton.png",
     "unlocked": true,
     "tags": []
   },
@@ -311,7 +311,7 @@
     "name": "Radioactive Sludge",
     "desc": "The Poison Status now heals you instead of damaging.",
     "price": 100,
-    "sprite": "items/DEBUG_item.png",
+    "sprite": "items/item_radioactiveSludge.png",
     "unlocked": true,
     "tags": []
   },
@@ -320,7 +320,7 @@
     "name": "Ebony & Ivory",
     "desc": "PLACEHOLDER DESC",
     "price": 100,
-    "sprite": "items/DEBUG_item.png",
+    "sprite": "items/item_ebonyIvory.png",
     "unlocked": true,
     "tags": []
   },
@@ -329,7 +329,7 @@
     "name": "Bing Bong",
     "desc": "PLACEHOLDER DESC",
     "price": 100,
-    "sprite": "items/DEBUG_item.png",
+    "sprite": "items/item_bingBong.png",
     "unlocked": true,
     "tags": []
   },
@@ -338,7 +338,7 @@
     "name": "Backpack",
     "desc": "PLACEHOLDER DESC",
     "price": 100,
-    "sprite": "items/DEBUG_item.png",
+    "sprite": "items/item_backpack.png",
     "unlocked": true,
     "tags": []
   },
@@ -347,7 +347,7 @@
     "name": "Scout Cannon",
     "desc": "PLACEHOLDER DESC",
     "price": 100,
-    "sprite": "items/DEBUG_item.png",
+    "sprite": "items/item_scoutCannon.png",
     "unlocked": true,
     "tags": []
   },
@@ -356,7 +356,7 @@
     "name": "M.O.A.B.",
     "desc": "PLACEHOLDER DESC",
     "price": 100,
-    "sprite": "items/DEBUG_item.png",
+    "sprite": "items/item_moab.png",
     "unlocked": true,
     "tags": []
   },
@@ -365,7 +365,7 @@
     "name": "Squeaky Hammer",
     "desc": "PLACEHOLDER DESC",
     "price": 100,
-    "sprite": "items/DEBUG_item.png",
+    "sprite": "items/item_squeakyHammer.png",
     "unlocked": true,
     "tags": []
   },
@@ -374,7 +374,7 @@
     "name": "Poker Chips",
     "desc": "PLACEHOLDER DESC",
     "price": 100,
-    "sprite": "items/DEBUG_item.png",
+    "sprite": "items/item_pokerChips.png",
     "unlocked": true,
     "tags": []
   },
@@ -383,7 +383,7 @@
     "name": "Microphone",
     "desc": "PLACEHOLDER DESC",
     "price": 100,
-    "sprite": "items/DEBUG_item.png",
+    "sprite": "items/item_microphone.png",
     "unlocked": true,
     "tags": []
   },
@@ -392,7 +392,7 @@
     "name": "Azure Flute",
     "desc": "PLACEHOLDER DESC",
     "price": 100,
-    "sprite": "items/DEBUG_item.png",
+    "sprite": "items/item_azureFlute.png",
     "unlocked": true,
     "tags": []
   },
@@ -401,7 +401,7 @@
     "name": "Letter",
     "desc": "PLACEHOLDER DESC",
     "price": 100,
-    "sprite": "items/DEBUG_item.png",
+    "sprite": "items/item_letter.png",
     "unlocked": true,
     "tags": []
   },
@@ -410,7 +410,7 @@
     "name": "Banana Peel",
     "desc": "PLACEHOLDER DESC",
     "price": 100,
-    "sprite": "items/DEBUG_item.png",
+    "sprite": "items/item_bananaPeel.png",
     "unlocked": true,
     "tags": []
   },
@@ -419,7 +419,7 @@
     "name": "Gas Mask",
     "desc": "PLACEHOLDER DESC",
     "price": 100,
-    "sprite": "items/DEBUG_item.png",
+    "sprite": "items/item_gasMask.png",
     "unlocked": true,
     "tags": []
   },
@@ -428,7 +428,7 @@
     "name": "Empty Container",
     "desc": "PLACEHOLDER DESC",
     "price": 100,
-    "sprite": "items/DEBUG_item.png",
+    "sprite": "items/item_emptyContainer.png",
     "unlocked": true,
     "tags": []
   },
@@ -437,7 +437,7 @@
     "name": "Chaos Buster",
     "desc": "PLACEHOLDER DESC",
     "price": 100,
-    "sprite": "items/DEBUG_item.png",
+    "sprite": "items/item_chaosBuster.png",
     "unlocked": true,
     "tags": []
   },
@@ -446,7 +446,7 @@
     "name": "Pumpkin Helmet",
     "desc": "Increase DEF by 10.",
     "price": 100,
-    "sprite": "items/DEBUG_item.png",
+    "sprite": "items/item_pumpkinHelmet.png",
     "unlocked": true,
     "tags": []
   },
@@ -455,7 +455,7 @@
     "name": "Fruit Basket",
     "desc": "PLACEHOLDER DESC",
     "price": 100,
-    "sprite": "items/DEBUG_item.png",
+    "sprite": "items/item_fruitBasket.png",
     "unlocked": true,
     "tags": []
   },
@@ -464,7 +464,7 @@
     "name": "Kryptonite",
     "desc": "Applies Poison Status to all enemies and user every round.",
     "price": 100,
-    "sprite": "items/DEBUG_item.png",
+    "sprite": "items/item_kryptonite.png",
     "unlocked": true,
     "tags": []
   },
@@ -473,7 +473,7 @@
     "name": "Apparatus",
     "desc": "PLACEHOLDER DESC",
     "price": 100,
-    "sprite": "items/DEBUG_item.png",
+    "sprite": "items/item_apparatus.png",
     "unlocked": true,
     "tags": []
   },
@@ -482,7 +482,7 @@
     "name": "Romanian Ruby",
     "desc": "PLACEHOLDER DESC",
     "price": 100,
-    "sprite": "items/DEBUG_item.png",
+    "sprite": "items/item_romanianRuby.png",
     "unlocked": true,
     "tags": []
   },
@@ -491,7 +491,7 @@
     "name": "Tunisian Diamond",
     "desc": "PLACEHOLDER DESC",
     "price": 100,
-    "sprite": "items/DEBUG_item.png",
+    "sprite": "items/item_tunisianDiamond.png",
     "unlocked": true,
     "tags": []
   },
@@ -500,7 +500,7 @@
     "name": "Norwegian Emerald",
     "desc": "PLACEHOLDER DESC",
     "price": 100,
-    "sprite": "items/DEBUG_item.png",
+    "sprite": "items/item_norwegianEmerald.png",
     "unlocked": true,
     "tags": []
   },
@@ -509,7 +509,7 @@
     "name": "Piston Cup",
     "desc": "PLACEHOLDER DESC",
     "price": 100,
-    "sprite": "items/DEBUG_item.png",
+    "sprite": "items/item_pistonCup.png",
     "unlocked": true,
     "tags": []
   },
@@ -518,7 +518,7 @@
     "name": "Magnifying Glass",
     "desc": "PLACEHOLDER DESC",
     "price": 100,
-    "sprite": "items/DEBUG_item.png",
+    "sprite": "items/item_magnifyingGlass.png",
     "unlocked": true,
     "tags": []
   },
@@ -527,7 +527,7 @@
     "name": "Cactus",
     "desc": "Gain Thorns equal to half of your DEF.",
     "price": 100,
-    "sprite": "items/DEBUG_item.png",
+    "sprite": "items/item_cactus.png",
     "unlocked": true,
     "tags": []
   },
@@ -536,7 +536,7 @@
     "name": "Medkit",
     "desc": "Restore 5 HP at the end of each Battle.",
     "price": 100,
-    "sprite": "items/DEBUG_item.png",
+    "sprite": "items/item_medkit.png",
     "unlocked": true,
     "tags": []
   },
@@ -545,7 +545,7 @@
     "name": "Trashcan",
     "desc": "PLACEHOLDER DESC",
     "price": 100,
-    "sprite": "items/DEBUG_item.png",
+    "sprite": "items/item_trashcan.png",
     "unlocked": true,
     "tags": []
   },
@@ -554,7 +554,7 @@
     "name": "Big Potion",
     "desc": "PLACEHOLDER DESC",
     "price": 100,
-    "sprite": "items/DEBUG_item.png",
+    "sprite": "items/item_bigPotion.png",
     "unlocked": true,
     "tags": []
   }
