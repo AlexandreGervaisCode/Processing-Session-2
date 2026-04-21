@@ -1,7 +1,7 @@
 {
   "char4_unlocked": true,
   "char4_exp": 250,
-  "moneyGained": 11451,
+  "moneyGained": 11764,
   "winNbr": 0,
   "unlockedItems": [],
   "char3_exp": 120,
@@ -20,6 +20,6 @@
   "char4_lvl": 3,
   "char0_exp": 600,
   "char3_unlocked": true,
-  "mobSlain": 90,
+  "mobSlain": 94,
   "runNbr": 0
 }

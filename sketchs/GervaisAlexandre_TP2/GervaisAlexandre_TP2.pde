@@ -11,7 +11,6 @@
  - Fonctionnement des objets
  - Le magasin au complet
  - Manque un display approprié pour les status
- - Les boosts de défenses des ennemies ne se reset pas après le tour du joueur
  - Seulement le héro "SHARK" à un sprite de combat et des attaques fonctionnelles
  - Aucune ennemie possède un sprite. Tous utilise le sprite placeholder
  - Arrière-plan de combat n'est pas final, c'est un placeholder
@@ -108,6 +107,7 @@ IntList currentAbilityHand; // Contient toutes les cartes dans les mains
 float energyCounterPosX = 10; // Positionnement du energy counter
 float energyCounterPosY = 95;
 float energyCounterSize = 80;
+int bossAmount = 2; // Le nombre de boss (utile pour ne pas spawn de boss durant les enemies encounter
 
 // Buff de stats du joueur
 int bonusPlayerATK = 0; // Stats augmentés par les objets/effets d'abilités
@@ -590,18 +590,20 @@ void drawHeroSelect() {
 void battle() {
   if (oneFrameExecution) {
     rerollAbilityHand(); // Génère les cartes en main
-
-    for (int i = 0; i < floor(random(1, 4)); i++) { // Génère les ennemies
-      spawnMobs();
-      mobAbilitiesThisTurn.set(i, mobs.get(i).selectAction());
-    }
     energyLeft = maxEnergy; // Rempli l'énergie
-
     roundNbr++; // Augmente le numéro de la round
-
     playerBlock = 0; // Reset le nombre de block
-
     isAbilitySelected = false; // Déselecte si une abilité était précédement sélectionnée
+
+    if (roundNbr == 20) {
+      spawnBoss();
+      mobAbilitiesThisTurn.set(0, mobs.get(0).selectAction());
+    } else {
+      for (int i = 0; i < floor(random(1, 4)); i++) { // Génère les ennemies
+        spawnMobs();
+        mobAbilitiesThisTurn.set(i, mobs.get(i).selectAction());
+      }
+    }
 
     oneFrameExecution = false;
   }
@@ -610,6 +612,7 @@ void battle() {
 
   if (mobs.size() > 0) { // Tant qu'il y a encore des ennemies présent
     hero.display(playerBlock); // Affiche le héro sprite
+    hero.statsDisplay();
 
     // L'ordre est fait a l'envers pour ne pas aller hors du range de l'array après avoir effacé un mob
     for (int i = mobs.size()-1; i >= 0; i--) { // check si un mob est mort
@@ -694,9 +697,9 @@ void enemyTurn() {
   isMobTargeted = false;
   enemyTurnTimer = timer(enemyTurnTimer);
   if (enemyTurnTimer<=0) {
-
     // TEMPORARY FOR MOB ABILITY UNTIL I FIGURE OUT A BETTER METHOD
     for (int i = 0; i < mobAbilitiesThisTurn.size(); i++) {
+      mobs.get(i).resetBlock();
       if (mobAbilitiesThisTurn.get(i) == 0) { // If an attack is selected
         int leftOverDmg = mobs.get(i).getAtk() - playerBlock;
         playerBlock -= mobs.get(i).getAtk();
@@ -812,7 +815,11 @@ void rerollAbilityHand() { // Donne des nouvelles abilitées
 }
 
 void spawnMobs() { // Fait apparaître un ennemie aléatoire
-  mobs.add(new Enemy(floor(random(allMobs.size()))));
+  mobs.add(new Enemy(floor(random(allMobs.size()-bossAmount))));
+}
+
+void spawnBoss() { // Fait apparaître un boss
+  mobs.add(new Enemy(floor(random(allMobs.size()-bossAmount, allMobs.size()))));
 }
 
 void damageMob(int mobIndex, int heroAtk) { // Endommage l'ennemie

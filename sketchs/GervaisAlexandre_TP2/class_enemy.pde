@@ -11,10 +11,14 @@ class Enemy {
   color white = color(255);
   color colTargeted = color(255, 0, 0, 170);
   color healthBar = color(0, 0, 0, 100);
+  color blockColor = color(0);
   float healthHeight = 50;
   float healthOffset = 20+healthHeight;
   // Visualisation de l'enemie
   PImage sprite;
+  // Block sprite
+  PImage shieldIcon;
+  float shieldIconSize = 40;
   // Collection de Data sur l'ennemie
   JSONArray enemies;
   JSONObject selectedEnemy;
@@ -45,8 +49,9 @@ class Enemy {
     scaleY = selectedEnemy.getFloat("scaleY");
     moneyDrop = selectedEnemy.getInt("moneyDrop");
     expDrop = selectedEnemy.getInt("expDrop");
-    posY = height*0.8-scaleY;
+    posY = height*0.7-scaleY;
     sprite = loadImage(selectedEnemy.getString("sprite"));
+    shieldIcon = loadImage("menus/battle_icon_shield.png");
   }
 
   // Affiche l'enemie
@@ -54,7 +59,7 @@ class Enemy {
     float maxScaleX = 150;
     float mobGutter = 25;
     mobOffset = posX+(maxScaleX*mobIndex)+mobGutter*mobIndex;
-    float hpDisplayConstrain = constrain(scaleX, 120, 150); // Pour pas que HP sort de son display
+    float hpDisplayConstrain = constrain(scaleX, 120, maxScaleX); // Pour pas que HP sort de son display
     image(sprite, mobOffset, posY, scaleX, scaleY);
     enemyArrayCurrentIndex = mobIndex;
     if (hp > 0) {
@@ -71,7 +76,14 @@ class Enemy {
       } else if (enemyAction == 1) {
         text("DEF " + def, mobOffset+scaleX/2, posY-healthOffset-healthHeight/3);
       }
-      
+
+      if (block > 0) {
+        image(shieldIcon, mobOffset-((hpDisplayConstrain-scaleX)/2)-shieldIconSize/2, posY-healthOffset-shieldIconSize/2, shieldIconSize, shieldIconSize);
+        textSize(12);
+        fill(blockColor);
+        text(block, mobOffset-((hpDisplayConstrain-scaleX)/2), posY-healthOffset);
+      }
+
       // Affiche si l'ennemie est ciblé
       if (isMobHovered() && mobIndex == mobTargetedIndex && isAbilitySelected && isTarget) {
         stroke(colTargeted);
@@ -82,7 +94,7 @@ class Enemy {
       }
     }
   }
-  
+
   boolean isMobHovered() {
     return (mouseX >= mobOffset && mouseX <= mobOffset+scaleX && mouseY >= posY && mouseY <= posY+scaleY);
   }
@@ -165,5 +177,8 @@ class Enemy {
   }
   void increaseBlock() {
     block += def;
+  }
+  void resetBlock() {
+    block = 0;
   }
 }
