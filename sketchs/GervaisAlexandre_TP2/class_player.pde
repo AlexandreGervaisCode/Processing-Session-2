@@ -102,6 +102,7 @@ class Player {
     fill(healthBar);
     float statOffsetX = 20;
     float statOffsetY = 10;
+    float statsStringY = 20;
     float stringOffset = 10; // Pour éviter que le text soit coller au bordures
     String statString = "ATK:"+atk+" DEF:"+def+" Crits:"+critsOdd+"%";
     rect(width/2+statOffsetX, statOffsetY, width/4, height/8, 15);
@@ -114,8 +115,8 @@ class Player {
     fill(white);
     textSize(16);
     textAlign(CENTER);
-    text("STATS", (width/2+statOffsetX)+(width/4)/2, statOffsetY+stringOffset);
-    text(statString, width/2+statOffsetX, statOffsetY+stringOffset, width/4-stringOffset, height/10-stringOffset);
+    text("STATS", width/2+statOffsetX, statOffsetY+stringOffset, width/4-stringOffset, height/10-stringOffset);
+    text(statString, width/2+statOffsetX, statOffsetY+stringOffset+statsStringY, width/4-stringOffset, height/10-stringOffset);
   }
 
   // Retourne les stats
