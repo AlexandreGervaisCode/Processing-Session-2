@@ -24,6 +24,7 @@
  */
 
 // import processing.sound.*;
+import java.util.Collections; // Pour shuffle les arrayLists
 
 // Les Game States
 boolean isGameStarted = false;
@@ -171,14 +172,14 @@ void draw() {
     isInCombat = true;
     isInShop = false;
     oneFrameExecution = true;
+  } else if (isInCombat) {
+    battle();
     // Once the Player has lost the Game
     if (hero.isDead()) {
       onGameOver();
     }
-  } else if (isInCombat) {
-    battle();
   } else if (isInShop) {
-    // nothing yet
+    shop();
   }
 }
 
@@ -227,6 +228,9 @@ void initializeVariables() {
   currentAbilityHand = new IntList();
 
   mobAbilitiesThisTurn = new IntList();
+
+  // Magasin
+  itemShop = new Shop();
 
   // Inventaire
   bag = new Inventory();
@@ -300,6 +304,7 @@ void mousePressed() {
           isGameStarted = true;
           isPlayerTurn = true;
           selectedHero = hero.getSelectedHero();
+          savefile.setInt("runNbr", savefile.getInt("runNbr")+1);
 
           // Ajoute les cartes ability appropriées
           JSONArray getAbilityList = selectedHero.getJSONArray("abilityList");
@@ -344,10 +349,13 @@ void mousePressed() {
     }
   }
   // Check pour si le bouton Exit a été appuyé dans les écrans appropriés
-  if ((isOnStatsPage || isOnHeroSelect || isInShop) && mouseDetection(exitBtnX, exitBtnY, exitBtnW, exitBtnH)) {
+  if ((isOnStatsPage || isOnHeroSelect) && mouseDetection(exitBtnX, exitBtnY, exitBtnW, exitBtnH)) {
     isOnStatsPage = false;
     isOnHeroSelect = false;
+  }
+  if (isInShop && mouseDetection(exitBtnX, exitBtnY, exitBtnW, exitBtnH)) {
     isInShop = false;
+    isInCombat = true;
   }
 }
 
@@ -363,6 +371,9 @@ void keyPressed() {
     }
     if (key == 'r') {
       rerollAbilityHand();
+    }
+    if (key == 'n') {
+      roundNbr = 19;
     }
   }
 
@@ -599,7 +610,15 @@ void battle() {
       spawnBoss();
       mobAbilitiesThisTurn.set(0, mobs.get(0).selectAction());
     } else {
-      for (int i = 0; i < floor(random(1, 4)); i++) { // Génère les ennemies
+      int maxEnemySpawn; // Change le nombre d'enemie max dépendemment du nombre de round
+      if (roundNbr <= 5) {
+        maxEnemySpawn = 2;
+      } else if (roundNbr <= 12) {
+        maxEnemySpawn = 3;
+      } else {
+        maxEnemySpawn = 4;
+      }
+      for (int i = 0; i < floor(random(1, maxEnemySpawn)); i++) { // Génère les ennemies
         spawnMobs();
         mobAbilitiesThisTurn.set(i, mobs.get(i).selectAction());
       }
@@ -612,7 +631,6 @@ void battle() {
 
   if (mobs.size() > 0) { // Tant qu'il y a encore des ennemies présent
     hero.display(playerBlock); // Affiche le héro sprite
-    hero.statsDisplay();
 
     // L'ordre est fait a l'envers pour ne pas aller hors du range de l'array après avoir effacé un mob
     for (int i = mobs.size()-1; i >= 0; i--) { // check si un mob est mort
@@ -634,15 +652,15 @@ void battle() {
 
     isPlayerTurn = (energyLeft > 0);
   } else {
-    // HERE WOULD BE THE SHOP SEND
-    /*
-    isInShop = true;
-     isInCombat = false;
-     oneFrameExecution = true;
-     */
-
-    // THIS RESTARTS A BATTLE INSTEAD OF SHOP FOR NOW
-    oneFrameExecution = true;
+    if (roundNbr <= 19) {
+      isInShop = true;
+      isInCombat = false;
+      oneFrameExecution = true;
+      itemShop.loadShop(bag);
+    } else {
+      // WIN SCREEN
+      winScreen();
+    }
   }
 
   // DEBUG INFO --------------------
@@ -663,6 +681,8 @@ void playerTurn() {
   text(energyLeft+"/"+maxEnergy, energyCounterPosX+energyCounterSize/2, energyCounterPosY+energyCounterSize/5*3);
 
   bag.itemDisplay(); // affiche tout les items
+
+  hero.statsDisplay(); // Affiche les stats du perso
 
   fill(hudProgressColor); // Rectangles Round et Money
   rect(hudProgressPosX, hudProgressPosY, hudProgressWidth, hudProgressHeight, hudProgressRounded);
@@ -733,10 +753,47 @@ void enemyTurn() {
   }
 }
 
-void onGameOver() { // Quand le joueur perd (PAS ENCORE FONCTIONNEL)
+void winScreen() { // Quand le joueur gagne
   bag.loseMoney(bag.getMoney()); // Réduit l'argent à zéro
   roundNbr = 0;
   bag.initializeInventory();
+  savefile.setInt("winNbr", savefile.getInt("winNbr")+1);
+  saveGame();
+
+  // Reset le game state
+  isGameStarted = false;
+  isPlayerTurn = false;
+  isInCombat = false;
+  isInShop = false;
+  isOnTitleScreen = true;
+  isOnHeroSelect = false;
+  isOnStatsPage = false;
+  
+  // Reset le visuel de sélection d'écran
+  overlayScreenY = height;
+  darkenBgProgress = 0;
+}
+
+void onGameOver() { // Quand le joueur perd
+  bag.loseMoney(bag.getMoney()); // Réduit l'argent à zéro
+  roundNbr = 0;
+  bag.initializeInventory();
+
+  savefile.setInt("defeatNbr", savefile.getInt("defeatNbr")+1);
+  saveGame();
+
+  // Reset le game state
+  isGameStarted = false;
+  isPlayerTurn = false;
+  isInCombat = false;
+  isInShop = false;
+  isOnTitleScreen = true;
+  isOnHeroSelect = false;
+  isOnStatsPage = false;
+  
+  // Reset le visuel de sélection d'écran
+  overlayScreenY = height;
+  darkenBgProgress = 0;
 }
 
 // Dessine une carte attaque
@@ -904,6 +961,28 @@ void attackCheck(String type, int typeAmount, int mobIndex) {
     bonusPlayerCrits += typeAmount;
   }
   isMobTargeted = false;
+}
+
+void shop() {
+  itemShop.display(bag, hero); // Montre l'item shop
+  
+  fill(hudProgressColor); // Rectangles Round et Money
+  rect(hudProgressPosX, hudProgressPosY, hudProgressWidth, hudProgressHeight, hudProgressRounded);
+  rect(hudProgressPosX, hudProgressPosY+hudProgressGutter, hudProgressWidth, hudProgressHeight, hudProgressRounded);
+
+  fill(COL_WHITE); // Texte Round et Money
+  textAlign(CENTER);
+  textSize(28);
+  text("ROUND "+roundNbr, hudProgressPosX+hudProgressWidth/2, hudProgressPosY+hudProgressHeight/6*4);
+  text("$"+bag.getMoney(), hudProgressPosX+hudProgressWidth/2, hudProgressPosY+hudProgressHeight/6*4+hudProgressGutter);
+
+  // Bouton Quitter
+  fill(COL_EXIT_BTN);
+  rect(exitBtnX, exitBtnY, exitBtnW, exitBtnH);
+  fill(COL_BLACK);
+  textSize(24);
+  textAlign(CENTER);
+  text("EXIT", exitBtnX+(exitBtnW/2), exitBtnY+(exitBtnH/2));
 }
 
 // --------------------

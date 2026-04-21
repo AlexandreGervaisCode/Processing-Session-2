@@ -114,8 +114,8 @@
     "defense": 17,
     "maxHp": 600,
     "sprite": "mobs/boss_buzzwole.png",
-    "scaleX": 350,
-    "scaleY": 350,
+    "scaleX": 275,
+    "scaleY": 275,
     "expDrop": 75,
     "moneyDrop": 250
   },
@@ -126,8 +126,8 @@
     "defense": 50,
     "maxHp": 750,
     "sprite": "mobs/boss_guzzlord.png",
-    "scaleX": 350,
-    "scaleY": 350,
+    "scaleX": 275,
+    "scaleY": 275,
     "expDrop": 75,
     "moneyDrop": 250
   }
