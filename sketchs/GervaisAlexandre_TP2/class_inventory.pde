@@ -1,20 +1,26 @@
 class Inventory {
-  int money;
+  int money; // Nombre d'argent
+  
+  // Éléments JSON
   JSONArray itemsJsonFile;
   JSONObject emptyItem;
   JSONObject[] heldItemsArr;
   JSONObject[] allItems;
+  
+  // Pimages
   PImage[] heldItemSprites;
+  PImage itemFrame;
+  
+  // Couleurs
   color itemHoverBubble;
   color itemHoverText;
-  PImage itemFrame;
   Inventory() {
     money = 0;
     itemsJsonFile = loadJSONArray("json/items.json");
     heldItemsArr = new JSONObject[6];
     heldItemSprites = new PImage[6];
-    itemHoverBubble = color(100, 100, 100, 170);
-    itemHoverText = color(255, 255, 255);
+    itemHoverBubble = color(100, 100, 100, 170); // Gris transparent
+    itemHoverText = color(255, 255, 255); // Blanc
     allItems = new JSONObject[61];
     itemFrame = loadImage("./menus/battle_item_frame.png");
   }
@@ -30,28 +36,28 @@ class Inventory {
     }
   }
 
-  int getMoney() {
+  int getMoney() { // Retourne l'argent
     return money;
   }
 
-  void gainMoney(int amount, JSONObject savefile) {
+  void gainMoney(int amount, JSONObject savefile) { // Gagne de l'argent
     money += amount;
     savefile.setInt("moneyGained", savefile.getInt("moneyGained")+amount);
   }
 
-  void loseMoney(int amount) {
+  void loseMoney(int amount) { // Quand t'achète quelque chose
     money -= amount;
   }
 
-  void itemDisplay() {
+  void itemDisplay() { // Affiche les objets
     float itemFrameSize = 76; // Taille du frame des items
     float startOffset = 10; // Le offset (posX posY) du premier item frame
     float itemGutterSize = 7; // L'espace entre chaque items
     float itemFrameBorder = 6; // Taille de la bordure du item frame
     float imageCenterY = startOffset + itemFrameBorder; // Centrer en Y
 
-    for (int i = 0; i < heldItemsArr.length; i++) {
-      if (heldItemsArr[i] != emptyItem) {
+    for (int i = 0; i < heldItemsArr.length; i++) { // Affiche chaque objets
+      if (heldItemsArr[i] != emptyItem) { // Si l'item slot n'est pas vide
         float frameXPos = startOffset + (itemFrameSize*i) + (itemGutterSize*i);
         float imageCenterX = frameXPos + itemFrameBorder; // Centrer en X
         
@@ -67,8 +73,11 @@ class Inventory {
           if (i == 0) {
             bubblePosX = frameXPos; // Position X de item 1
           }
+          // Bulle de description
           fill(itemHoverBubble);
           rect(bubblePosX, bubblePosY, itemFrameSize*2, itemFrameSize*1.2, 10);
+          
+          // Description
           fill(itemHoverText);
           textSize(11);
           text(heldItemsArr[i].getString("name"), bubblePosX+textOffset/2, bubblePosY+textOffset/2, itemFrameSize*2-textOffset, itemFrameSize-textOffset-itemFrameSize/5*3);
@@ -79,6 +88,7 @@ class Inventory {
     }
   }
 
+  // Quand tu perd un item (PAS ENCORE UTILISÉ AUTRE QUE EN DEBUG)
   void loseHeldItem(int itemIndex) {
     boolean elementRemoved = false;
     for (int i = 0; i < heldItemsArr.length; i++) {

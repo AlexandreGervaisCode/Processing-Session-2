@@ -1,29 +1,41 @@
 /*
  * Titre: EDM1700 Projet Final: "Crumbling Thalasso"
  * Auteur: Alexandre Gervais
- * Version: 1.0
- * Instructions: Utiliser la souris pour naviguer dans les menus et le clavier pour
- naviguer les combats.
+ * Version: 2.0
+ * Instructions: Utiliser la souris pour naviguer dans le jeu et le clavier pour
+ utiliser les fonctions debug dans les combats.
+ 
  * Description du projet : Un jeu rogue-lite qui se joue tour par tour dans lequel
  l'utilisateur(trice) est amené(e) à éliminer des vagues
  d'ennemies jusqu'à se rendre au boss final.
+ 
  * Notes: LISTE D'ASPECTS DU JEU QUI NE SONT PAS TERMINÉES DANS LE PROTOTYPE:
  - Fonctionnement des objets
- - Le magasin au complet
+ - Des éléments du magasin
+ - Ajouter des images pour les abilités
  - Manque un display approprié pour les status
- - Seulement le héro "SHARK" à un sprite de combat et des attaques fonctionnelles
- - Aucune ennemie possède un sprite. Tous utilise le sprite placeholder
+ - Seulement le héro "SHARK" à un sprite de combat et toutes ses attaques fonctionnelles
+ - Pouvoir débloquer des héros
  - Arrière-plan de combat n'est pas final, c'est un placeholder
  - Le système de zones
  - Audio
  
- Est-ce que je trouve ça réalistique que pour la remise du travail final que j'ai
- tout cela de fini? Non, mais je devrais être capable de majoritairement tout faire
- sauf le système de zone, l'audio et l'implimentation de quelques des
- héros à débloquer.
+ MODE DEBUG (CLAVIER UNIQUEMENT ET UNIQUEMENT DURANT UNE PARTIE):
+ 'i' = ajoute un objet aléatoire à ton inventaire
+ 'o' = enlève le premier objet de ton inventaire
+ 'r' = re-roll les cartes dans tes mains
+ 'n' = change ton round number pour celui avant le final boss
+ 'p' = met ton attaque à 999 pour démolir les ennemies
+ 
+ FUN FACT: Ce projet contient 1698 lines de codes ! (Désolé pour la longue correction)
+ 1129 dans GervaisAlexandreTP2
+ 186 dans class enemy
+ 130 dans class inventory
+ 131 dans class player
+ 122 dans class shop
  */
 
-// import processing.sound.*;
+// import processing.sound.*; // VA AJOUTER DANS LA VERSION FINALE 2
 import java.util.Collections; // Pour shuffle les arrayLists
 
 // Les Game States
@@ -364,16 +376,19 @@ void mousePressed() {
 // --------------------
 void keyPressed() {
   if (isGameStarted) { // FOR DEBUG ONLY
-    if (key == 'i') {
+    if (key == 'i') { // Ajoute un objet
       bag.receiveItem(floor(random(60)));
-    } else if (key == 'o') {
+    } else if (key == 'o') { // Supprime un objet
       bag.loseHeldItem(0);
     }
-    if (key == 'r') {
+    if (key == 'r') { // Re-roll ta main d'abilité
       rerollAbilityHand();
     }
-    if (key == 'n') {
+    if (key == 'n') { // Change ton round nbr pour celui avant le final boss
       roundNbr = 19;
+    }
+    if (key == 'p') {
+      bonusPlayerATK = 999;
     }
   }
 
@@ -611,14 +626,18 @@ void battle() {
       mobAbilitiesThisTurn.set(0, mobs.get(0).selectAction());
     } else {
       int maxEnemySpawn; // Change le nombre d'enemie max dépendemment du nombre de round
-      if (roundNbr <= 5) {
+      int minEnemySpawn;
+      if (roundNbr <= 5) { // Seulement 1 ennemie peut spawn
+        minEnemySpawn = 1;
         maxEnemySpawn = 2;
-      } else if (roundNbr <= 12) {
+      } else if (roundNbr <= 12) { // Entre 1 et 2 ennemies peuvent spawn 
+        minEnemySpawn = 1;
         maxEnemySpawn = 3;
-      } else {
+      } else { // Entre 2 et 3 ennemies peuvent spawn
+        minEnemySpawn = 2;
         maxEnemySpawn = 4;
       }
-      for (int i = 0; i < floor(random(1, maxEnemySpawn)); i++) { // Génère les ennemies
+      for (int i = 0; i < floor(random(minEnemySpawn, maxEnemySpawn)); i++) { // Génère les ennemies
         spawnMobs();
         mobAbilitiesThisTurn.set(i, mobs.get(i).selectAction());
       }
@@ -655,6 +674,14 @@ void battle() {
     if (roundNbr <= 19) {
       isInShop = true;
       isInCombat = false;
+      bonusPlayerATK = 0;
+      bonusPlayerDEF = 0;
+      bonusPlayerCrits = 0;
+      bonusPlayerDodge = 0;
+      bonusPlayerLifeSteal = 0;
+      bonusPlayerThorns = 0;
+      playerBlock = 0;
+      bonusPlayerEnergy = 0;
       oneFrameExecution = true;
       itemShop.loadShop(bag);
     } else {
@@ -662,12 +689,6 @@ void battle() {
       winScreen();
     }
   }
-
-  // DEBUG INFO --------------------
-  fill(255, 0, 0);
-  textAlign(RIGHT);
-  textSize(30);
-  text(hero.getName(), width, height*0.2);
 }
 
 // --------------------
@@ -682,7 +703,7 @@ void playerTurn() {
 
   bag.itemDisplay(); // affiche tout les items
 
-  hero.statsDisplay(); // Affiche les stats du perso
+  statsDisplay(); // Affiche les stats du perso
 
   fill(hudProgressColor); // Rectangles Round et Money
   rect(hudProgressPosX, hudProgressPosY, hudProgressWidth, hudProgressHeight, hudProgressRounded);
@@ -710,6 +731,39 @@ void playerTurn() {
   }
 }
 
+void statsDisplay() {
+  fill(hudProgressColor);
+  float statOffsetX = 20;
+  float statOffsetY = 10;
+  float statsStringY = 20;
+  float stringOffset = 10; // Pour éviter que le text soit coller au bordures
+
+  // Stats calculés
+  int totalAtk = hero.getAtk() + bonusPlayerATK;
+  int totalDef = hero.getDef() + bonusPlayerDEF;
+  int totalCrits = hero.getCritsOdd() + bonusPlayerCrits;
+  int totalThorns = hero.getThorns() + bonusPlayerThorns;
+  int totalDodge = hero.getDodgeOdd() + bonusPlayerDodge;
+  int totalLifeSteal = hero.getLifeSteal() + bonusPlayerLifeSteal;
+
+  String statString = "ATK:"+totalAtk+" DEF:"+totalDef+" Crits:"+totalCrits+"%";
+  rect(width/2+statOffsetX, statOffsetY, width/4, height/8, 15);
+  if (totalThorns > 0) {
+    statString += " Thorns:"+totalThorns;
+  }
+  if (totalDodge > 0) {
+    statString += " Dodge:"+totalDodge+"%";
+  }
+  if (totalLifeSteal > 0) {
+    statString += " Lifesteal:"+totalLifeSteal;
+  }
+  fill(COL_WHITE);
+  textSize(16);
+  textAlign(CENTER);
+  text("STATS", width/2+statOffsetX, statOffsetY+stringOffset, width/4-stringOffset, height/10-stringOffset);
+  text(statString, width/2+statOffsetX, statOffsetY+stringOffset+statsStringY, width/4-stringOffset, height/10-stringOffset);
+}
+
 // --------------------
 // TOUR DES ENEMIES
 // --------------------
@@ -729,6 +783,9 @@ void enemyTurn() {
         if (leftOverDmg > 0) {
           hero.hurt(leftOverDmg);
         }
+        if (hero.getThorns() > 0 || bonusPlayerThorns > 0) {
+          mobs.get(i).hurt(hero.getThorns()+bonusPlayerThorns);
+        }
       } else if (mobAbilitiesThisTurn.get(i) == 1) { // if a defense is selected
         mobs.get(i).increaseBlock();
       }
@@ -744,6 +801,8 @@ void enemyTurn() {
     energyLeft = maxEnergy + bonusPlayerEnergy;
     rerollAbilityHand();
     isPlayerTurn = true;
+    bonusPlayerATK = 0;
+    bonusPlayerDEF = 0;
     bonusPlayerCrits = 0;
     bonusPlayerDodge = 0;
     bonusPlayerLifeSteal = 0;
@@ -753,49 +812,9 @@ void enemyTurn() {
   }
 }
 
-void winScreen() { // Quand le joueur gagne
-  bag.loseMoney(bag.getMoney()); // Réduit l'argent à zéro
-  roundNbr = 0;
-  bag.initializeInventory();
-  savefile.setInt("winNbr", savefile.getInt("winNbr")+1);
-  saveGame();
-
-  // Reset le game state
-  isGameStarted = false;
-  isPlayerTurn = false;
-  isInCombat = false;
-  isInShop = false;
-  isOnTitleScreen = true;
-  isOnHeroSelect = false;
-  isOnStatsPage = false;
-  
-  // Reset le visuel de sélection d'écran
-  overlayScreenY = height;
-  darkenBgProgress = 0;
-}
-
-void onGameOver() { // Quand le joueur perd
-  bag.loseMoney(bag.getMoney()); // Réduit l'argent à zéro
-  roundNbr = 0;
-  bag.initializeInventory();
-
-  savefile.setInt("defeatNbr", savefile.getInt("defeatNbr")+1);
-  saveGame();
-
-  // Reset le game state
-  isGameStarted = false;
-  isPlayerTurn = false;
-  isInCombat = false;
-  isInShop = false;
-  isOnTitleScreen = true;
-  isOnHeroSelect = false;
-  isOnStatsPage = false;
-  
-  // Reset le visuel de sélection d'écran
-  overlayScreenY = height;
-  darkenBgProgress = 0;
-}
-
+// --------------------
+// A B I L I T É S
+// --------------------
 // Dessine une carte attaque
 void drawAbilityCard(float cardX, float cardY, JSONObject cardAbility, int handIndex) {
   color cardColor;
@@ -871,6 +890,70 @@ void rerollAbilityHand() { // Donne des nouvelles abilitées
   }
 }
 
+// --------------------
+// LISTE DE TOUTES LES ATTAQUES
+// --------------------
+void attackCheck(String type, int typeAmount, int mobIndex) {
+  // Ceci sera une longue liste qui check chacun des types d'abilités.
+  // Pas super optimale, mais c'est le mieux dont j'ai réussi à penser à
+
+  // Attaque du joueur (s'applique seulement si c'est une attaque)
+  int playerATK = ceil((hero.getAtk()+bonusPlayerATK)*typeAmount/100);
+  // Défense du joueur (s'applique seulement si c'est une capacité défensive)
+  int playerDEF = ceil((hero.getDef()+bonusPlayerDEF)*typeAmount/100);
+
+  // Effets spéciaux du joueur (MAJORITAIREMENT PAS INTÉGRÉ ENCORE)
+  int playerCrits = hero.getCritsOdd()+bonusPlayerCrits;
+  int playerThorns = hero.getThorns()+bonusPlayerThorns;
+  int playerDodge = hero.getDodgeOdd()+bonusPlayerDodge;
+  int playerLifeSteal = hero.getLifeSteal()+bonusPlayerLifeSteal;
+  if (type.equals("ATK")) { // Simple attaque
+    if (random(100) <= playerCrits) { // Si le joueur pogne un coup critique
+      playerATK = ceil(playerATK*=2);
+    }
+    mobs.get(mobIndex).hurt(playerATK);
+  } else if (type.equals("DEF")) { // Augmente la défense
+    playerBlock += playerDEF;
+  } else if (type.equals("critOneTime")) { // Coup critique avec chances augmentés
+    if (random(100) <= playerCrits+typeAmount) { // Si le joueur pogne un coup critique
+      playerATK = ceil(playerATK*=2);
+    }
+    mobs.get(mobIndex).hurt(playerATK);
+  } else if (type.equals("mobAtkDebuff")) { // Baisse l'attaque d'un ennemie
+    mobs.get(mobIndex).debuffedAtk(typeAmount);
+  } else if (type.equals("recoil")) { // Reçois des dégâts en attaquant
+    int leftOverDmg = ceil(hero.getMaxHP()/(100/typeAmount)) - playerBlock;
+    playerBlock -= ceil(hero.getMaxHP()/(100/typeAmount));
+    if (playerBlock < 0) {
+      playerBlock = 0;
+    }
+    if (leftOverDmg > 0) {
+      hero.hurt(leftOverDmg);
+    }
+  } else if (type.equals("thornsAdd")) { // Ajoute des dégâts quand l'ennemie t'attaque
+    bonusPlayerThorns += ceil((hero.getAtk()*typeAmount)/100);
+  } else if (type.equals("energy")) { // Augmente le nombre d'énergie prochain tour
+    bonusPlayerEnergy++;
+  } else if (type.equals("ATKbuff")) { // Augmente l'atk du joueur pour ce tour
+    bonusPlayerATK += ceil(hero.getAtk()*typeAmount/100);
+  } else if (type.equals("multiTarget")) { // Attaque tout les ennemies présents
+    for (int j = 0; j < mobs.size(); j++) {
+      if (random(100) <= playerCrits) { // Si le joueur pogne un coup critique
+        playerATK = ceil(((hero.getAtk()+bonusPlayerATK)*typeAmount/100)*2);
+      } else { // La formule ATK doit être réécrite pour éviter bonus critique par dessus bonus critique
+        playerATK = ceil((hero.getAtk()+bonusPlayerATK)*typeAmount/100);
+      }
+      mobs.get(j).hurt(playerATK);
+    }
+  } else if (type.equals("crit")) { // Augmente les chances de faire un coup critique ce tour
+    bonusPlayerCrits += typeAmount;
+  }
+  isMobTargeted = false;
+}
+
+// --------------------
+// GESTION DES ENNEMIES
+// --------------------
 void spawnMobs() { // Fait apparaître un ennemie aléatoire
   mobs.add(new Enemy(floor(random(allMobs.size()-bossAmount))));
 }
@@ -909,63 +992,15 @@ void removeMob(int mobIndex) {
   }
 }
 
+
 // --------------------
-// LISTE DE TOUTES LES ATTAQUES
+// S H O P
 // --------------------
-void attackCheck(String type, int typeAmount, int mobIndex) {
-  // Ceci sera une longue liste qui check chacun des types d'abilités.
-  // Pas super optimale, mais c'est le mieux dont j'ai réussi à penser à
-
-  // Attaque du joueur (s'applique seulement si c'est une attaque)
-  int playerATK = ceil((hero.getAtk()+bonusPlayerATK)*typeAmount/100);
-  // Défense du joueur (s'applique seulement si c'est une capacité défensive)
-  int playerDEF = ceil((hero.getDef()+bonusPlayerDEF)*typeAmount/100);
-
-  // Effets spéciaux du joueur (MAJORITAIREMENT PAS INTÉGRÉ ENCORE)
-  int playerCrits = hero.getCritsOdd()+bonusPlayerCrits;
-  int playerThorns = hero.getThorns()+bonusPlayerThorns;
-  int playerDodge = hero.getDodgeOdd()+bonusPlayerDodge;
-  int playerLifeSteal = hero.getLifeSteal()+bonusPlayerLifeSteal;
-  if (type.equals("ATK")) { // Simple attaque
-    if (random(100) <= playerCrits) { // Si le joueur pogne un coup critique
-      playerATK = ceil(playerATK*=2);
-    }
-    mobs.get(mobIndex).hurt(playerATK);
-  } else if (type.equals("DEF")) { // Augmente la défense
-    playerBlock += playerDEF;
-  } else if (type.equals("critOneTime")) { // Coup critique avec chances augmentés
-    if (random(100) <= playerCrits+typeAmount) { // Si le joueur pogne un coup critique
-      playerATK = ceil(playerATK*=2);
-    }
-    mobs.get(mobIndex).hurt(playerATK);
-  } else if (type.equals("mobAtkDebuff")) { // Baisse l'attaque d'un ennemie
-    mobs.get(mobIndex).debuffedAtk(typeAmount);
-  } else if (type.equals("recoil")) { // Reçois des dégâts en attaquant
-    hero.recoil(typeAmount);
-  } else if (type.equals("thornsAdd")) { // Ajoute des dégâts quand l'ennemie t'attaque
-    bonusPlayerThorns += ceil(playerATK*typeAmount/100);
-  } else if (type.equals("energy")) { // Augmente le nombre d'énergie prochain tour
-    bonusPlayerEnergy++;
-  } else if (type.equals("ATKbuff")) { // Augmente l'atk du joueur pour ce tour
-    bonusPlayerATK += ceil(playerATK*typeAmount/100);
-  } else if (type.equals("multiTarget")) { // Attaque tout les ennemies présents
-    for (int j = 0; j < mobs.size(); j++) {
-      if (random(100) <= playerCrits) { // Si le joueur pogne un coup critique
-        playerATK = ceil(((hero.getAtk()+bonusPlayerATK)*typeAmount/100)*2);
-      } else { // La formule ATK doit être réécrite pour éviter bonus critique par dessus bonus critique
-        playerATK = ceil((hero.getAtk()+bonusPlayerATK)*typeAmount/100);
-      }
-      mobs.get(j).hurt(playerATK);
-    }
-  } else if (type.equals("crit")) { // Augmente les chances de faire un coup critique ce tour
-    bonusPlayerCrits += typeAmount;
-  }
-  isMobTargeted = false;
-}
-
 void shop() {
-  itemShop.display(bag, hero); // Montre l'item shop
-  
+  itemShop.display(bag); // Montre l'item shop
+
+  statsDisplay();
+
   fill(hudProgressColor); // Rectangles Round et Money
   rect(hudProgressPosX, hudProgressPosY, hudProgressWidth, hudProgressHeight, hudProgressRounded);
   rect(hudProgressPosX, hudProgressPosY+hudProgressGutter, hudProgressWidth, hudProgressHeight, hudProgressRounded);
@@ -983,6 +1018,52 @@ void shop() {
   textSize(24);
   textAlign(CENTER);
   text("EXIT", exitBtnX+(exitBtnW/2), exitBtnY+(exitBtnH/2));
+}
+
+// --------------------
+// F I N S (VICTOIR OU DÉFAITE)
+// --------------------
+void winScreen() { // Quand le joueur gagne
+  bag.loseMoney(bag.getMoney()); // Réduit l'argent à zéro
+  roundNbr = 0;
+  bag.initializeInventory();
+  savefile.setInt("winNbr", savefile.getInt("winNbr")+1);
+  saveGame();
+
+  // Reset le game state
+  isGameStarted = false;
+  isPlayerTurn = false;
+  isInCombat = false;
+  isInShop = false;
+  isOnTitleScreen = true;
+  isOnHeroSelect = false;
+  isOnStatsPage = false;
+
+  // Reset le visuel de sélection d'écran
+  overlayScreenY = height;
+  darkenBgProgress = 0;
+}
+
+void onGameOver() { // Quand le joueur perd
+  bag.loseMoney(bag.getMoney()); // Réduit l'argent à zéro
+  roundNbr = 0;
+  bag.initializeInventory();
+
+  savefile.setInt("defeatNbr", savefile.getInt("defeatNbr")+1);
+  saveGame();
+
+  // Reset le game state
+  isGameStarted = false;
+  isPlayerTurn = false;
+  isInCombat = false;
+  isInShop = false;
+  isOnTitleScreen = true;
+  isOnHeroSelect = false;
+  isOnStatsPage = false;
+
+  // Reset le visuel de sélection d'écran
+  overlayScreenY = height;
+  darkenBgProgress = 0;
 }
 
 // --------------------
@@ -1041,14 +1122,6 @@ void savefileLoad() {
   statRunWinNbr = savefile.getInt("winNbr");
   statMoneyGained = savefile.getInt("moneyGained");
   statLevelBeaten = savefile.getInt("levelBeaten");
-}
-
-// Sauvegarde un stat augmenté et met à jour la variable contenant la valeur
-int statIncrease(int stat, int amountGained, String savefileField) {
-  stat += amountGained;
-  savefile.setInt(savefileField, stat);
-  saveGame();
-  return stat;
 }
 
 void saveGame() { // Sauvegarde le progrès

@@ -76,12 +76,6 @@ class Player {
       deathAnim();
     }
   }
-  void recoil(int recoil) {
-    hp -= ceil(maxHp/(100/recoil));
-    if (isDead()) {
-      deathAnim();
-    }
-  }
   void hurt() {
     hp -= 1;
     if (isDead()) {
@@ -92,31 +86,9 @@ class Player {
   boolean isDead() {
     return hp<=0;
   }
-  // Séquence de mort
+  // Séquence de mort (PAS ENCORE AJOUTÉ, TRÈS FAIBLE PRIOPRITÉE)
   void deathAnim() {
     // deathAnim here
-  }
-  
-  // Montre les stats
-  void statsDisplay() {
-    fill(healthBar);
-    float statOffsetX = 20;
-    float statOffsetY = 10;
-    float statsStringY = 20;
-    float stringOffset = 10; // Pour éviter que le text soit coller au bordures
-    String statString = "ATK:"+atk+" DEF:"+def+" Crits:"+critsOdd+"%";
-    rect(width/2+statOffsetX, statOffsetY, width/4, height/8, 15);
-    if (thorns > 0) {
-      statString += " Thorns:"+thorns;
-    }
-    if (dodgeOdd > 0) {
-      statString += " Dodge:"+dodgeOdd+"%";
-    }
-    fill(white);
-    textSize(16);
-    textAlign(CENTER);
-    text("STATS", width/2+statOffsetX, statOffsetY+stringOffset, width/4-stringOffset, height/10-stringOffset);
-    text(statString, width/2+statOffsetX, statOffsetY+stringOffset+statsStringY, width/4-stringOffset, height/10-stringOffset);
   }
 
   // Retourne les stats

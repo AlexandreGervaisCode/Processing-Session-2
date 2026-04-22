@@ -113,6 +113,7 @@ class Enemy {
     hp -= 1;
   }
 
+  // Check si l'animation de mort est terminée
   boolean deathCheck() {
     if (isDead()) {
       deathAnim();
@@ -138,8 +139,9 @@ class Enemy {
     return (scaleX <= 0 && scaleY <= 0);
   }
 
+  // Si une abilité de réduction d'atk est utilisé sur lui
   void debuffedAtk(int debuffAmount) {
-    floor(atk*(100/debuffAmount));
+    atk = floor(atk*debuffAmount/100);
   }
 
   // Retourne les stats
@@ -155,7 +157,7 @@ class Enemy {
   int getBlock() {
     return block;
   }
-  void turnEnd() {
+  void turnEnd() { // Reset les stats à la fin du tour
     atk = initialAtk;
     block = 0;
   }
@@ -168,17 +170,17 @@ class Enemy {
   int getExpDrop() { // Drop un montant d'exp un peu aléatoire
     return ceil(random(expDrop*0.9, expDrop*1.1));
   }
-  int selectAction() {
+  int selectAction() { // Sélectionne s'il attaque ou défend ce tour
     enemyAction = floor(random(2));
     return enemyAction;
   }
   int getEnemyArrayCurrentIndex() {
     return enemyArrayCurrentIndex;
   }
-  void increaseBlock() {
+  void increaseBlock() { // Si l'ennemi défend ce tour ci
     block += def;
   }
-  void resetBlock() {
+  void resetBlock() { // Reset au début de son tour le block
     block = 0;
   }
 }

@@ -35,7 +35,7 @@
     "name": "Scuttling",
     "desc": "Deal 75% ATK Damage, but lower enemy ATK by 25%.",
     "type": ["ATK", "mobAtkDebuff"],
-    "typeAmount": [75, 25],
+    "typeAmount": [75, 75],
     "price": 100,
     "sprite": "items/item_vampiricShield.png",
     "unlocked": false,
