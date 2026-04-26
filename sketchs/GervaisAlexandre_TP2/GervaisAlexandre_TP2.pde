@@ -1,7 +1,7 @@
 /*
  * Titre: EDM1700 Projet Final: "Crumbling Thalasso"
  * Auteur: Alexandre Gervais
- * Version: 2.0
+ * Version: 3.0
  * Instructions: Utiliser la souris pour naviguer dans le jeu et le clavier pour
  utiliser les fonctions debug dans les combats.
  
@@ -9,7 +9,7 @@
  l'utilisateur(trice) est amené(e) à éliminer des vagues
  d'ennemies jusqu'à se rendre au boss final.
  
- * Notes: LISTE D'ASPECTS DU JEU QUI NE SONT PAS TERMINÉES DANS LE PROTOTYPE:
+ * Notes: LISTE D'ASPECTS DU JEU QUI NE SONT PAS TERMINÉES:
  - Fonctionnement des objets
  - Des éléments du magasin
  - Ajouter des images pour les abilités
@@ -18,7 +18,6 @@
  - Pouvoir débloquer des héros
  - Arrière-plan de combat n'est pas final, c'est un placeholder
  - Le système de zones
- - Audio
  
  MODE DEBUG (CLAVIER UNIQUEMENT ET UNIQUEMENT DURANT UNE PARTIE):
  'i' = ajoute un objet aléatoire à ton inventaire
@@ -26,16 +25,22 @@
  'r' = re-roll les cartes dans tes mains
  'n' = change ton round number pour celui avant le final boss
  'p' = met ton attaque à 999 pour démolir les ennemies
+ '+' = augmente le volume de la musique (check console pour la valeur du volume)
+ '-' = diminue le volume de la musique (check console pour la valeur du volume)
  
- FUN FACT: Ce projet contient 1698 lines de codes ! (Désolé pour la longue correction)
- 1129 dans GervaisAlexandreTP2
+ Si je continuerai à travailler sur ce projet, je le recréerai sur Unity pour
+ faciliter le placement d'éléments UI et le système d'objets et ennemies au lieu
+ de le continuer sur Processing.
+ 
+ FUN FACT: Ce projet contient 1807 lines de codes ! (Désolé pour la longue correction)
+ 1238 dans GervaisAlexandreTP2
  186 dans class enemy
  130 dans class inventory
  131 dans class player
  122 dans class shop
  */
 
-// import processing.sound.*; // VA AJOUTER DANS LA VERSION FINALE 2
+import processing.sound.*; // VA AJOUTER DANS LA VERSION FINALE 2
 import java.util.Collections; // Pour shuffle les arrayLists
 
 // Les Game States
@@ -158,6 +163,14 @@ boolean isMobTargeted; // Si un ennemie est ciblé (Sert pour les visuels)
 // Font
 PFont descFont;
 
+// Audio
+SoundFile backgroundMusic;
+SoundFile titleScreenMusic;
+SoundFile[] battleMusic;
+SoundFile shopMusic;
+SoundFile bossMusic;
+float musicVolume = 0.25;
+
 // Variables de classes
 Player hero; // Le joueur
 ArrayList<Enemy> mobs = new ArrayList<Enemy>(); // Jusqu'à 5 ennemies peuvent être à l'écran à la fois
@@ -176,6 +189,7 @@ void setup() {
 
 void draw() {
   background(128);
+  backgroundMusic.amp(musicVolume); // Met le volume approprié pour la musique
   if (isOnTitleScreen) { // Dessine l'écran titre
     isPlayerTurn = false;
     isInCombat = false;
@@ -253,6 +267,20 @@ void initializeVariables() {
   allMobs = loadJSONArray("./json/enemies.json");
   allItems = bag.getAllItems();
   allAttacks = loadJSONArray("./json/attacks.json");
+
+  // Load toutes les musiques (Source de la musique choisie: Deltarune)
+  titleScreenMusic = new SoundFile(this, "audio/Catswing.mp3"); // Music écran titre
+  battleMusic = new SoundFile[5]; // Music de combat
+  for (int i = 0; i < battleMusic.length; i++) {
+    battleMusic[i] = new SoundFile(this, "audio/battle_"+i+".mp3");
+  }
+  shopMusic = new SoundFile(this, "audio/Fireplace.mp3"); // Music de shop
+  bossMusic = new SoundFile(this, "audio/Chaos_King.mp3"); // Music de boss
+  backgroundMusic = titleScreenMusic;
+
+  // Joue la musique
+  backgroundMusic.play();
+  backgroundMusic.loop();
 }
 
 // --------------------
@@ -404,6 +432,16 @@ void keyPressed() {
       abilitySelectedIndex = keyInput;
       isAbilitySelected = true;
     }
+  }
+  if (key == '+') { // Augmente le volume
+    musicVolume += 0.05;
+    println("Volume: " + int(musicVolume*100) + "%");
+    musicVolume = constrain(musicVolume, 0, 1);
+  }
+  if (key == '-') { // Réduit le volume
+    musicVolume -= 0.05;
+    println("Volume: " + int(musicVolume*100) + "%");
+    musicVolume = constrain(musicVolume, 0, 1);
   }
 }
 
@@ -624,13 +662,26 @@ void battle() {
     if (roundNbr == 20) {
       spawnBoss();
       mobAbilitiesThisTurn.set(0, mobs.get(0).selectAction());
+
+      // Set la musique
+      backgroundMusic.stop();
+      backgroundMusic = bossMusic; // Met la musique boss
+      // Joue la musique
+      backgroundMusic.play();
+      backgroundMusic.loop();
     } else {
+      // Set la musique
+      backgroundMusic.stop();
+      backgroundMusic = battleMusic[floor(random(5))]; // Met la musique de combat normal
+      // Joue la musique
+      backgroundMusic.play();
+      backgroundMusic.loop();
       int maxEnemySpawn; // Change le nombre d'enemie max dépendemment du nombre de round
       int minEnemySpawn;
       if (roundNbr <= 5) { // Seulement 1 ennemie peut spawn
         minEnemySpawn = 1;
         maxEnemySpawn = 2;
-      } else if (roundNbr <= 12) { // Entre 1 et 2 ennemies peuvent spawn 
+      } else if (roundNbr <= 12) { // Entre 1 et 2 ennemies peuvent spawn
         minEnemySpawn = 1;
         maxEnemySpawn = 3;
       } else { // Entre 2 et 3 ennemies peuvent spawn
@@ -682,6 +733,14 @@ void battle() {
       bonusPlayerThorns = 0;
       playerBlock = 0;
       bonusPlayerEnergy = 0;
+
+      // Set la musique
+      backgroundMusic.stop();
+      backgroundMusic = shopMusic;
+      // Joue la musique
+      backgroundMusic.play();
+      backgroundMusic.loop();
+
       oneFrameExecution = true;
       itemShop.loadShop(bag);
     } else {
@@ -773,7 +832,7 @@ void enemyTurn() {
   if (enemyTurnTimer<=0) {
     // TEMPORARY FOR MOB ABILITY UNTIL I FIGURE OUT A BETTER METHOD
     for (int i = 0; i < mobAbilitiesThisTurn.size(); i++) {
-      mobs.get(i).resetBlock();
+      mobs.get(i).turnEnd();
       if (mobAbilitiesThisTurn.get(i) == 0) { // If an attack is selected
         int leftOverDmg = mobs.get(i).getAtk() - playerBlock;
         playerBlock -= mobs.get(i).getAtk();
@@ -1039,6 +1098,28 @@ void winScreen() { // Quand le joueur gagne
   isOnHeroSelect = false;
   isOnStatsPage = false;
 
+  // Set la musique
+  backgroundMusic.stop();
+  backgroundMusic = titleScreenMusic; // Met la bonne musique
+  // Joue la musique
+  backgroundMusic.play();
+  backgroundMusic.loop();
+
+  // Reset les stats bonus du joueur
+  bonusPlayerATK = 0;
+  bonusPlayerDEF = 0;
+  bonusPlayerCrits = 0;
+  bonusPlayerDodge = 0;
+  bonusPlayerLifeSteal = 0;
+  bonusPlayerThorns = 0;
+  playerBlock = 0;
+  bonusPlayerEnergy = 0;
+
+  // Reset les abilities
+  fullAbilityDeck.clear();
+  currentAbilityDeck.clear();
+  currentAbilityHand.clear();
+
   // Reset le visuel de sélection d'écran
   overlayScreenY = height;
   darkenBgProgress = 0;
@@ -1060,6 +1141,34 @@ void onGameOver() { // Quand le joueur perd
   isOnTitleScreen = true;
   isOnHeroSelect = false;
   isOnStatsPage = false;
+
+  // Enlève les mobs précédemments présents
+  for (int i = 0; i < mobs.size(); i++) {
+    mobs.remove(i);
+    mobAbilitiesThisTurn.remove(i);
+  }
+
+  // Set la musique
+  backgroundMusic.stop();
+  backgroundMusic = titleScreenMusic; // Met la bonne musique
+  // Joue la musique
+  backgroundMusic.play();
+  backgroundMusic.loop();
+
+  // Reset les stats bonus du joueur
+  bonusPlayerATK = 0;
+  bonusPlayerDEF = 0;
+  bonusPlayerCrits = 0;
+  bonusPlayerDodge = 0;
+  bonusPlayerLifeSteal = 0;
+  bonusPlayerThorns = 0;
+  playerBlock = 0;
+  bonusPlayerEnergy = 0;
+
+  // Reset les abilities
+  fullAbilityDeck.clear();
+  currentAbilityDeck.clear();
+  currentAbilityHand.clear();
 
   // Reset le visuel de sélection d'écran
   overlayScreenY = height;

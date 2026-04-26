@@ -180,7 +180,4 @@ class Enemy {
   void increaseBlock() { // Si l'ennemi défend ce tour ci
     block += def;
   }
-  void resetBlock() { // Reset au début de son tour le block
-    block = 0;
-  }
 }
